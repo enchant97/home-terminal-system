@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include "includes/head.html" %}
+    <title>PD 1 Edit</title>
+</head>
+
+<body>
+    <header>
+        <a id="backhome" href="/home"><img width="100px" src="/static/homeicon.svg" alt="home"></a>
+        <h1>Photo Database 1.0</h1>
+        <h2>Edit</h2>
+    </header>
+
+    {% include "includes/alert.html" %}
+
+    <div class="container down">
+        <form action="/pd1/edit" method="POST">
+            <input type="text" name="mainloc" id="mainloc" list="mainlocations" autocomplete="off" required>
+            <datalist name="mainlocations" id="mainlocations">
+                {% for mainloc in mainlocations %}
+                <option value="{{ mainloc }}">{{ mainloc }}</option>
+                {% enfor %}
+            </datalist>
+            <!-- fill sub locations datalist using js (POST request) when mainloc changes -->
+        </form>
+    </div>
+
+</body>
+
+</html>

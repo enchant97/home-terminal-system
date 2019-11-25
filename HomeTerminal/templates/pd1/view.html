@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include "includes/head.html" %}
+    <title>PD 1 Report</title>
+</head>
+
+<body>
+    <header>
+        <a id="backhome" href="/home"><img width="100px" src="/static/homeicon.svg" alt="home"></a>
+        <h1>Photo Database 1.0</h1>
+        <h2>Report</h2>
+    </header>
+
+    {% include "includes/alert.html" %}
+
+    <div class="container">
+        <div class="center down">
+            <form class="container two-col" action="/pd1/view" method="POST">
+                <label for="main-location">Main Location:</label>
+                <select name="main-location" id="main-location" required>
+                    {% for i in main_locations %}
+                    <option value="{{ i.name }}">{{ i.name }}</option>
+                    {% endfor %}
+                </select>
+                <label for="all-sub">All Sub-locations</label>
+                <input onchange="togg_element_onclick('all-sub', 'sub-location')" type="checkbox" name="all-sub"
+                    id="all-sub" value="1">
+                <label for="sub-location">Sub Location:</label>
+                <select name="sub-location" id="sub-location" required>
+                    {% for i in sub_locations %}
+                    <option value="{{ i.name }}">{{ i.name }}</option>
+                    {% endfor %}
+                </select>
+                <button class="button ok fillboth" type="submit">Display</button>
+            </form>
+            <a class="button add" href="/fm4/edit">Add Entry</a>
+        </div>
+    </div>
+
+</body>
+
+</html>

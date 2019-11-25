@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% include "includes/head.html" %}
+    <title>Login</title>
+</head>
+<body>
+    <h1>House Interface System 1.0</h1>
+    {% include "includes/alert.html" %}
+    <form id="login" action="/" method="POST">
+        <h2>Please Login</h2>
+        <select name="username" id="username">
+            {% for user in users %}
+            <option value="{{ user.username }}">{{ user.username }}</option>
+            {% endfor %}
+        </select>
+        <input type="password" name="password" id="password" placeholder="Password..." required autocomplete="off">
+        <button class="ok" type="submit">Login</button>
+    </form>
+</body>
+</html>

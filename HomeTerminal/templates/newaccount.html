@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Create Your Account</title>
+    {% include "includes/head.html" %}
+</head>
+
+<body>
+    <header>
+        <a id="backhome" href="/home"><img width="100px" src="/static/homeicon.svg" alt="home"></a>
+        <h2>Creating a new account</h2>        
+    </header>
+
+    {% include "includes/alert.html" %}
+    <form class="container two-col" action="/newaccount" method="POST" onsubmit="return validate_password('password', 'password_conf', 'username')">
+        <label for="username">Your Username</label>
+        <input type="text" name="username" id="username" placeholder="Username" autocomplete="off" required>
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" placeholder="Password" autocomplete="off" required>
+        <label for="password_conf">Confirm Password</label>
+        <input type="password" name="password_conf" id="password_conf" placeholder="Confirm Password" autocomplete="off"
+            required>
+        <label for="birthday">Your Birthday</label>
+        <input type="date" name="birthday" id="birthday" placeholder="birthday" autocomplete="off" required>
+        <button class="button ok fillboth" type="submit">Create</button>
+        <a class="button fillboth" href="/cc">Cancel</a>
+    </form>
+</body>
+
+</html>

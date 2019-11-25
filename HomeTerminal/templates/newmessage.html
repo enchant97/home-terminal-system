@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include "includes/head.html" %}
+    <title>New Message</title>
+</head>
+
+<body>
+    <h1>Message</h1>
+    {% include "includes/alert.html" %}
+    <form class="container down" id="newmessage" action="/newmessage" method="POST">
+        <h2>Write Message Here:</h2>
+        <textarea name="message" id="message" cols="30" rows="10" placeholder="Write message here..." required></textarea>
+        <button class="button ok" type="submit">Save Message</button>
+        <a class="button" href="/home">Close</a>
+    </form>
+</body>
+
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include "includes/head.html" %}
+    <title>FM 4 Report of expiring</title>
+</head>
+
+<body>
+    <header>
+        <a id="backhome" href="/home"><img width="100px" src="/static/homeicon.svg" alt="home"></a>
+        <h1>Freezer Manager 4.0</h1>
+        <h2>Report Of Expiring</h2>
+    </header>
+
+    {% include "includes/alert.html" %}
+
+    <div class="container down">
+        <a href="/fm4/report" class="button">Back</a>
+        <table>
+            <tr>
+                <td>Name</td>
+                <td>Expire</td>
+                <td>Quantity</td>
+                <td>Category</td>
+            </tr>
+            {% for i in items %}
+            <tr>
+                <td>{{ i.name }}</td>
+                <td>{{ i.get_day_first_date() }}</td>
+                <td>{{ i.quantity }}</td>
+                <td>{{ i.categoryname }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include "includes/head.html" %}
+    <title>Timer</title>
+</head>
+
+<body>
+    <header>
+        <a id="backhome" href="/home"><img width="100px" src="/static/homeicon.svg" alt="home"></a>
+        <h1>Timer</h1>
+    </header>
+
+    {% include "includes/alert.html" %}
+
+
+    <form class="container two-col" action="/timer" method="POST">
+        <label for="name">Name:</label>
+        <select name="name" id="name">
+            <option value="Kitchen">Kitchen</option>
+        </select>
+        <label for="hours">Hours:</label>
+        <input type="number" name="hours" id="hours" required>
+        <label for="mins">Mins:</label>
+        <input type="number" name="mins" id="mins" required>
+        <button class="button ok fillboth" type="submit">Go</button>
+    </form>
+
+</body>
+
+</html>
