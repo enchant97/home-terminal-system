@@ -17,16 +17,17 @@
 
     <div class="container">
         <div class="center down">
+            <a class="button add" href="/pd1/edit">Add Entry</a>
             <form class="container two-col" action="/pd1/view" method="POST">
                 <label for="main-location">Main Location:</label>
-                <select name="main-location" id="main-location" required>
+                <select onchange="start_load_options_to_select('sub-location','/pd1/report-subloc',this.options[this.selectedIndex].text)" name="main-location" id="main-location" required>
                     {% for i in main_locations %}
                     <option value="{{ i.name }}">{{ i.name }}</option>
                     {% endfor %}
                 </select>
-                <label for="all-sub">All Sub-locations</label>
+                <!-- <label for="all-sub">All Sub-locations</label>
                 <input onchange="togg_element_onclick('all-sub', 'sub-location')" type="checkbox" name="all-sub"
-                    id="all-sub" value="1">
+                    id="all-sub" value="1"> -->
                 <label for="sub-location">Sub Location:</label>
                 <select name="sub-location" id="sub-location" required>
                     {% for i in sub_locations %}
@@ -35,7 +36,20 @@
                 </select>
                 <button class="button ok fillboth" type="submit">Display</button>
             </form>
-            <a class="button add" href="/fm4/edit">Add Entry</a>
+            <table>
+                <tr>
+                    <td>Id</td>
+                    <td>date_taken</td>
+                    <td>notes</td>
+                </tr>
+                {% for i in loaded_entries %}
+                <tr>
+                    <td>{{ i.id_ }}</td>
+                    <td>{{ i.date_taken }}</td>
+                    <td>{{ i.notes }}</td>
+                </tr>
+                {% endfor %}
+            </table>
         </div>
     </div>
 

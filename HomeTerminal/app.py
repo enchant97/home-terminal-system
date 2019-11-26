@@ -350,7 +350,7 @@ def fm4_edit():
                 amount = request.form["amount"]
                 category = request.form["category"].capitalize()
                 removed = request.form.get("removed", 0)
-                if not FM4_Category.query.filter_by(name=category).first():
+                if not FM4_Category.query.filter_by(name=category).first():#TODO: use .scalar()
                     db.session.add(FM4_Category(name=category))
                     db.session.commit()
                 if id_ == -1:
@@ -460,7 +460,7 @@ def remove_homework():
                 db.session.commit()
         except:
             logging.exception("error removing homework")
-            flash(SERVER_ERROR_MESSAGE)
+            flash(SERVER_ERROR_MESSAGE, "error")
         return redirect("/hwm")
     return redirect("/")
 
@@ -477,33 +477,63 @@ def get_pd1_subloc():
         return jsonify(sublocs=[])
     return jsonify(error="You do not have permision")
 
-@app.route("/pd1")
-@app.route("/pd1/view")
+@app.route("/pd1", methods=["GET", "POST"])
+@app.route("/pd1/view", methods=["GET", "POST"])
 def get_pd1_view():
-    # TODO: allow for user to select from boxes
     if session.get("username", False):
-        # if request.method == "POST":
-        #     pass
-        main_locations = PD1_MainLocation.query.order_by(PD1_MainLocation.name).all()
         loaded_entries = ()
-        if main_locations:
-            sub_locations = PD1_SubLocation.query.filter_by(main_name=main_locations[0].name).order_by(PD1_SubLocation.name)
-        else:
-            sub_locations = ()
-
-        if sub_locations:# TODO: move this lower down if no main_loc and sub_loc was selected
-                loaded_entries = PD1_FullEvent.query.filter_by(subloc=sub_locations[0])
-
-        # TODO: add code for getting main_loc and sub_loc selected from ?=args
-
-        return render_template("/pd1/view.html", main_locations=main_locations, sub_loc=sub_locations, fullevents=loaded_entries)
+        if request.method == "POST":
+            try:
+                mainloc = request.form["main-location"].capitalize()
+                if request.form.get("all-sub", False) == "1":
+                    # if user wants all sub locations
+                    # TODO: allow for user wanting all sub locations
+                    pass
+                else:
+                    subloc = request.form["sub-location"].capitalize()
+                    loaded_entries = PD1_FullEvent.query.filter_by(subloc=subloc).all()
+            except:
+                logging.exception("error viewing pd1")
+                flash(SERVER_ERROR_MESSAGE, "error")
+        main_locations = PD1_MainLocation.query.order_by(PD1_MainLocation.name).all()
+        return render_template("/pd1/view.html", main_locations=main_locations, loaded_entries=loaded_entries)
     return redirect("/")
 
 @app.route("/pd1/edit", methods=["GET", "POST"])
 def get_pd1_edit():
     # TODO: Finish
     if session.get("username", False):
-        return ""
+        if request.method == "POST":
+            try:
+                mainloc = request.form["mainloc"].capitalize()
+                subloc = request.form["subloc"].capitalize()
+                datetaken = datetime.strptime(request.form["datetaken"], "%Y-%m-%d")
+                notes = request.form["notes"]
+                users = request.form.getlist("user", type=str)
+
+                if users:
+                    if PD1_MainLocation.query.filter_by(name=mainloc).scalar() == None:
+                        # add main location if it does not exist
+                        db.session.add(PD1_MainLocation(name=mainloc))
+                    if PD1_SubLocation.query.filter_by(name=subloc).scalar() == None:
+                        # add sub location if it does not exist
+                        # TODO: add option to use 'real' lat and lng
+                        db.session.add(PD1_SubLocation(name=subloc, main_name=mainloc, lat=0, lng=0))
+                    fullevent = PD1_FullEvent(subloc=subloc, date_taken=datetaken, notes=notes)
+                    db.session.add(fullevent)
+                    db.session.commit()
+                    for user in users:
+                        # adds all the user events by selected user
+                        db.session.add(PD1_UserEvent(full_event=fullevent.id_, username=user.lower()))
+                    db.session.commit()
+                    flash("added entry")
+                else:
+                    flash("not added as no users were selected", "warning")
+            except:
+                logging.exception("error adding pd1 entry")
+                flash(SERVER_ERROR_MESSAGE, "error")
+        main_locations = PD1_MainLocation.query.order_by(PD1_MainLocation.name).all()
+        return render_template("pd1/edit.html", main_locations=main_locations, users=User.query.filter_by(removed=0).all())
     return redirect("/")
 # END PD1
 # END WEB

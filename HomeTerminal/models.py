@@ -130,6 +130,15 @@ class PD1_SubLocation(db.Model):
     lat = db.Column("lat", db.Float(precision=10, decimal_return_scale=None), nullable=False)
     lng = db.Column("lng", db.Float(precision=10, decimal_return_scale=None), nullable=False)
 
+    def serialize(self):
+        """
+
+        """
+        return {
+            "name":self.name,
+            "main_name":self.main_name
+        }
+
 class PD1_FullEvent(db.Model):
     """
     Where the full event data is stored

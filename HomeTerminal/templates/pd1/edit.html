@@ -16,14 +16,28 @@
     {% include "includes/alert.html" %}
 
     <div class="container down">
-        <form action="/pd1/edit" method="POST">
-            <input type="text" name="mainloc" id="mainloc" list="mainlocations" autocomplete="off" required>
+        <form class="container two-col" action="/pd1/edit" method="POST">
+            <label for="mainloc">Main Location:</label>
+            <input onchange="start_load_options_to_select('sublocations','/pd1/report-subloc',this.value)" type="text" name="mainloc" id="mainloc" list="mainlocations" autocomplete="off" required>
             <datalist name="mainlocations" id="mainlocations">
-                {% for mainloc in mainlocations %}
-                <option value="{{ mainloc }}">{{ mainloc }}</option>
-                {% enfor %}
+                {% for mainloc in main_locations %}
+                <option value="{{ mainloc.name }}">{{ mainloc.name }}</option>
+                {% endfor %}
             </datalist>
-            <!-- fill sub locations datalist using js (POST request) when mainloc changes -->
+            <label for="subloc">Sub Location:</label>
+            <input type="text" name="subloc" id="subloc" list="sublocations" autocomplete="off" required>
+            <datalist name="sublocations" id="sublocations"></datalist>
+            <label for="">Users:</label>
+            <div class="down">
+                {% for user in users %}
+                <label >{{ user.username }}<input type="checkbox" name="user" id="user-{{ user.username }}" value="{{ user.username }}"></label>
+                {% endfor %}
+            </div>
+            <label for="datetaken">Date Taken:</label>
+            <input type="date" name="datetaken" id="datetaken" required>
+            <label for="notes">Notes:</label>
+            <textarea name="notes" id="notes" cols="30" rows="5" placeholder="Enter notes here..."></textarea>
+            <button class="button ok fillboth" type="submit">Save</button>
         </form>
     </div>
 

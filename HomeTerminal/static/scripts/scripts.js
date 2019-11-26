@@ -73,29 +73,39 @@ function remove_elem_children(elem){
   }
 }
 
-function httpGetAsync(theUrl, callback) {
+function httpGetAsync(theUrl, callback, ...callback_args) {
+  // used for api-requests without the need for a apikey (uses cookies)
   // source: https://stackoverflow.com/questions/247483/http-get-request-in-javascript
   var xmlHttp = new XMLHttpRequest();
   xmlHttp.onreadystatechange = function () {
     if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-      callback(xmlHttp.responseText);
+      callback(xmlHttp.responseText, ...callback_args);
   }
   xmlHttp.open("GET", theUrl, true); // true for asynchronous 
   xmlHttp.send(null);
 }
 
-function load_options_to_select(raw_options) {
+
+function load_options_to_select(raw_options, select_elem) {
+  // loads the select box with new values, and clears old ones
+  remove_elem_children(select_elem);
   var parsed = JSON.parse(raw_options);
   for (i in parsed.sublocs){
-    console.log(parsed[i].name);
+    create_option_into_select(select_elem, parsed.sublocs[i].name);
   }
 }
 
-function start_load_options_to_select(select_id, url, main_loc_id){
-  // TODO: enable/disable when async has started and finished
+function create_option_into_select(select_elem, option_val) {
+  // appends a new child the the select element given
+  var the_option = document.createElement("option");
+  the_option.value = option_val;
+  the_option.innerText = option_val;
+  select_elem.appendChild(the_option);
+}
+
+function start_load_options_to_select(select_id, url, main_loc){
+  // calls the async func to load new options into select element
   var select_elem = document.getElementById(select_id);
-  var main_loc = document.getElementById(main_loc_id);
-  remove_elem_children(select_elem);
-  url = url + "?mainloc=" + main_loc.options[main_loc.selectedIndex].text;
-  httpGetAsync(url, load_options_to_select)
+  url = url + "?mainloc=" + main_loc
+  httpGetAsync(url, load_options_to_select, select_elem)
 }
