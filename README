@@ -1,76 +1,55 @@
-Project structure:
-    /ProjectName:
-        /projectmodule
-        /run.py
-        /requirments.txt
-        /venv
-
-Notes:
-ufw = firewall
-nginx = static file webserver
-gunicorn = WSGI server 
-
-How to deploy:
-1.  sudo apt-get install ufw nginx supervisor
-2.  sudo ufw allow ssh
-3.  sudo ufw allow http/tcp
-3.5.  sudo ufw allow 443 (if using https)
-3.  sudo ufw enable
-4.  cd into project directory
-5.  python3 -m venv projectname/venv
-6.  source venv/bin/activate
-7.  pip install -r requirments.txt
-8.  sudo rm /etc/nginx/sites-enabled/default
-9.  sudo nano /etc/nginx/sites-enabled/projectname
-10. sudo systemctl restart nginx
-11. sudo mkdir -p /var/log/projectname
-12. sudo touch /var/log/projectname/projectname.err.log
-13  sudo touch /var/log/projectname/projectname.out.log
-14. sudo nano /etc/supervisor/conf.d/projectname.conf
-15. sudo supervisorctl reload
-
-START OF STEP 9 FILE
-server {
-listen 80;
-server_name YOUR_IP_OR_DOMAIN;
-
-location /static {
-    alias /home/YOUR_USER/PROJECTNAME/projectmodule/static;
-}
-
-location / {
-    proxy_pass http://localhost:8000;
-    include /etc/nginx/proxy_params;
-    proxy_redirect off;
-}
-location /socket.io {
-    include proxy_params;
-    proxy_http_version 1.1;
-    proxy_buffering off;
-    proxy_set_header Upgrade $http_upgrade;
-    proxy_set_header Connection "Upgrade";
-    proxy_pass http://127.0.0.1:8000/socket.io;
-}
-}
-END OF STEP 9 FILE
-
-START OF STEP 14 FILE
-[program:PROGRAMNAME]
-directory=/home/YOUR_USER/PROJECTNAME
-command=/home/YOUR_USER/PROJECTNAME/venv/bin/gunicorn -k geventwebsocket.gunicorn.workers.GeventWebSocketWorker -w 1 run:app
-# if using https:
-#command=/home/YOUR_USER/PROJECTNAME/venv/bin/gunicorn -k gevent -w 1 run:app
-user=USERNAME
-autostart=true
-autorestart=true
-stopasgroup=true
-killasgroup=true
-stderr_logfile=/var/log/projectname/projectname.err.log
-stdout_logfile=/var/log/projectname/projectname.out.log
-END OF STEP 11 FILE
-
-START OF run.py
-from projectmodule import app
-if __name__ == "__main__":
-    app.run(debug=True)
-END OF run.py
+# Home Terminal System (HTS)
+## Project structure:
+```
+/PROJECTNAME:
+    /PROJECTNAME
+    /setup-files
+    /run.py
+    /requirments.txt
+    /venv
+```
+## Notes:
+* ufw = firewall
+* nginx = static file webserver
+* gunicorn = WSGI server 
+## How to deploy (Linux):
+### Installing required programs
+```
+sudo apt-get install ufw nginx supervisor git
+```
+### Setup filewall
+```
+ufw disable
+sudo ufw default deny
+sudo ufw allow ssh
+sudo ufw allow http/tcp
+sudo ufw enable
+```
+### Clone project folder
+```
+git clone https://github.com/enchant97/House_Terminal_System.git PROJECTNAME
+cd /PROJECTNAME
+python3 -m venv PROJECTNAME/venv
+source venv/bin/activate
+```
+### Setup Nginx
+make sure to edit the default file with the project name
+```
+sudo rm /etc/nginx/sites-enabled/default
+sudo cp setup-files/nginx-sitesenabled.conf /etc/nginx/sites-enabled/PROJECTNAME.conf
+sudo systemctl restart nginx`
+```
+### Setup supervisor
+```
+sudo mkdir -p /var/log/PROJECTNAME
+sudo touch /var/log/PROJECTNAME/PROJECTNAME.err.log
+sudo touch /var/log/PROJECTNAME/PROJECTNAME.out.log
+sudo nano /etc/supervisor/conf.d/PROJECTNAME.conf
+sudo supervisorctl reload
+```
+## Further setup for https
+**Coming Soon!**
+```
+sudo ufw allow 443
+sudo cp setup-files/nginx-sitesenabled_https.conf /etc/nginx/sites-enabled/PROJECTNAME.conf
+```
