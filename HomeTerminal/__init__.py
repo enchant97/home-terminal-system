@@ -1,1 +1,1 @@
-from .app import app, socketio, db
+from .app import socketio, create_app

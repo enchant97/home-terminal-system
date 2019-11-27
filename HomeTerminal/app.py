@@ -16,24 +16,32 @@ from .models import (
     PD1_SubLocation, PD1_FullEvent, PD1_UserEvent
     )
 
-# TODO: move most of stuff in a init_app()
-
 __version__ = "1.4"
-# global variables
-CONFIG = Config("usersettings.json")
-SERVER_ERROR_MESSAGE = CONFIG.get_server_error_message()
-
-# flask setup
+CONFIG = None
+SERVER_ERROR_MESSAGE = None
 app = Flask(__name__)
-app.config["SECRET_KEY"] = CONFIG.get_secretkey()
-app.config["SQLALCHEMY_DATABASE_URI"] = CONFIG.get_db_path()
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-db.init_app(app)
-
 socketio = SocketIO(app, async_mode="threading") # async_mode 'threading' works better
 
-with app.app_context():
-    db.create_all()
+def create_app(config_file="usersettings.json"):
+    """
+    Creates the app and configures SQLALCHEMY
+
+    args:
+        config_file : where the app config file is stored
+    returns:
+        Flask app
+    """
+    global CONFIG, SERVER_ERROR_MESSAGE, app
+    CONFIG = Config(config_file)
+    SERVER_ERROR_MESSAGE = CONFIG.get_server_error_message()
+    app.config["SECRET_KEY"] = CONFIG.get_secretkey()
+    app.config["SQLALCHEMY_DATABASE_URI"] = CONFIG.get_db_path()
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    db.init_app(app)
+
+    with app.app_context():
+        db.create_all()
+    return app
 
 # START SOCKET
 
