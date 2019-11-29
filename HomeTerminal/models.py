@@ -97,7 +97,7 @@ class Homework_Main(db.Model):
         return {
             "id":self.id_,
             "message":self.message,
-            "datedue":self.datedue
+            "datedue":datetime.strftime(self.datedue, "%Y-%m-%d")
         }
 
 class Homework_Task(db.Model):
