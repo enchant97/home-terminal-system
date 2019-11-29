@@ -527,6 +527,7 @@ def get_pd1_edit():
                         # add sub location if it does not exist
                         # TODO: add option to use 'real' lat and lng
                         db.session.add(PD1_SubLocation(name=subloc, main_name=mainloc, lat=0, lng=0))
+                    db.session.commit()
                     fullevent = PD1_FullEvent(subloc=subloc, date_taken=datetaken, notes=notes)
                     db.session.add(fullevent)
                     db.session.commit()
