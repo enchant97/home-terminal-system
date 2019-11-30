@@ -358,7 +358,7 @@ def fm4_edit():
                 amount = request.form["amount"]
                 category = request.form["category"].capitalize()
                 removed = request.form.get("removed", 0)
-                if not FM4_Category.query.filter_by(name=category).first():#TODO: use .scalar()
+                if not FM4_Category.query.filter_by(name=category).scalar():
                     db.session.add(FM4_Category(name=category))
                     db.session.commit()
                 if id_ == -1:
@@ -494,12 +494,15 @@ def get_pd1_view():
             try:
                 mainloc = request.form["main-location"].capitalize()
                 if request.form.get("all-sub", False) == "1":
-                    # if user wants all sub locations
                     # TODO: allow for user wanting all sub locations
                     pass
                 else:
                     subloc = request.form["sub-location"].capitalize()
-                    loaded_entries = PD1_FullEvent.query.filter_by(subloc=subloc).all()
+                    if PD1_SubLocation.query.filter_by(name=subloc, main_name=mainloc).scalar():
+                        subloc = PD1_SubLocation.query.filter_by(name=subloc, main_name=mainloc).first()
+                        loaded_entries = PD1_FullEvent.query.filter_by(subloc=subloc.id_).all()
+                    else:
+                        loaded_entries = ()
             except:
                 logging.exception("error viewing pd1")
                 flash(SERVER_ERROR_MESSAGE, "error")
@@ -509,7 +512,6 @@ def get_pd1_view():
 
 @app.route("/pd1/edit", methods=["GET", "POST"])
 def get_pd1_edit():
-    # TODO: Finish
     if session.get("username", False):
         if request.method == "POST":
             try:
@@ -520,15 +522,19 @@ def get_pd1_edit():
                 users = request.form.getlist("user", type=str)
 
                 if users:
-                    if PD1_MainLocation.query.filter_by(name=mainloc).scalar() == None:
+                    if not PD1_MainLocation.query.filter_by(name=mainloc).scalar():
                         # add main location if it does not exist
                         db.session.add(PD1_MainLocation(name=mainloc))
-                    if PD1_SubLocation.query.filter_by(name=subloc).scalar() == None:
+                        db.session.commit()
+                    if not PD1_SubLocation.query.filter_by(name=subloc, main_name=mainloc).scalar():
                         # add sub location if it does not exist
                         # TODO: add option to use 'real' lat and lng
-                        db.session.add(PD1_SubLocation(name=subloc, main_name=mainloc, lat=0, lng=0))
-                    db.session.commit()
-                    fullevent = PD1_FullEvent(subloc=subloc, date_taken=datetaken, notes=notes)
+                        subloc = PD1_SubLocation(name=subloc, main_name=mainloc, lat=0, lng=0)
+                        db.session.add(subloc)
+                        db.session.commit()
+                    else:
+                        subloc = PD1_SubLocation.query.filter_by(name=subloc, main_name=mainloc).first()
+                    fullevent = PD1_FullEvent(subloc=subloc.id_, date_taken=datetaken, notes=notes)
                     db.session.add(fullevent)
                     db.session.commit()
                     for user in users:
