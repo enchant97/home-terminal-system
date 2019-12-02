@@ -21,6 +21,7 @@
             <form class="container two-col" action="/pd1/view" method="POST">
                 <label for="main-location">Main Location:</label>
                 <select onchange="start_load_options_to_select('sub-location','/pd1/report-subloc',this.options[this.selectedIndex].text)" name="main-location" id="main-location" required>
+                    <option value=""></option>
                     {% for i in main_locations %}
                     <option value="{{ i.name }}">{{ i.name }}</option>
                     {% endfor %}
