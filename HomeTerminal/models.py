@@ -32,6 +32,13 @@ class User_Settings(db.Model):
     hwm_notif = db.Column("hwm_notif", db.Integer, nullable=False, default=0)
     mess_notif = db.Column("mess_notif", db.Integer, nullable=False, default=0)
 
+    def serialize(self):
+        return {
+            "fm_notif":self.fm_notif,
+            "hwm_notif":self.hwm_notif,
+            "mess_notif":self.mess_notif
+        }
+
 class Api_Key(db.Model):
     """
     Stores api keys and registers each owner
@@ -48,6 +55,15 @@ class Message(db.Model):
     message = db.Column("message", db.String(length=1500), nullable=False)
     dateadded = db.Column("dateadded", db.DateTime, nullable=False, default=datetime.now)
     removed = db.Column("removed", db.Integer, nullable=False, default=0)
+
+    def serialize(self):
+        return {
+            "id":self.id_,
+            "user_from":self.user_from,
+            "message":self.message,
+            "dateadded":self.dateadded,
+            "removed":self.removed
+        }
 
 # FREEZER MANAGER
 
@@ -110,6 +126,13 @@ class Homework_Task(db.Model):
     hw_id = db.Column("hw_id", db.Integer, db.ForeignKey("homework_main.id"), nullable=False)
     content = db.Column("content", db.String(length=2000), nullable=False)
     removed = db.Column("removed", db.Integer, nullable=False, default=0)
+
+    def serialize(self):
+        return {
+            "id":self.id_,
+            "hw_id":self.hw_id,
+            "content":self.content
+        }
 
 # PHOTO DATABASE
 
