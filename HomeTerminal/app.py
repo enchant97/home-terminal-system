@@ -320,23 +320,6 @@ def command_center():
         return render_template("commandcenter.html", admin=True)
     return render_template("commandcenter.html", admin=False)
 
-@app.route("/status", methods=["GET"])
-@web_admin_auth_required
-def server_status():
-    sh_path = CONFIG.get_server_status_sh()
-    if sh_path:
-        status_pipe = Popen(sh_path, shell=True, stdout=PIPE).stdout
-        status = status_pipe.read()
-    else:
-        status = "No Status Available"
-    return render_template("admin/status.html", status=status)
-
-@app.route("/server-control", methods=["GET"])
-@web_admin_auth_required
-def get_servercontrol():
-    return render_template("admin/server-control.html")
-
-
 # START FM4
 @app.route("/fm4", methods=["GET", "POST"])
 @app.route("/fm4/report", methods=["GET", "POST"])

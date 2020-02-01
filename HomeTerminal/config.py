@@ -7,14 +7,7 @@ CONFIG_DEFAULTS = {
     "db_path": "sqlite:///database.db",
     "secret_key": "replace me with a better key!",
     "server-error-message": "SERVER ERROR! Try again later with your request",
-    "enable-servercontrol": False,
-    "admin-username": "terminal",
-    "server-commands": {
-        "status-command":"",
-        "shutdown": "",
-        "restart" : "",
-        "restart-web" : ""
-    }
+    "admin-username": "terminal"
 }
 
 class Config:
@@ -27,7 +20,7 @@ class Config:
     def __init__(self, filename):
         """Reads json data from required given filename"""
         self.__read(filename)
-  
+
     def __read(self, filename):
         try:
             with open(filename, "r") as fo:
@@ -41,21 +34,12 @@ class Config:
 
     def get_secretkey(self):
         return self.JSON_DATA.get("secret_key", uuid4().hex)
-    
+
     def get_schema_path(self):
         return self.JSON_DATA.get("schema_path", None)
-    
+
     def get_server_error_message(self):
         return self.JSON_DATA.get("server-error-message", "error")
-    
-    def get_server_status_sh(self):
-        return self.JSON_DATA["server-commands"].get("status-command", "")
-    
+
     def get_admin_username(self):
         return self.JSON_DATA.get("admin-username", "terminal")
-
-    def get_enable_server_control(self):
-        if self.JSON_DATA.get("enable-servercontrol", False) == True:
-            return True
-        else:
-            return False
