@@ -47,9 +47,33 @@ sudo touch /var/log/PROJECTNAME/PROJECTNAME.out.log
 sudo nano /etc/supervisor/conf.d/PROJECTNAME.conf
 sudo supervisorctl reload
 ```
+## Updating the HTS
+Warning  any local files without commits will be **lost**!
+```
+cd PROJECTPATH/PROJECTNAME
+git pull
+```
 ## Further setup for https
-**Coming Soon!**
 ```
 sudo ufw allow 443
 sudo cp setup-files/nginx-sitesenabled_https.conf /etc/nginx/sites-enabled/PROJECTNAME.conf
 ```
+## Create a self-signed https cetificate
+```
+openssl req -newkey rsa:4096 \
+    -x509 \
+    -sha256 \
+    -days 3650 \
+    -nodes \
+    -out CERTNAME.crt \
+    -keyout KEYNAME.key \
+    -subj "/C=EN/ST=Kent/L=Canterbury/O=exampleorginisation/OU=example department/CN=www.example.com"
+```
+The fields, specified in -subj line are listed below:
+* C= - Country name. The two-letter ISO abbreviation.
+* ST= - State or Province name.
+* L= - Locality Name. The name of the city where you are located.
+* O= - The full name of your organization.
+* OU= - Organizational Unit.
+* CN= - The fully qualified domain name.
+* [Source](https://linuxize.com/post/creating-a-self-signed-ssl-certificate/)
