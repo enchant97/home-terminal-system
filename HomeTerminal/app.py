@@ -17,7 +17,6 @@ from .models import (
     PD1_SubLocation, PD1_FullEvent, PD1_UserEvent
     )
 
-__version__ = "1.4"
 CONFIG = None
 SERVER_ERROR_MESSAGE = None
 app = Flask(__name__)
