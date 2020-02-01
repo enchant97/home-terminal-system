@@ -18,7 +18,6 @@ from .models import (
     )
 
 CONFIG = None
-SERVER_ERROR_MESSAGE = None
 app = Flask(__name__)
 socketio = SocketIO(app, async_mode="threading") # async_mode 'threading' works better
 
@@ -31,9 +30,9 @@ def create_app(config_file="usersettings.json"):
     returns:
         Flask app
     """
-    global CONFIG, SERVER_ERROR_MESSAGE, app
+    global CONFIG, app
     CONFIG = Config(config_file)
-    SERVER_ERROR_MESSAGE = CONFIG.get_server_error_message()
+    app.config["SERVER_ERROR_MESSAGE"] = CONFIG.get_server_error_message()
     app.config["SECRET_KEY"] = CONFIG.get_secretkey()
     app.config["SQLALCHEMY_DATABASE_URI"] = CONFIG.get_db_path()
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -160,7 +159,7 @@ def get_api_key():
             db.commit()
         return jsonify(key=api_key.key, owner=username)
     except:
-        flash(SERVER_ERROR_MESSAGE, "error")
+        flash(app.config["SERVER_ERROR_MESSAGE"], "error")
         logging.exception("api key creation failed to run")
 # END API
 @app.errorhandler(404)
@@ -225,7 +224,7 @@ def new_message():
             send_new_message(the_message.id_, message)
             flash("Message saved!")
     except:
-        flash(SERVER_ERROR_MESSAGE, "error")
+        flash(app.config["SERVER_ERROR_MESSAGE"], "error")
         logging.exception("new message failed to run.")
     return render_template("newmessage.html")
 
@@ -241,7 +240,7 @@ def route_timer():
             timer.start()
             flash("Timer Started")
         except:
-            flash(SERVER_ERROR_MESSAGE, "error")
+            flash(app.config["SERVER_ERROR_MESSAGE"], "error")
             logging.exception("new message failed to run.")
         return redirect("/home")
     return render_template("timer.html")
@@ -263,7 +262,7 @@ def newaccount():
                 db.session.commit()
                 flash("user created!")
     except:
-        flash(SERVER_ERROR_MESSAGE, "error")
+        flash(app.config["SERVER_ERROR_MESSAGE"], "error")
         logging.exception("New account failed to run.")
     return render_template("newaccount.html")
 
@@ -284,7 +283,7 @@ def changepassword():
                 flash("incorrect details!", "warning")
     except:
         logging.exception("changepassword error")
-        flash(SERVER_ERROR_MESSAGE, "error")
+        flash(app.config["SERVER_ERROR_MESSAGE"], "error")
     return render_template("changepassword.html", username=username)
 
 @app.route("/usersettings", methods=["GET","POST"])
@@ -302,7 +301,7 @@ def get_usersettings():
             flash("Saved!")
         except:
             logging.exception("changepassword error")
-            flash(SERVER_ERROR_MESSAGE, "error")
+            flash(app.config["SERVER_ERROR_MESSAGE"], "error")
     user_settings = User_Settings.query.filter_by(username=username).first()
     return render_template("usersettings.html", the_settings=user_settings)
 
@@ -355,7 +354,7 @@ def fm4_report():
         return render_template("fm4/report.html", items=items, categories=categories)
     except:
         logging.exception("fm4 report error")
-        flash(SERVER_ERROR_MESSAGE, "error")
+        flash(app.config["SERVER_ERROR_MESSAGE"], "error")
 
 @app.route("/fm4/report-expiring", methods=["GET"])
 @web_auth_required
@@ -397,7 +396,7 @@ def fm4_edit():
         else: default_item = FM4_Item.query.filter_by(id_=edit_item_id).first()
         return render_template("fm4/edit.html", categories=categories, def_item=default_item)
     except:
-        flash(SERVER_ERROR_MESSAGE, "error")
+        flash(app.config["SERVER_ERROR_MESSAGE"], "error")
         logging.exception("error with editing fm4")
 # END FM4
 
@@ -412,7 +411,7 @@ def get_homework():
         return render_template("/hwm/view_hw.html", due_homework=due_homework)
     except:
         logging.exception("error loading /hwm")
-        flash(SERVER_ERROR_MESSAGE, "error")
+        flash(app.config["SERVER_ERROR_MESSAGE"], "error")
 
 @app.route("/hwm/view-tasks", methods=["GET"])
 @web_auth_required
@@ -423,7 +422,7 @@ def get_homework_tasks():
         return render_template("/hwm/view_tasks.html", tasks=homework_tasks, hw_id=homework_id)
     except:
         logging.exception("error loading /hwm")
-        flash(SERVER_ERROR_MESSAGE, "error")
+        flash(app.config["SERVER_ERROR_MESSAGE"], "error")
 
 @app.route("/hwm/new", methods=["GET", "POST"])
 @web_auth_required
@@ -447,7 +446,7 @@ def new_homework():
                 flash("added homework")
         except:
             logging.exception("adding new homework error")
-            flash(SERVER_ERROR_MESSAGE, "error")
+            flash(app.config["SERVER_ERROR_MESSAGE"], "error")
     return render_template("/hwm/new_hw.html")
 
 @app.route("/hwm/new-task", methods=["GET", "POST"])
@@ -465,7 +464,7 @@ def new_homework_task():
                 redirect("/hwm")
         except:
             logging.exception("adding new homework error")
-            flash(SERVER_ERROR_MESSAGE, "error") 
+            flash(app.config["SERVER_ERROR_MESSAGE"], "error") 
     homework_id = request.args.get("homework_id", default="", type=str)
     return render_template("/hwm/new_tasks.html", hw_id=homework_id)
 
@@ -480,7 +479,7 @@ def remove_homework():
             db.session.commit()
     except:
         logging.exception("error removing homework")
-        flash(SERVER_ERROR_MESSAGE, "error")
+        flash(app.config["SERVER_ERROR_MESSAGE"], "error")
     return redirect("/hwm")
 
 # END HW
@@ -514,7 +513,7 @@ def get_pd1_view():
                     loaded_entries = ()
         except:
             logging.exception("error viewing pd1")
-            flash(SERVER_ERROR_MESSAGE, "error")
+        flash(app.config["SERVER_ERROR_MESSAGE"], "error")
     main_locations = PD1_MainLocation.query.order_by(PD1_MainLocation.name).all()
     return render_template("/pd1/view.html", main_locations=main_locations, loaded_entries=loaded_entries)
 
@@ -555,7 +554,7 @@ def get_pd1_edit():
                 flash("not added as no users were selected", "warning")
         except:
             logging.exception("error adding pd1 entry")
-            flash(SERVER_ERROR_MESSAGE, "error")
+            flash(app.config["SERVER_ERROR_MESSAGE"], "error")
     main_locations = PD1_MainLocation.query.order_by(PD1_MainLocation.name).all()
     return render_template("pd1/edit.html", main_locations=main_locations, users=User.query.filter_by(removed=0).all())
 # END PD1
