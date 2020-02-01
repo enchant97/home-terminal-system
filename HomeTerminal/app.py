@@ -16,10 +16,15 @@ from .models import (
     Homework_Task, PD1_MainLocation,
     PD1_SubLocation, PD1_FullEvent, PD1_UserEvent
     )
+from .last_update import LastUpdate
 
 CONFIG = None
 app = Flask(__name__)
 socketio = SocketIO(app, async_mode="threading") # async_mode 'threading' works better
+
+LAST_HOMEWORK_UPDATE = LastUpdate()
+LAST_MESSAGE_UPDATE = LastUpdate()
+LAST_FREEZER_MANAGER_UPDATE = LastUpdate()
 
 def create_app(config_file="usersettings.json"):
     """
@@ -86,7 +91,7 @@ def api_auth_required(fn):
         elif Api_Key.query.filter_by(key=request.headers.get("x-api-key", default="", type=str)).scalar():
             return fn(*args, **kwargs)
         else:
-            return jsonify({"error": "You need a valid apikey or usercookie to log in here"})
+            return abort(401)
     return wrap
 # END USERAUTH
 
@@ -143,8 +148,23 @@ def send_notification(content, category="message", users=None):
 @app.route("/api/hwm/hw", methods=["GET"])
 @api_auth_required
 def api_get_hw():
+    last_update = request.args.get("last_update", None)
+    if last_update:
+        try:
+            last_update = datetime.strptime(last_update, "%Y-%m-%d %H:%M:%S.%f")
+        except:
+            return jsonify({"error":"datetime not in correct format of YYYY/MM/DD H:M:S"})
+        if LAST_HOMEWORK_UPDATE.is_uptodate(last_update):
+            # if the client already is up-to date
+            return jsonify({"error": "you already have the latest data", "loaded_data":tuple()})
     due_hw = Homework_Main.query.filter_by(removed=0).order_by(Homework_Main.datedue).all()
-    return jsonify(homework_due=[hw.serialize() for hw in due_hw])
+    return jsonify(loaded_data=[hw.serialize() for hw in due_hw])
+
+@app.route("/api/messages", methods=["GET"])
+@api_auth_required
+def api_get_messages():
+    messages = Message.query.filter_by(removed=0).all()
+    return jsonify(messages=[message.serialize() for message in messages])
 
 @app.route("/get-api-key", methods=["GET"])
 @api_auth_required
@@ -426,6 +446,7 @@ def new_homework():
                     for task in tasks:
                         db.session.add(Homework_Task(hw_id=new_homework.id_, content=task))
                     db.session.commit()
+                LAST_HOMEWORK_UPDATE.update_now()
                 flash("added homework")
         except:
             logging.exception("adding new homework error")
@@ -443,6 +464,7 @@ def new_homework_task():
                 for task in tasks:
                     db.session.add(Homework_Task(hw_id=hw_id, content=task))
                 db.session.commit()
+                LAST_HOMEWORK_UPDATE.update_now()
                 flash("added homework tasks")
                 redirect("/hwm")
         except:
@@ -460,6 +482,7 @@ def remove_homework():
             Homework_Main.query.filter_by(id_=homework_id).update(dict(removed=1))
             Homework_Task.query.filter_by(hw_id=homework_id).update(dict(removed=1))
             db.session.commit()
+            LAST_HOMEWORK_UPDATE.update_now()
     except:
         logging.exception("error removing homework")
         flash(app.config["SERVER_ERROR_MESSAGE"], "error")
@@ -481,24 +504,32 @@ def get_pd1_subloc():
 @web_auth_required
 def get_pd1_view():
     loaded_entries = ()
-    if request.method == "POST":
-        try:
-            mainloc = request.form["main-location"].capitalize()
-            if request.form.get("all-sub", False) == "1":
-                # TODO: allow for user wanting all sub locations
-                pass
-            else:
-                subloc = request.form["sub-location"].capitalize()
-                if PD1_SubLocation.query.filter_by(name=subloc, main_name=mainloc).scalar():
-                    subloc = PD1_SubLocation.query.filter_by(name=subloc, main_name=mainloc).first()
-                    loaded_entries = PD1_FullEvent.query.filter_by(subloc=subloc.id_).all()
+    filter_by = "no filter"
+    try:
+        if request.method == "POST":
+                mainloc = request.form.get("main-location", "", str).capitalize()
+                subloc = request.form.get("sub-location", "", str).capitalize()
+                if mainloc == "":
+                    loaded_entries = PD1_FullEvent.query.all()
+                elif mainloc != "" and subloc == "":
+                    # TODO: allow for user wanting all sub locations
+                    filter_by = "main-loc"
+                    pass
                 else:
-                    loaded_entries = ()
-        except:
-            logging.exception("error viewing pd1")
+                    filter_by = "sub-loc"
+                    if PD1_SubLocation.query.filter_by(name=subloc, main_name=mainloc).scalar():
+                        subloc = PD1_SubLocation.query.filter_by(name=subloc, main_name=mainloc).first()
+                        loaded_entries = PD1_FullEvent.query.filter_by(subloc=subloc.id_).all()
+                    else:
+                        loaded_entries = ()
+        else:
+            # if user is just loading the page use default, show-none
+            filter_by = "(Please use display button to filter)"
+    except:
+        logging.exception("error viewing pd1")
         flash(app.config["SERVER_ERROR_MESSAGE"], "error")
     main_locations = PD1_MainLocation.query.order_by(PD1_MainLocation.name).all()
-    return render_template("/pd1/view.html", main_locations=main_locations, loaded_entries=loaded_entries)
+    return render_template("/pd1/view.html", main_locations=main_locations, loaded_entries=loaded_entries, filter_by=filter_by)
 
 @app.route("/pd1/edit", methods=["GET", "POST"])
 @web_auth_required

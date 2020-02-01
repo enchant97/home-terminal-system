@@ -20,23 +20,22 @@
             <a class="button add" href="/pd1/edit">Add Entry</a>
             <form class="container two-col" action="/pd1/view" method="POST">
                 <label for="main-location">Main Location:</label>
-                <select onchange="start_load_options_to_select('sub-location','/pd1/report-subloc',this.options[this.selectedIndex].text)" name="main-location" id="main-location" required>
-                    <option value=""></option>
+                <select onchange="start_load_options_to_select('sub-location','/pd1/report-subloc',this.options[this.selectedIndex].text)" name="main-location" id="main-location">
+                    <option value="">Show All</option>
                     {% for i in main_locations %}
                     <option value="{{ i.name }}">{{ i.name }}</option>
                     {% endfor %}
                 </select>
-                <!-- <label for="all-sub">All Sub-locations</label>
-                <input onchange="togg_element_onclick('all-sub', 'sub-location')" type="checkbox" name="all-sub"
-                    id="all-sub" value="1"> -->
                 <label for="sub-location">Sub Location:</label>
-                <select name="sub-location" id="sub-location" required>
+                <select name="sub-location" id="sub-location">
+                    <option value="">Show All</option>
                     {% for i in sub_locations %}
                     <option value="{{ i.name }}">{{ i.name }}</option>
                     {% endfor %}
                 </select>
                 <button class="button ok fillboth" type="submit">Display</button>
             </form>
+            <h2>Filter by: {{ filter_by }}</h2>
             <table>
                 <tr>
                     <td>Id</td>

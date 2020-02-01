@@ -27,6 +27,12 @@
             <label for="subloc">Sub Location:</label>
             <input type="text" name="subloc" id="subloc" list="sublocations" autocomplete="off" required>
             <datalist name="sublocations" id="sublocations"></datalist>
+            <label for="loc_selections">Co-ordinates</label>
+            <div id="loc_selections" class="down">
+            <input type="number" name="lat" id="lat" placeholder="lat..." value="0">
+            <input type="number" name="lng" id="lng" placeholder="lng..." value="0">
+            </div>
+
             <label for="">Users:</label>
             <div class="down">
                 {% for user in users %}
