@@ -3,11 +3,13 @@ Small functions which do useful things
 """
 import hashlib
 import datetime
+from functools import lru_cache
 
 def hash_str(str_to_hash):
     """returns a hashed version of the string in sha512"""
     return hashlib.sha512(str_to_hash.encode()).hexdigest()
 
+@lru_cache(maxsize=15)
 def calc_expire_date(months):
     """
     Returns date
