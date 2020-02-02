@@ -25,7 +25,7 @@
                 <td>Category</td>
             </tr>
             {% for i in items %}
-            <tr>
+            <tr onclick="window.location = '/fm4/edit?item_id={{ i.id_ }}'">
                 <td>{{ i.name }}</td>
                 <td>{{ i.get_day_first_date() }}</td>
                 <td>{{ i.quantity }}</td>
