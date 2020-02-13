@@ -12,6 +12,7 @@ class LastUpdate:
         """
         returns whether the datetime given is more recent or equal
         """
-        if compare_date >= self.__last_update:
-            return True
+        if self.__last_update:
+            if compare_date >= self.__last_update:
+                return True
         return False
