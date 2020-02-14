@@ -25,7 +25,7 @@ def index():
     #TODO: remove User.query.all()
     return render_template("login.html", users=User.query.all())
 
-@app.route("/logout")
+@main.route("/logout")
 @login_required
 def do_logout():
     logout_user()

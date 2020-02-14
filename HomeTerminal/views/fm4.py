@@ -6,7 +6,7 @@ from flask import (Blueprint, current_app, flash, redirect, render_template,
 from flask_login import current_user, login_required
 
 from ..models import FM4_Category, FM4_Item, db
-from ..views import calc_expire_date
+from ..utils import calc_expire_date
 
 fm4 = Blueprint("fm4", __name__)
 

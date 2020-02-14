@@ -3,11 +3,12 @@ Contains all the database stuff
 """
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin
 db = SQLAlchemy()
 
 # MAIN
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     """
     Stores info about users
     """
@@ -17,6 +18,9 @@ class User(db.Model):
     lastlogin = db.Column("lastlogin", db.DateTime, nullable=False, default=datetime.now)
     birthday = db.Column("birthday", db.DateTime, nullable=False)
     removed = db.Column("removed", db.Integer, nullable=False, default=0)
+
+    def get_id(self):
+        return self.username
 
     def __repr__(self):
         return f"username={self.username}, lastlogin={self.lastlogin}"

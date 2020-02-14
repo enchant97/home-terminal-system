@@ -30,7 +30,7 @@ def get_notifations(username):
 @login_required
 def dashboard():
     #TODO: seperate into DAO
-    current_user.username
+    username = current_user.username
     notifications = get_notifations(username)
 
     return render_template(

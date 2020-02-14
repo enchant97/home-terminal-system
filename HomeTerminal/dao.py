@@ -11,11 +11,11 @@ def try_login_user(username, password):
     """
     returns user obj and sets last login date, if password and username match
     """
-    the_user = User.query.filter_by(username=username, password=hash_str(password)).first():
-    the_user.lastlogin = datetime.now()
-    db.session.add(the_user)
-    db.session.commit()
+    the_user = User.query.filter_by(username=username, password=hash_str(password)).first()
     if the_user:
+        the_user.lastlogin = datetime.now()
+        db.session.add(the_user)
+        db.session.commit()
         logging.debug(f"User Logged In {username}")
         return the_user
 
