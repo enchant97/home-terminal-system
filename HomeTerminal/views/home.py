@@ -34,7 +34,7 @@ def dashboard():
     notifications = get_notifations(username)
 
     return render_template(
-        "/terminal_page.html",
+        "home/dashboard.html",
         username=username,
         messages=Message.query.filter_by(removed=0).all(),
         notifications=notifications
@@ -52,7 +52,7 @@ def new_message():
                 flash("Message saved!")
         else:
             flash("required form details missing", "error")
-    return render_template("newmessage.html")
+    return render_template("home/new_message.html")
 
 @home.route("/timer", methods=["POST", "GET"])
 @login_required
@@ -78,5 +78,5 @@ def timer():
 def command_center():
     #TODO: move admin check into template?
     if current_user.username == current_app.config.get("ADMINUSERNAME"):
-        return render_template("commandcenter.html", admin=True)
-    return render_template("commandcenter.html", admin=False)
+        return render_template("home/command_center.html", admin=True)
+    return render_template("home/command_center.html", admin=False)

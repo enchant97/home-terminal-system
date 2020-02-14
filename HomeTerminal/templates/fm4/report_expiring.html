@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}FM4 Expiring{% endblock %}
+{% block maincontent %}
+<div class="container down">
+    <a href="{{ url_for('fm4.report') }}" class="button">Back</a>
+    <table>
+        <tr>
+            <td>Name</td>
+            <td>Expire</td>
+            <td>Quantity</td>
+            <td>Category</td>
+        </tr>
+        {% for i in items %}
+        <tr onclick="window.location = '/fm4/edit?item_id={{ i.id_ }}'"><!-- TODO change this -->
+            <td>{{ i.name }}</td>
+            <td>{{ i.get_day_first_date() }}</td>
+            <td>{{ i.quantity }}</td>
+            <td>{{ i.categoryname }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

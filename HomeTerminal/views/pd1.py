@@ -12,7 +12,7 @@ pd1 = Blueprint("pd1", __name__)
 
 @pd1.route("/report-subloc", methods=["GET"])
 @login_required
-def get_pd1_subloc():
+def get_subloc():
     #TODO: seperate into DAO
     main_loc = request.args.get("mainloc", default="", type=str)
     sublocations = PD1_SubLocation.query.filter_by(main_name=main_loc).all()
@@ -22,7 +22,7 @@ def get_pd1_subloc():
 
 @pd1.route("/", methods=["GET", "POST"])
 @login_required
-def pd1_view():
+def view():
     #TODO: seperate into DAO
     loaded_entries = ()
     filter_by = "no filter"
@@ -54,7 +54,7 @@ def pd1_view():
 
 @pd1.route("/edit", methods=["GET", "POST"])
 @login_required
-def get_pd1_edit():
+def edit():
     #TODO: seperate into DAO
     if request.method == "POST":
         try:
@@ -93,3 +93,5 @@ def get_pd1_edit():
             flash(current_app.config["SERVER_ERROR_MESSAGE"], "error")
     main_locations = PD1_MainLocation.query.order_by(PD1_MainLocation.name).all()
     return render_template("pd1/edit.html", main_locations=main_locations, users=User.query.filter_by(removed=0).all())
+
+#TODO: make a new function allowing for new location to be added

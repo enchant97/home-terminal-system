@@ -1,40 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
+{% block title %}HWM1 View Homework{% endblock %}
+{% block maincontent %}
+<div class="container down">
+    <a href="/hwm?showremoved=1" class="button">Show Removed</a>
+    <a href="{{ url_for('hwm.new_homework') }}" class="button ok">New Homework</a>
 
-<head>
-    {% include "includes/head.html" %}
-    <title>HWM View Homework</title>
-</head>
-
-<body>
-    <header>
-        <a id="backhome" href="/home"><img width="100px" src="/static/homeicon.svg" alt="home"></a>
-        <h1>Homework Manager</h1>
-        <h2>View Homework</h2>
-    </header>
-
-    {% include "includes/alert.html" %}
-
-    <div class="container down">
-        <a href="/hwm?showremoved=1" class="button">Show Removed</a>
-        <a href="/hwm/new" class="button ok">New Homework</a>
-
-        <table>
-            <tr>
-                <td>id</td>
-                <td>comment</td>
-                <td>datedue</td>
-            </tr>
-            {% for i in due_homework %}
-            <tr onclick="window.location = '/hwm/view-tasks?homework_id={{ i.id_ }}'">
-                <td>{{ i.id_ }}</td>
-                <td>{{ i.message }}</td>
-                <td>{{ i.get_day_first_date() }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-    </div>
-
-</body>
-
-</html>
+    <table>
+        <tr>
+            <td>id</td>
+            <td>comment</td>
+            <td>datedue</td>
+        </tr>
+        {% for i in due_homework %}
+        <tr onclick="window.location = '/hwm/view-tasks?homework_id={{ i.id_ }}'">
+            <td>{{ i.id_ }}</td>
+            <td>{{ i.message }}</td>
+            <td>{{ i.get_day_first_date() }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

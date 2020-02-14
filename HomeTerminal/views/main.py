@@ -10,20 +10,26 @@ main = Blueprint("main", __name__)
 def index():
     if current_user.is_authenticated:
             return redirect(url_for("home.dashboard"))
-    if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
-        if not username or not password:
-            flash("You have left the form blank", "warning")
-        user = try_login_user(username, password)
-        if user:
-            #TODO: change to allow remember me to be chosen on the login form
-            login_user(user, remember=True)
-            return redirect(url_for("home.dashboard"))
-        else:
-            flash("username or password not correct", "warning")
     #TODO: remove User.query.all()
-    return render_template("login.html", users=User.query.all())
+    return render_template("main/index.html", users=User.query.all())
+
+@main.route("/login", methods=["POST"])
+def do_login():
+    if current_user.is_authenticated:
+            return redirect(url_for("home.dashboard"))
+
+    username = request.form.get("username")
+    password = request.form.get("password")
+    if not username or not password:
+        flash("You have left the form blank", "warning")
+    user = try_login_user(username, password)
+    if user:
+        #TODO: change to allow remember me to be chosen on the login form
+        login_user(user, remember=True)
+        return redirect(url_for("home.dashboard"))
+    else:
+        flash("username or password not correct", "warning")
+    return redirect(url_for(".index"))
 
 @main.route("/logout")
 @login_required

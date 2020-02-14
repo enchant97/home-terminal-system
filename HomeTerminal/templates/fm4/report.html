@@ -1,54 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    {% include "includes/head.html" %}
-    <title>FM 4 Report</title>
-</head>
-
-<body>
-    <header>
-        <a id="backhome" href="/home"><img width="100px" src="/static/homeicon.svg" alt="home"></a>
-        <h1>Freezer Manager 4.0</h1>
-        <h2>Report</h2>
-    </header>
-
-    {% include "includes/alert.html" %}
-
-    <div class="container down">
-        <a href="/fm4/report-expiring" class="button">Report of Expiring</a>
-        <div class="center">
-            <form action="/fm4/report" method="POST">
-                <label for="category">Category:</label>
-                <select name="category" id="category">
-                    <option value=""></option>
-                    {% for cat in categories %}
-                    <option value="{{ cat.name }}">{{ cat.name }}</option>
-                    {% endfor %}
-                </select>
-                <button class="button ok" type="submit">Display</button>
-            </form>
-            <a class="button add" href="/fm4/edit">Add Entry</a>
-        </div>
-
-        <table>
-            <tr>
-                <td>id</td>
-                <td>Name</td>
-                <td>Expire</td>
-                <td>Quantity</td>
-            </tr>
-            {% for i in items %}
-            <tr onclick="window.location = '/fm4/edit?item_id={{ i.id_ }}'">
-                <td>{{ i.id_ }}</td>
-                <td>{{ i.name }}</td>
-                <td>{{ i.get_day_first_date() }}</td>
-                <td>{{ i.quantity }}</td>
-            </tr>
-            {% endfor %}
-        </table>
+{% extends "base.html" %}
+{% block title %}FM4 Report{% endblock %}
+{% block maincontent %}
+<div class="container down">
+    <a href="{{ url_for('fm4.report_expiring') }}" class="button">Report of Expiring</a>
+    <div class="center">
+        <form action="{{ url_for('fm4.report') }}" method="POST">
+            <label for="category">Category:</label>
+            <select name="category" id="category">
+                <option value="">SELECT ALL</option>
+                {% for cat in categories %}
+                <option value="{{ cat.name }}">{{ cat.name }}</option>
+                {% endfor %}
+            </select>
+            <button class="button ok" type="submit">Display</button>
+        </form>
+        <a class="button add" href="{{ url_for('fm4.edit') }}">Add Entry</a>
     </div>
 
-</body>
-
-</html>
+    <table>
+        <tr>
+            <td>id</td>
+            <td>Name</td>
+            <td>Expire</td>
+            <td>Quantity</td>
+        </tr>
+        {% for i in items %}
+        
+        <tr onclick="window.location = '/fm4/edit?item_id={{ i.id_ }}'"><!-- TODO change this -->
+            <td>{{ i.id_ }}</td>
+            <td>{{ i.name }}</td>
+            <td>{{ i.get_day_first_date() }}</td>
+            <td>{{ i.quantity }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

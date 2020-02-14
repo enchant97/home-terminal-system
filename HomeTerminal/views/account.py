@@ -10,11 +10,11 @@ account = Blueprint("account", __name__)
 @account.route("/newaccount", methods=["POST", "GET"])
 @login_required
 def newaccount():
-    if current_user.username == current_app.config.get("ADMINUSERNAME"): #TODO: add this in app.config
+    if current_user.username == current_app.config.get("ADMINUSERNAME"):
         if request.method == "POST":
-            username = request.form("username")
-            password = request.form("password")
-            birthday = request.form("birthday")
+            username = request.form.get("username")
+            password = request.form.get("password")
+            birthday = request.form.get("birthday")
             if username and password and birthday:
                 try:
                     birthday = datetime.strptime(birthday, "%Y-%m-%d")
@@ -24,15 +24,15 @@ def newaccount():
                     flash("user already exists!", "error")
             else:
                 flash("missing required form details", "error")
-        return render_template("newaccount.html")
+        return render_template("account/new_account.html")
     return redirect(url_for("main.index"))
 
 @account.route("/changepassword", methods=["POST", "GET"])
 @login_required
 def changepassword():
     if request.method == "POST":
-        old_password = request.form("old_password")
-        new_password = request.form("new_password")
+        old_password = request.form.get("old_password")
+        new_password = request.form.get("new_password")
         if old_password and new_password:
             if change_user_password(current_user.username, new_password, old_password):
                 flash("password changed")
@@ -40,7 +40,7 @@ def changepassword():
                 flash("password could not be changed", "error")
         else:
             flash("missing required form details", "error")
-    return render_template("changepassword.html", username=username)
+    return render_template("account/change_password.html", username=current_user.username)
 
 @account.route("/usersettings", methods=["GET","POST"])
 @login_required
@@ -60,4 +60,4 @@ def settings():
             logging.exception("usersetting error")
             flash(current_app.config["SERVER_ERROR_MESSAGE"], "error")
     user_settings = User_Settings.query.filter_by(username=username).first()
-    return render_template("usersettings.html", the_settings=user_settings)
+    return render_template("account/user_settings.html", the_settings=user_settings)

@@ -1,33 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    {% include "includes/head.html" %}
-    <title>HWM New Tasks</title>
-</head>
-
-<body>
-    <header>
-        <a id="backhome" href="/home"><img width="100px" src="/static/homeicon.svg" alt="home"></a>
-        <h1>Homework Manager</h1>
-        <h2>New Tasks</h2>
-    </header>
-
-    {% include "includes/alert.html" %}
-
-    <div class="container down">
-        <form class="container two-col" id="hw-tasks_form" action="/hwm/new-task" method="POST">
-            <label for="hw_id">Homework id:</label>
-            <input type="text" name="hw_id" id="hw_id" value="{{ hw_id }}" required readonly>
-            <button type="button" class="button fillboth" onclick="new_task()">New Task</button>
-            <div class="fillboth down" id="created_tasks">
-                <!-- where new tasks are added -->
-            </div>
-            <button class="button ok fillboth" type="submit">Save</button>
-            <a class="button fillboth" href="/hwm/view-tasks?homework_id={{ hw_id }}">Close</a>
-        </form>
+{% extends "base.html" %}
+{% block title %}HWM1 New Tasks{% endblock %}
+{% block maincontent %}
+<form class="container two-col" id="hw-tasks_form" action="/hwm/new-task" method="POST">
+    <label for="hw_id">Homework id:</label>
+    <input type="text" name="hw_id" id="hw_id" value="{{ hw_id }}" required readonly>
+    <button type="button" class="button fillboth" onclick="new_task()">New Task</button>
+    <div class="fillboth down" id="created_tasks">
+        <!-- where new tasks are added -->
     </div>
-
-</body>
-
-</html>
+    <button class="button ok fillboth" type="submit">Save</button>
+    <a class="button fillboth" href="/hwm/view-tasks?homework_id={{ hw_id }}">Close</a>
+</form>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Command Center{% endblock %}
+{% block maincontent %}
+<menu class="container down">
+    <a class="button" href="{{ url_for('fm4.report') }}">Freezer Manager 4.0</a>
+    <a class="button" href="{{ url_for('hwm.homework') }}">Homework Manager 1.0</a>
+    <a class="button" href="{{ url_for('pd1.view') }}">Photo Database 1.0</a>
+    <a href="{{ url_for('account.settings') }}" class="button">User Settings</a>
+    {% if admin %}
+    <h3>Admin Only:</h3>
+    <a class="button" href="{{ url_for('account.newaccount') }}">New Account</a>
+    {% endif %}
+    <a class="button" href="{{ url_for('main.do_logout') }}">Logout</a>
+</menu>
+{% endblock %}

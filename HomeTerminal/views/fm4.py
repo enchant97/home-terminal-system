@@ -14,7 +14,7 @@ fm4 = Blueprint("fm4", __name__)
 
 @fm4.route("/", methods=["GET", "POST"])
 @login_required
-def fm4_report():
+def report():
     #TODO: seperate into DAO
     try:
         items = []
@@ -29,20 +29,20 @@ def fm4_report():
     except:
         logging.exception("fm4 report error")
         flash(current_app.config["SERVER_ERROR_MESSAGE"], "error")
-    return redirect(url_for(".fm4_report"))
+    return redirect(url_for(".report"))
 
 @fm4.route("/report-expiring", methods=["GET"])
 @login_required
-def fm4_report_expiring():
+def report_expiring():
     #TODO: seperate into DAO
     week_later = datetime.now() + timedelta(days=7)
     # gets all items that are about to expire 7 days after todays date or ones that have already expired
     items = FM4_Item.query.filter(FM4_Item.expire_date <= week_later).filter_by(removed=0).order_by(FM4_Item.expire_date).all()
-    return render_template("/fm4/report-expiring.html", items=items)
+    return render_template("/fm4/report_expiring.html", items=items)
 
 @fm4.route("/edit", methods=["GET", "POST"])
 @login_required
-def fm4_edit():
+def edit():
     #TODO: seperate into DAO
     try:
         if request.method == "POST":

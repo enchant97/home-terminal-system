@@ -1,76 +1,60 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    {% include "includes/head.html" %}
-    <title>FM 4 Edit</title>
-    <script>
-        function custom_expire_onclick() {
-            var custom_expire = document.getElementById("custom_expire");
-            var expire_3 = document.getElementById("expire_3");
-            var expire_6 = document.getElementById("expire_6");
-            var expire_12 = document.getElementById("expire_12");
-            var expire_date = document.getElementById("expire_date");
-            if (custom_expire.checked == false) {
-                expire_3.disabled = false;
-                expire_6.disabled = false;
-                expire_12.disabled = false;
-                expire_date.disabled = true;
-            }
-            else if (custom_expire.checked == true) {
-                expire_3.disabled = true;
-                expire_6.disabled = true;
-                expire_12.disabled = true;
-                expire_date.disabled = false;
-            }
+{% extends "base.html" %}
+{% block title %}FM4 Edit{% endblock %}
+{% block extrahead %}
+<script>
+    function custom_expire_onclick() {
+        var custom_expire = document.getElementById("custom_expire");
+        var expire_3 = document.getElementById("expire_3");
+        var expire_6 = document.getElementById("expire_6");
+        var expire_12 = document.getElementById("expire_12");
+        var expire_date = document.getElementById("expire_date");
+        if (custom_expire.checked == false) {
+            expire_3.disabled = false;
+            expire_6.disabled = false;
+            expire_12.disabled = false;
+            expire_date.disabled = true;
         }
-    </script>
-</head>
+        else if (custom_expire.checked == true) {
+            expire_3.disabled = true;
+            expire_6.disabled = true;
+            expire_12.disabled = true;
+            expire_date.disabled = false;
+        }
+    }
+</script>
+{% endblock %}
+{% block maincontent %}
+<form class="container two-col" action="{{ url_for('fm4.edit') }}" method="POST">
+    <label for="id">id:</label>
+    <input type="text" name="id" id="id" placeholder="AUTO" value={{ def_item.id_ }} readonly>
+    <label for="name">name:</label>
+    <input type="text" name="name" id="name" placeholder="Name..." value="{{ def_item.name }}" required>
+    {% if def_item.id_ == -1 %}
+    <label for="custom_expire">Custom Expire:</label>
+    <input onchange="custom_expire_onclick()" type="checkbox" name="custom_expire" id="custom_expire" value="1">
+    <label for="expire_date">Expire Date:</label>
+    <input type="date" name="expire_date" id="expire_date" disabled>
+    <label for="expire_select">expire in months:</label>
+    <fieldset id="expire_select">
+        <label>3<input type="radio" name="expire" id="expire_3" value="3" required></label>
+        <label>6<input type="radio" name="expire" id="expire_6" value="6" required></label>
+        <label>12<input type="radio" name="expire" id="expire_12" value="12" required></label>
+    </fieldset>
+    {% endif %}
+    <label for="amount">quantity:</label>
+    <input type="number" name="amount" id="amount" step="1" min="0" value={{ def_item.quantity }}>
+    <label for="category">category:</label>
+    <input type="text" name="category" id="category" list="categories" autocomplete="off"
+        value="{{ def_item.categoryname }}" required>
+    <datalist name="categories" id="categories">
+        {% for cat in categories %}
+        <option value="{{ cat.name }}">{{ cat.name }}</option>
+        {% endfor %}
+    </datalist>
+    <label for="removed">remove entries</label>
+    <input type="checkbox" name="removed" id="removed" value="1">
 
-<body>
-    <header>
-        <a id="backhome" href="/home"><img width="100px" src="/static/homeicon.svg" alt="home"></a>
-        <h1>Freezer Manager 4.0</h1>
-        <h2>Edit</h2>
-    </header>
-
-    {% include "includes/alert.html" %}
-
-    <form class="container two-col" action="/fm4/edit" method="POST">
-        <label for="id">id:</label>
-        <input type="text" name="id" id="id" placeholder="AUTO" value={{ def_item.id_ }} readonly>
-        <label for="name">name:</label>
-        <input type="text" name="name" id="name" placeholder="Name..." value="{{ def_item.name }}" required>
-        {% if def_item.id_ == -1 %}
-        <label for="custom_expire">Custom Expire:</label>
-        <input onchange="custom_expire_onclick()" type="checkbox" name="custom_expire" id="custom_expire" value="1">
-        <label for="expire_date">Expire Date:</label>
-        <input type="date" name="expire_date" id="expire_date" disabled>
-        <label for="expire_select">expire in months:</label>
-        <fieldset id="expire_select">
-            <label>3<input type="radio" name="expire" id="expire_3" value="3" required></label>
-            <label>6<input type="radio" name="expire" id="expire_6" value="6" required></label>
-            <label>12<input type="radio" name="expire" id="expire_12" value="12" required></label>
-        </fieldset>
-        {% endif %}
-        <label for="amount">quantity:</label>
-        <input type="number" name="amount" id="amount" step="1" min="0" value={{ def_item.quantity }}>
-        <label for="category">category:</label>
-        <input type="text" name="category" id="category" list="categories" autocomplete="off"
-            value="{{ def_item.categoryname }}" required>
-        <datalist name="categories" id="categories">
-            {% for cat in categories %}
-            <option value="{{ cat.name }}">{{ cat.name }}</option>
-            {% endfor %}
-        </datalist>
-        <label for="removed">remove entries</label>
-        <input type="checkbox" name="removed" id="removed" value="1">
-
-        <button class="button ok fillboth" type="submit">Save</button>
-        <a class="button fillboth" href="/fm4/report">Close</a>
-
-    </form>
-
-</body>
-
-</html>
+    <button class="button ok fillboth" type="submit">Save</button>
+    <a class="button fillboth" href="{{ url_for('fm4.report') }}">Close</a>
+</form>
+{% endblock %}

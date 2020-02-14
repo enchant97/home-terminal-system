@@ -1,35 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    {% include "includes/head.html" %}
-    <title>HWM New</title>
-</head>
-
-<body>
-    <header>
-        <a id="backhome" href="/home"><img width="100px" src="/static/homeicon.svg" alt="home"></a>
-        <h1>Homework Manager</h1>
-        <h2>New</h2>
-    </header>
-
-    {% include "includes/alert.html" %}
-
-    <div class="container down">
-        <form class="container two-col" id="hw_form" action="/hwm/new" method="POST">
-            <label for="message">Message:</label>
-            <input type="text" name="message" id="message" required>
-            <label for="datedue">Date Due:</label>
-            <input type="date" name="datedue" id="datedue" required>
-            <button type="button" class="button fillboth" onclick="new_task()">New Task</button>
-            <div class="fillboth down" id="created_tasks">
-                <!-- where new tasks are added -->
-            </div>
-            <button class="button ok fillboth" type="submit">Save</button>
-            <a class="button fillboth" href="/hwm">Close</a>
-        </form>
-    </div>
-
-</body>
-
-</html>
+{% extends "base.html" %}
+{% block title %}HWM1 New{% endblock %}
+{% block maincontent %}
+<div class="container down">
+    <form class="container two-col" id="hw_form" action="{{ url_for('hwm.new_homework') }}" method="POST">
+        <label for="message">Message:</label>
+        <input type="text" name="message" id="message" required>
+        <label for="datedue">Date Due:</label>
+        <input type="date" name="datedue" id="datedue" required>
+        <button type="button" class="button fillboth" onclick="new_task()">New Task</button>
+        <div class="fillboth down" id="created_tasks">
+            <!-- where new tasks are added -->
+        </div>
+        <button class="button ok fillboth" type="submit">Save</button>
+        <a class="button fillboth" href="{{ url_for('hwm.homework') }}">Close</a>
+    </form>
+</div>
+{% endblock %}

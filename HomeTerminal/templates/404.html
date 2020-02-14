@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block title %}404{% endblock %}
+{% block maincontent %}
+<h1>Requested page was no found!</h1>
+<a href="{{ url_for('main.index') }}" class="button">Home</a>
+{% endblock %}
