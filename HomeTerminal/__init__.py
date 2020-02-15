@@ -1,36 +1,28 @@
 __version__ = "2.0.0"
 
 from flask import Flask, render_template
+from os import getenv
 
 from .authentication import login_manager
-from .config import Config
+from .config import config
 from .models import db
 from .views import account, home, hwm, main, pd1, fm4
 
-CONFIG = None
 app = Flask(__name__)
 
 @app.errorhandler(404)
 def not_found(e):
     return render_template("404.html"), 404
 
-def create_app(config_file="usersettings.json"):
+def create_app():
     """
     Creates the app and configures SQLALCHEMY
 
-    args:
-        config_file : where the app config file is stored
     returns:
         Flask app
     """
-    global CONFIG
-    #TODO: read config in through flask built in reader
-    CONFIG = Config(config_file)
-    app.config["SERVER_ERROR_MESSAGE"] = CONFIG.get_server_error_message()
-    app.config["ADMINUSERNAME"] = CONFIG.get_admin_username()
-    app.config["SECRET_KEY"] = CONFIG.get_secretkey()
-    app.config["SQLALCHEMY_DATABASE_URI"] = CONFIG.get_db_path()
-    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    config_name = getenv("FLASK_CONFIGURATION", "dev")
+    app.config.from_object(config[config_name])
     db.init_app(app)
     login_manager.init_app(app)
 
