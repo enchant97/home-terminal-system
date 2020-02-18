@@ -1,12 +1,13 @@
 __version__ = "2.0.0"
 
-from flask import Flask, render_template
 from os import getenv
+
+from flask import Flask, render_template
 
 from .authentication import login_manager
 from .config import config
 from .models import db
-from .views import account, home, hwm, main, pd1, fm4
+from .views import account, api, fm4, home, hwm, main, pd1
 
 app = Flask(__name__)
 
@@ -32,6 +33,7 @@ def create_app():
     app.register_blueprint(hwm, url_prefix="/hwm")
     app.register_blueprint(fm4, url_prefix="/fm4")
     app.register_blueprint(pd1, url_prefix="/pd1")
+    app.register_blueprint(api, url_prefix="/api")
 
     with app.app_context():
         db.create_all()

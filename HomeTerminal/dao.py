@@ -1,8 +1,9 @@
 import logging
 from datetime import datetime
 
-from .models import User, User_Settings, db
+from .models import Api_Key, Homework_Main, Message, User, User_Settings, db
 from .utils import hash_str
+
 
 class RowAlreadyExists(Exception):
     pass
@@ -57,3 +58,21 @@ def new_message(user_from, message):
     db.session.add(the_message)
     db.session.commit()
     return the_message
+
+def check_api_key(api_key):
+    """
+    Checks whether the api key given is valid
+    """
+    if Api_Key.query.filter_by(key=api_key).scalar():
+        return True
+    else:
+        return False
+
+def get_messages(removed=0):
+    """
+    returns the messages
+    """
+    return Message.query.filter_by(removed=removed).all()
+
+def get_homework_ordered(removed=0):
+    return Homework_Main.query.filter_by(removed=removed).order_by(Homework_Main.datedue).all()
