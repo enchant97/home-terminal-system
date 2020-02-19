@@ -4,7 +4,8 @@ from datetime import datetime
 from flask import Blueprint, abort, jsonify, request
 from flask_login import current_user
 
-from ..dao import check_api_key, get_homework_ordered, get_messages
+from ..dao import (AlreadyUpToDate, check_api_key, get_homework_ordered,
+                   get_messages)
 
 api = Blueprint("api", __name__)
 
@@ -16,7 +17,7 @@ def api_auth(fn):
     """
     @wraps(fn)
     def wrap(*args, **kwargs):
-        if current_user._id:
+        if not current_user.is_anonymous:
             # allow cookie auth
             return fn(*args, **kwargs)
         elif check_api_key(request.headers.get("x-api-key", default="", type=str)):
@@ -26,23 +27,30 @@ def api_auth(fn):
             return abort(401)
     return wrap
 
+def api_date_checks(fn):
+    """
+    decorator that returns json for the date
+    """
+    @wraps(fn)
+    def wrap(*args, **kwargs):
+        try:
+            return fn(*args, **kwargs)
+        except AlreadyUpToDate:
+            return jsonify({"error": "AlreadyUpToDate", "loaded_data":tuple()})
+        except ValueError:
+            return jsonify({"error":"datetime not in correct format of YYYY/MM/DD H:M:S.MS"})
+    return wrap
+
 @api.route("/hwm/hw")
 @api_auth
+@api_date_checks
 def hw():
-    #TODO: seperate into DAO
-    last_update = request.args.get("last_update", None)
-    if last_update:
-        try:
-            last_update = datetime.strptime(last_update, "%Y-%m-%d %H:%M:%S.%f")
-        except:
-            return jsonify({"error":"datetime not in correct format of YYYY/MM/DD H:M:S.MS"})
-        #TODO: find better way to do this (with database)
-        # if LAST_HOMEWORK_UPDATE.is_uptodate(last_update):
-        #     # if the client already is up-to date
-        #     return jsonify({"error": "you already have the latest data", "loaded_data":tuple()})
-    return jsonify(loaded_data=[hw.serialize() for hw in get_homework_ordered()])
+    loaded_hw = get_homework_ordered(last_updated = request.args.get("last-update"))
+    return jsonify(loaded_data=[hw.serialize() for hw in loaded_hw])
 
 @api.route("/messages")
 @api_auth
+@api_date_checks
 def messages():
-    return jsonify(messages=[message.serialize() for message in get_messages()])
+    loaded_messages = get_messages(last_updated = request.args.get("last-update"))
+    return jsonify(loaded_data=[message.serialize() for message in loaded_messages])

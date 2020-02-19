@@ -9,6 +9,11 @@ from .utils import hash_str
 class RowAlreadyExists(Exception):
     pass
 
+
+class AlreadyUpToDate(Exception):
+    pass
+
+
 def mark_table_updated(table_name):
     """
     Change a the update time table row,
@@ -24,6 +29,15 @@ def mark_table_updated(table_name):
         new_row = Table_Updates(table_name=table_name)
     db.session.add(new_row)
     db.session.commit()
+
+def get_last_updated(table_name):
+    """
+    Returns the last time the table was updated,
+    returns a datetime obj
+    """
+    sel_row = Table_Updates.query.filter_by(table_name=table_name).first()
+    if sel_row:
+        return sel_row.last_updated
 
 def try_login_user(username, password):
     """
@@ -88,11 +102,40 @@ def check_api_key(api_key):
     else:
         return False
 
-def get_messages(removed=0):
+def get_messages(removed=0, last_updated=None):
     """
-    returns the messages
+    Returns the messages,
+    if last_updated is datetime will raise
+    AlreadyUpToDate if it is already up to date
+
+    args:
+        removed : whether to select removed entries or not
+        last_updated : datetime obj or '%Y-%m-%d %H:%M:%S.%f'
     """
+    if last_updated:
+        last_updated = datetime.strptime(last_updated, "%Y-%m-%d %H:%M:%S.%f")
+        #TODO: seperate this into a function?
+        db_updated = get_last_updated(Message.__tablename__)
+        if db_updated:
+            if db_updated <= last_updated:
+                raise AlreadyUpToDate()
+
     return Message.query.filter_by(removed=removed).all()
 
-def get_homework_ordered(removed=0):
+def get_homework_ordered(removed=0, last_updated=None):
+    """
+    Returns the homework,
+    if last_updated is datetime will raise
+    AlreadyUpToDate if it is already up to date
+
+    args:
+        removed : whether to select removed entries or not
+        last_updated : datetime obj or '%Y-%m-%d %H:%M:%S.%f'
+    """
+    if last_updated:
+        last_updated = datetime.strptime(last_updated, "%Y-%m-%d %H:%M:%S.%f")
+        db_updated = get_last_updated(Homework_Main.__tablename__)
+        if db_updated:
+            if db_updated <= last_updated:
+                raise AlreadyUpToDate()
     return Homework_Main.query.filter_by(removed=removed).order_by(Homework_Main.datedue).all()
