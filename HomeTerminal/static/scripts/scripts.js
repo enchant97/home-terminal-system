@@ -1,3 +1,9 @@
+function datetime_for_api() {
+  // returns the utc time in string format of: YYYY/MM/DD H:M:S.MS
+  const curr_dt = new Date();
+  return `${curr_dt.getUTCFullYear()}/${curr_dt.getUTCMonth()}/${curr_dt.getUTCDay()} ${curr_dt.getUTCHours()}:${curr_dt.getUTCMinutes()}:${curr_dt.getUTCSeconds()}.${curr_dt.getUTCMilliseconds()}`;
+}
+
 function createAlert(message, category) {
   var box = document.createElement("div");
   box.innerText = message;
@@ -66,9 +72,9 @@ function new_task() {
   }
 }
 
-function remove_elem_children(elem){
+function remove_elem_children(elem) {
   // removes a given elements children
-  while (elem.hasChildNodes()){
+  while (elem.hasChildNodes()) {
     elem.removeChild(elem.lastChild);
   }
 }
@@ -90,7 +96,7 @@ function load_options_to_select(raw_options, select_elem) {
   // loads the select box with new values, and clears old ones
   remove_elem_children(select_elem);
   var parsed = JSON.parse(raw_options);
-  for (i in parsed.sublocs){
+  for (i in parsed.sublocs) {
     create_option_into_select(select_elem, parsed.sublocs[i].name);
   }
 }
@@ -103,7 +109,7 @@ function create_option_into_select(select_elem, option_val) {
   select_elem.appendChild(the_option);
 }
 
-function start_load_options_to_select(select_id, url, main_loc){
+function start_load_options_to_select(select_id, url, main_loc) {
   // calls the async func to load new options into select element
   var select_elem = document.getElementById(select_id);
   url = url + "?mainloc=" + main_loc

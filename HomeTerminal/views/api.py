@@ -24,6 +24,7 @@ def api_auth(fn):
             return fn(*args, **kwargs)
         else:
             return abort(401)
+    return wrap
 
 @api.route("/hwm/hw")
 @api_auth

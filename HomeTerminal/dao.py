@@ -1,12 +1,29 @@
 import logging
 from datetime import datetime
 
-from .models import Api_Key, Homework_Main, Message, User, User_Settings, db
+from .models import (Api_Key, Homework_Main, Message, Table_Updates, User,
+                     User_Settings, db)
 from .utils import hash_str
 
 
 class RowAlreadyExists(Exception):
     pass
+
+def mark_table_updated(table_name):
+    """
+    Change a the update time table row,
+    uses utc time
+
+    args:
+        just_creating : if the row already exists will not update the datetime
+    """
+    if Table_Updates.query.filter_by(table_name=table_name).scalar():
+        new_row = Table_Updates.query.filter_by(table_name=table_name)
+        new_row.last_updated = datetime.utcnow()
+    else:
+        new_row = Table_Updates(table_name=table_name)
+    db.session.add(new_row)
+    db.session.commit()
 
 def try_login_user(username, password):
     """
@@ -20,13 +37,16 @@ def try_login_user(username, password):
         logging.debug(f"User Logged In {username}")
         return the_user
 
-def new_account(username, password, birthday: datetime):
+def new_account(username, password, birthday: datetime, ignore_duplicate=False):
     """
     creates a new account in the database
     """
     if User.query.filter_by(username=username).scalar():
         # if the username already exists
-        raise RowAlreadyExists(f"username already exists: {username}")
+        if not ignore_duplicate:
+            raise RowAlreadyExists(f"username already exists: {username}")
+        else:
+            return
     password = hash_str(password)
 
     new_user = User(username=username.lower(), password=password, birthday=birthday)
