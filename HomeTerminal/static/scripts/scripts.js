@@ -1,9 +1,3 @@
-function datetime_for_api() {
-  // returns the utc time in string format of: YYYY/MM/DD H:M:S.MS
-  const curr_dt = new Date();
-  return `${curr_dt.getUTCFullYear()}/${curr_dt.getUTCMonth()}/${curr_dt.getUTCDay()} ${curr_dt.getUTCHours()}:${curr_dt.getUTCMinutes()}:${curr_dt.getUTCSeconds()}.${curr_dt.getUTCMilliseconds()}`;
-}
-
 function createAlert(message, category) {
   var box = document.createElement("div");
   box.innerText = message;
