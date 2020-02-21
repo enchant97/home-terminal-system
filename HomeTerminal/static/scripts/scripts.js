@@ -74,6 +74,7 @@ function remove_elem_children(elem) {
 }
 
 function httpGetAsync(theUrl, callback, ...callback_args) {
+  //TODO: remove this when httpGetAsyncJSON is implemented
   // used for api-requests without the need for a apikey (uses cookies)
   // source: https://stackoverflow.com/questions/247483/http-get-request-in-javascript
   var xmlHttp = new XMLHttpRequest();
