@@ -4,7 +4,7 @@ from flask import (Blueprint, current_app, flash, redirect, render_template,
                    request, url_for)
 from flask_login import current_user, login_required
 
-from ..dao import new_message
+from ..dao import new_message as newMessage
 from ..models import FM4_Item, Homework_Main, Message, User_Settings, db
 from ..utils import Notification
 
@@ -46,9 +46,7 @@ def new_message():
     if request.method == "POST":
         message = request.form.get("message")
         if message:
-            if new_message(current_user.username, message):
-                # TODO: add socketio call in later
-                #send_new_message(the_message.id_, message)
+            if newMessage(current_user.username, message):
                 flash("Message saved!")
         else:
             flash("required form details missing", "error")
