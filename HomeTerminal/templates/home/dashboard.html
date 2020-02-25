@@ -42,6 +42,8 @@
         </tr>
         {% endfor %}
     </table>
+
+    <script>setInterval(do_messages_refresh, 900000);</script> <!-- starts the refresh message cycle -->
 </div>
 <div class="container down">
     <a class="button" href="{{ url_for('home.command_center') }}">Command Center</a>
