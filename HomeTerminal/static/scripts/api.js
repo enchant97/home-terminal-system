@@ -14,35 +14,17 @@ function datetime_for_api() {
     return `${curr_dt.getUTCFullYear()}/${pad_zero(curr_dt.getUTCMonth())}/${pad_zero(curr_dt.getUTCDay())} ${pad_zero(curr_dt.getUTCHours())}:${pad_zero(curr_dt.getUTCMinutes())}:${pad_zero(curr_dt.getUTCSeconds())}.${curr_dt.getUTCMilliseconds()}`;
 }
 
-function httpGetAsyncJSON(theUrl, callback, ...callback_args) {
-    // will pass callback json
-    // source: https://stackoverflow.com/questions/247483/http-get-request-in-javascript
-    const xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = function () {
-        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-            const raw = xmlHttp.responseText;
-            callback(JSON.parse(raw), ...callback_args);
-        }
-    }
-    xmlHttp.open("GET", theUrl, true); // true for asynchronous
-    xmlHttp.send(null);
-}
-
-function httpPOSTAsyncJSON(){
-    //TODO: implement
-}
-
-function refresh_notifications_count(){
+function refresh_notifications_count() {
     // loads a new count of notifications
     // into notification icon
     //TODO: implement later after 2.0
 }
 
-function new_messages(messages){
+function new_messages(messages) {
     // adds new messages to the messages box on dashboard
     const mesage_table = document.getElementById("loadedmessages");
     mesage_table.innerHTML = "";//TODO: remove when the lastupdated date is implemented
-    for (const message of messages.loaded_data){
+    for (const message of messages.loaded_data) {
         const row = document.createElement("tr");
         const col1 = document.createElement("td");
         const col2 = document.createElement("td");
@@ -61,10 +43,33 @@ function new_messages(messages){
     }
 }
 
-function delete_message(mess_id){
-    //TODO: implement with xhr
+function delete_message(mess_id) {
+    //sends a xhr POST request to remove a message
+    //source: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
+    fetch("/api/messages/remove", {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: mess_id }),
+    })
+        .then(function () {
+            document.getElementById("message_" + mess_id).remove();
+        })
+        .catch((error) => {
+            console.error("Error", error);
+        });
 }
 
-function do_messages_refresh(){
-    httpGetAsyncJSON("/api/messages", new_messages);
+function do_messages_refresh() {
+    fetch("/api/messages")
+        .then((response) => {
+            return response.json();
+        })
+        .then((conv_json) => {
+            new_messages(conv_json);
+        })
+        .catch((error) => {
+            console.error("Error", error);
+        });
 }

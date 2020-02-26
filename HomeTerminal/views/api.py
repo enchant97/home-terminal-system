@@ -4,8 +4,8 @@ from datetime import datetime
 from flask import Blueprint, abort, jsonify, request
 from flask_login import current_user
 
-from ..dao import (AlreadyUpToDate, check_api_key, get_homework_ordered,
-                   get_messages)
+from ..dao import (AlreadyUpToDate, RowDoesNotExist, check_api_key,
+                   get_homework_ordered, get_messages, remove_message)
 
 api = Blueprint("api", __name__)
 
@@ -54,3 +54,15 @@ def hw():
 def messages():
     loaded_messages = get_messages(last_updated = request.args.get("last-update"))
     return jsonify(loaded_data=[message.serialize() for message in loaded_messages])
+
+@api.route("/messages/remove", methods=["POST"])
+@api_auth
+def message_remove():
+    try:
+        mess_id = request.get_json()["id"]
+        remove_message(mess_id)
+    except RowDoesNotExist:
+        return jsonify({"status":"id does not exist"})
+    except KeyError:
+        return jsonify({"status":"invalid body content"})
+    return jsonify({"status":"ok"})

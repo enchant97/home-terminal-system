@@ -9,6 +9,8 @@ from .utils import hash_str
 class RowAlreadyExists(Exception):
     pass
 
+class RowDoesNotExist(Exception):
+    pass
 
 class AlreadyUpToDate(Exception):
     pass
@@ -92,6 +94,17 @@ def new_message(user_from, message):
     db.session.add(the_message)
     db.session.commit()
     return the_message
+
+def remove_message(mess_id):
+    """
+    marks a message as removed in the database
+    """
+    the_message = Message.query.filter_by(id_=mess_id).first()
+    if not the_message:
+        raise RowDoesNotExist(f"message id {mess_id} does not exist")
+    the_message.removed = 1
+    db.session.add(the_message)
+    db.session.commit()
 
 def check_api_key(api_key):
     """
