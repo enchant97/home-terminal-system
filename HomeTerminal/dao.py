@@ -152,3 +152,27 @@ def get_homework_ordered(removed=0, last_updated=None):
             if db_updated <= last_updated:
                 raise AlreadyUpToDate()
     return Homework_Main.query.filter_by(removed=removed).order_by(Homework_Main.datedue).all()
+
+def update_usersettings(username, hwm_notif=None, fm_notif=None, mess_notif=None):
+    """
+    updates the user settings,
+    if no new settings were provided will not update,
+    will return the usersettings obj
+
+    args:
+        username: the id of the users account
+        hwm_notif, fm_notif, mess_notif: the new value
+    """
+    user_setting = User_Settings.query.filter_by(username=username).first()
+    if not user_setting:
+        raise RowDoesNotExist("User settings row does not exist")
+    if hwm_notif:
+        user_setting.hwm_notif = hwm_notif
+    if fm_notif:
+        user_setting.fm_notif = fm_notif
+    if mess_notif:
+        user_setting.mess_notif = mess_notif
+    if hwm_notif and fm_notif and mess_notif:
+        db.session.add(user_setting)
+        db.session.commit()
+    return user_setting

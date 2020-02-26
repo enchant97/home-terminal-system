@@ -1,9 +1,11 @@
+from datetime import datetime
+
 from flask import (Blueprint, current_app, flash, redirect, render_template,
                    request, url_for)
 from flask_login import current_user, login_required
 
-from ..dao import RowAlreadyExists, change_user_password, new_account
-from ..models import User_Settings, db
+from ..dao import (RowAlreadyExists, change_user_password, new_account,
+                   update_usersettings)
 
 account = Blueprint("account", __name__)
 
@@ -42,22 +44,17 @@ def changepassword():
             flash("missing required form details", "error")
     return render_template("account/change_password.html", username=current_user.username)
 
-@account.route("/usersettings", methods=["GET","POST"])
+@account.route("/usersettings", methods=["GET", "POST"])
 @login_required
 def settings():
-    #TODO: move database stuff into DAO
     username = current_user.username
     if request.method == "POST":
-        try:
-            hwm_notif = request.form.get("hwm_notif", 0, int)
-            fm_notif = request.form.get("fm_notif", 0, int)
-            mess_notif = request.form.get("mess_notif", 0, int)
-            User_Settings.query.filter_by(username=username).update(
-                dict(hwm_notif=hwm_notif, fm_notif=fm_notif, mess_notif=mess_notif))
-            db.session.commit()
-            flash("Saved!")
-        except:
-            logging.exception("usersetting error")
-            flash(current_app.config["SERVER_ERROR_MESSAGE"], "error")
-    user_settings = User_Settings.query.filter_by(username=username).first()
-    return render_template("account/user_settings.html", the_settings=user_settings)
+        hwm_notif = request.form.get("hwm_notif", 0, int)
+        fm_notif = request.form.get("fm_notif", 0, int)
+        mess_notif = request.form.get("mess_notif", 0, int)
+        user_setting = update_usersettings(
+            current_user.username, hwm_notif, fm_notif, mess_notif)
+        flash("updated your settings")
+    else:
+        user_setting = update_usersettings(current_user.username)
+    return render_template("account/user_settings.html", the_settings=user_setting)
