@@ -34,6 +34,7 @@ def create_app():
     """
     config_name = getenv("FLASK_CONFIGURATION", "dev")
     app.config.from_object(config[config_name])
+    app.config["APP_VERSION"] = __version__
     db.init_app(app)
     login_manager.init_app(app)
 

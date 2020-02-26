@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Welcome To The Home Terminal System 2.0{% endblock %}
+{% block title %}Welcome To The Home Terminal System {{ config["APP_VERSION"] }}{% endblock %}
 {% block maincontent %}
     <form id="login" action="{{ url_for("main.do_login") }}" method="POST">
         <h2>Please Login</h2>
