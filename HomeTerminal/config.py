@@ -4,7 +4,8 @@ Stores the apps configs
 
 config = {
     "dev": "HomeTerminal.config.Development",
-    "prod": "HomeTerminal.config.Production"
+    "prod": "HomeTerminal.config.Production",
+    "test": "HomeTerminal.config.Testing"
 }
 
 class Base:
@@ -15,6 +16,13 @@ class Base:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = "abf5f6a68b734dc38332278c83ae8bb1"
     SQLALCHEMY_DATABASE_URI = "sqlite://"
+
+class Testing(Base):
+    """
+    Used for testing with pytest
+
+    """
+    SQLALCHEMY_DATABASE_URI = "sqlite://:memory:"
 
 class Development(Base):
     """
