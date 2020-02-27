@@ -4,6 +4,7 @@ from flask import (Blueprint, current_app, flash, redirect, render_template,
                    request, url_for)
 from flask_login import current_user, login_required
 
+from ..dao import get_messages
 from ..dao import new_message as newMessage
 from ..models import FM4_Item, Homework_Main, Message, User_Settings, db
 from ..utils import Notification
@@ -29,14 +30,13 @@ def get_notifations(username):
 @home.route("/dashboard")
 @login_required
 def dashboard():
-    #TODO: seperate into DAO
     username = current_user.username
     notifications = get_notifations(username)
 
     return render_template(
         "home/dashboard.html",
         username=username,
-        messages=Message.query.filter_by(removed=0).all(),
+        messages=get_messages(),
         notifications=notifications
         )
 
