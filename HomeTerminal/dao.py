@@ -1,9 +1,9 @@
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 
-from .models import (Api_Key, Homework_Main, Message, Table_Updates, User,
-                     User_Settings, db)
-from .utils import hash_str
+from .models import (Api_Key, FM4_Category, FM4_Item, Homework_Main, Message,
+                     Table_Updates, User, User_Settings, db)
+from .utils import Notification, hash_str
 
 
 class RowAlreadyExists(Exception):
@@ -176,3 +176,92 @@ def update_usersettings(username, hwm_notif=None, fm_notif=None, mess_notif=None
         db.session.add(user_setting)
         db.session.commit()
     return user_setting
+
+def get_fm4_expiring(days=7, count=False):
+    """
+    Will return the number of items that
+    will expire between the days given
+
+    args:
+        days: used to compare between
+        expiredate lessthan or equal to days after
+        count: whether it should return the number of or the items
+    """
+    days_after = datetime.now() + timedelta(days=days)
+    items = FM4_Item.query.filter(FM4_Item.expire_date <= days_after).filter_by(removed=0)
+    if count:
+        return items.count()
+    return items.all()
+
+def get_notifations(username):
+    """
+    returns a generator of all notifications as Notification objects
+
+    args:
+        username : the username for getting different notifications
+    """
+    usr_setting = User_Settings.query.filter_by(username=username).first()
+    if usr_setting.fm_notif == 1:
+        fm_expiring = get_fm4_expiring(count=True)
+        if fm_expiring > 0:
+            yield Notification(f"You have {fm_expiring} expiring items in the freezer", "warning")
+    if usr_setting.hwm_notif == 1:
+        hw_due = Homework_Main.query.filter_by(removed=0).count()
+        if hw_due > 0:
+            yield Notification(f"You have {hw_due} outstanding homeworks", "warning")
+
+def get_fm4_report(category=None, removed=0):
+    """
+    returns FM4_Item obj from database
+
+    args:
+        category : category to filter by, if None will return all
+        removed : allows to display removed entries
+    """
+    if category:
+        items = FM4_Item.query.filter_by(categoryname=category, removed=removed)
+    else:
+        items = FM4_Item.query.filter_by(removed=removed)
+
+    return items.order_by(FM4_Item.expire_date).all()
+
+def get_fm4_categories(removed=0):
+    """
+    returns all the fm4 categories
+    """
+    return FM4_Category.query.filter_by(removed=removed).all()
+
+def get_fm4_item(id_):
+    """
+    returns the fm4 item,
+    or raises RowDoesNotExist
+    """
+    fm_item = FM4_Item.query.filter_by(id_=id_).first()
+    if not fm_item:
+        raise RowDoesNotExist("Row with id {id_} does not exist")
+    return fm_item
+
+def edit_fm4_item(name, categoryname, quantity, expire=None, removed=0, id_=None):
+    """
+    Used to create an fm4 Item or edit an existing one,
+    returns the edited item
+    """
+    if id_:
+        fm_item = get_fm4_item(id_)
+    else:
+        fm_item = fm_item()
+
+    fm_item.name = name
+    if expire:
+        fm_item.expire_date = expire
+    if not FM4_Category.query.filter_by(name=categoryname).scalar():
+        # create category if it does not exist
+        db.session.add(FM4_Category(name=categoryname))
+        db.session.commit()
+    fm_item.categoryname = categoryname
+    fm_item.quantity = quantity
+    fm_item.removed = removed
+
+    db.session.add(fm_item)
+    db.session.commit()
+    return fm_item
