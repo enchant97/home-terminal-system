@@ -1,8 +1,9 @@
 import logging
 from datetime import datetime, timedelta
 
-from .models import (Api_Key, FM4_Category, FM4_Item, Homework_Main, Message,
-                     Table_Updates, User, User_Settings, db)
+from .models import (Api_Key, FM4_Category, FM4_Item, Homework_Main,
+                     Homework_Task, Message, Table_Updates, User,
+                     User_Settings, db)
 from .utils import Notification, hash_str
 
 
@@ -152,6 +153,76 @@ def get_homework_ordered(removed=0, last_updated=None):
             if db_updated <= last_updated:
                 raise AlreadyUpToDate()
     return Homework_Main.query.filter_by(removed=removed).order_by(Homework_Main.datedue).all()
+
+def get_homework_tasks(hw_id, removed=0):
+    """
+    returns the homework tasks related to the given homework id
+    """
+    return Homework_Task.query.filter_by(removed=removed, hw_id=hw_id).all()
+
+def edit_homework(message, datedue, removed=0, id_=None):
+    """
+    Allows for editing or adding a new homework,
+    editing is not implemented,
+    returns a Homework_Main obj
+
+    args:
+        message: the message for the homework
+        datedue: datetime obj for when it is due
+        removed: whether entries should be marked for removal
+        id_: the id of the homework if editing
+    """
+    if id_:
+        #TODO: implement
+        raise NotImplementedError("edit homework not available :(")
+    else:
+        homework = Homework_Main()
+
+    homework.message = message
+    homework.datedue = datedue
+    homework.removed = removed
+
+    db.session.add(homework)
+    db.session.commit()
+    return homework
+
+def edit_homework_task(content, hw_id, removed=0, id_=None):
+    """
+    Allows for editing or adding a new homework task,
+    editing is not implemented,
+    returns Homework_Task obj/s
+
+    args:
+        content: the task content, if multiple tasks need to be added send list/tuple
+        hw_id: id for the Homework_Main it relates to
+        removed: whether entries should be marked for removal
+        id_: the id of the homework task if editing
+    """
+    if id_:
+        #TODO: implement
+        raise NotImplementedError("edit homework task not available :(")
+    if isinstance(content, (list, tuple)):
+        tasks = []
+        for mess in content:
+            task = Homework_Task(content=mess, hw_id=hw_id, removed=removed)
+            tasks.append(task)
+        for task in tasks:
+            db.session.add(task)
+        db.session.commit()
+        return tasks
+    task = Homework_Task(content=content, hw_id=hw_id, removed=removed)
+    db.session.add(task)
+    db.session.commit()
+    return task
+
+def mark_homework_for_removal(id_):
+    """
+    removes the homework and all the tasks related to it
+    """
+    #TODO: implement RowDoesNotExist error
+    Homework_Main.query.filter_by(id_=id_).update(dict(removed=1))
+    Homework_Task.query.filter_by(hw_id=id_).update(dict(removed=1))
+    db.session.commit()
 
 def update_usersettings(username, hwm_notif=None, fm_notif=None, mess_notif=None):
     """
