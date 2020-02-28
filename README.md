@@ -6,13 +6,13 @@
     /PROJECTNAME
     /setup-files
     /run.py
-    /requirments.txt
+    /requirements.txt
     /venv
 ```
 ## Notes:
 * ufw = firewall
 * nginx = static file webserver
-* gunicorn = WSGI server 
+* gunicorn = WSGI server
 ## How to deploy (Linux):
 ### Installing required programs
 ```
