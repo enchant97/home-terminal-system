@@ -1,8 +1,7 @@
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 
-from ..dao import try_login_user
-from ..models import User
+from ..dao import try_login_user, get_users
 
 main = Blueprint("main", __name__)
 
@@ -10,8 +9,7 @@ main = Blueprint("main", __name__)
 def index():
     if current_user.is_authenticated:
         return redirect(url_for("home.dashboard"))
-    #TODO: remove User.query.all()
-    return render_template("main/index.html", users=User.query.all())
+    return render_template("main/index.html", users=get_users())
 
 @main.route("/login", methods=["POST"])
 def do_login():

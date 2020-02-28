@@ -73,29 +73,6 @@ function remove_elem_children(elem) {
   }
 }
 
-function httpGetAsync(theUrl, callback, ...callback_args) {
-  //TODO: remove this when httpGetAsyncJSON is implemented
-  // used for api-requests without the need for a apikey (uses cookies)
-  // source: https://stackoverflow.com/questions/247483/http-get-request-in-javascript
-  var xmlHttp = new XMLHttpRequest();
-  xmlHttp.onreadystatechange = function () {
-    if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-      callback(xmlHttp.responseText, ...callback_args);
-  }
-  xmlHttp.open("GET", theUrl, true); // true for asynchronous 
-  xmlHttp.send(null);
-}
-
-
-function load_options_to_select(raw_options, select_elem) {
-  // loads the select box with new values, and clears old ones
-  remove_elem_children(select_elem);
-  var parsed = JSON.parse(raw_options);
-  for (i in parsed.sublocs) {
-    create_option_into_select(select_elem, parsed.sublocs[i].name);
-  }
-}
-
 function create_option_into_select(select_elem, option_val) {
   // appends a new child the the select element given
   var the_option = document.createElement("option");
@@ -108,5 +85,17 @@ function start_load_options_to_select(select_id, url, main_loc) {
   // calls the async func to load new options into select element
   var select_elem = document.getElementById(select_id);
   url = url + "?mainloc=" + main_loc
-  httpGetAsync(url, load_options_to_select, select_elem)
+  fetch(url)
+    .then((response) => {
+      return response.json();
+    })
+    .then((conv_json) =>{
+      remove_elem_children(select_elem);
+      for (i in conv_json.sublocs) {
+        create_option_into_select(select_elem, conv_json.sublocs[i].name);
+      }
+    })
+    .catch((error) =>{
+      console.error("Error", error);
+    });
 }

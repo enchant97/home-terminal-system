@@ -1,4 +1,4 @@
-__version__ = "2.0.0"
+__version__ = "2.0.1"
 
 from datetime import datetime
 from os import getenv
@@ -23,7 +23,9 @@ def create_default_db():
     Creates the default rows in the database,
     runs before_first_request
     """
-    new_account(app.config["ADMINUSERNAME"], app.config["ADMINUSERNAME"], datetime.utcnow(), ignore_duplicate=True)
+    new_account(
+        app.config["ADMINUSERNAME"], app.config["ADMINUSERNAME"],
+        datetime.utcnow(), ignore_duplicate=True)
 
 def create_app():
     """
