@@ -1,4 +1,5 @@
 # Home Terminal System (HTS)
+![Python application](https://github.com/enchant97/House_Terminal_System/workflows/Python%20application/badge.svg)
 ## Project structure:
 ```
 /PROJECTNAME:
