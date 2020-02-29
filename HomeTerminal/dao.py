@@ -57,7 +57,8 @@ def try_login_user(username, password):
 
 def new_account(username, password, birthday: datetime, ignore_duplicate=False):
     """
-    creates a new account in the database
+    creates a new account in the database,
+    returns the User obj
     """
     if User.query.filter_by(username=username).scalar():
         # if the username already exists
@@ -71,6 +72,7 @@ def new_account(username, password, birthday: datetime, ignore_duplicate=False):
     db.session.add(new_user)
     db.session.add(User_Settings(username=username))
     db.session.commit()
+    return new_user
 
 def change_user_password(username, new_password, old_password):
     """

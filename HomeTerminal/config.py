@@ -22,7 +22,9 @@ class Testing(Base):
     Used for testing with pytest
 
     """
+    ENV = "test"
     SQLALCHEMY_DATABASE_URI = "sqlite://:memory:"
+    TESTING = True
 
 class Development(Base):
     """
