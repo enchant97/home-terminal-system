@@ -17,7 +17,7 @@ def calc_expire_date(months):
     """
     try:
         months = int(months)
-    except:
+    except ValueError:
         months = 0
 
     if months == 0:
