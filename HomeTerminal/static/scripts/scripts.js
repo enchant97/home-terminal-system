@@ -1,3 +1,17 @@
+function gen_datetime() {
+  var date = new Date();
+  var h = date.getHours();
+  var m = date.getMinutes();
+  var dd = date.getDate();
+  var mm = date.getMonth();
+  if (h < 10) { h = '0' + h }
+  if (m < 10) { m = '0' + m }
+  if (dd < 10) { dd = '0' + dd }
+  if (mm < 10) { mm = '0' + mm }
+  document.getElementById("timebox").innerHTML = `${h}:${m}`;
+  document.getElementById("datebox").innerHTML = `${dd}-${mm}-${date.getFullYear()}`;
+}
+
 function createAlert(message, category) {
   var box = document.createElement("div");
   box.innerText = message;

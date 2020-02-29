@@ -18,6 +18,11 @@
 <body>
     <header>
         {% block header %}
+        <div id="datetime">
+            <div id="timebox"></div>
+            <div id="datebox"></div>
+            <script>gen_datetime(); setInterval(gen_datetime, 60000);</script>
+        </div>
         <h1>
             {{ self.title() }}
             {% if current_user.is_authenticated %}
@@ -26,6 +31,8 @@
             </a>
             {% endif %}
         </h1>
+        <div></div>
+        {# <button class="button">Extra</button> #}
         {% endblock %}
     </header>
     {% with messages = get_flashed_messages(with_categories=true) %}

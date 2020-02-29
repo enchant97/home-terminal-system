@@ -1,28 +1,6 @@
 {% extends "base.html" %}
 {% block title %}Dashboard{% endblock %}
-{% block extrahead %}
-    <script>
-        function gen_datetime() {
-            var date = new Date();
-            var h = date.getHours();
-            var m = date.getMinutes();
-            var dd = date.getDate();
-            var mm = date.getMonth();
-            if (h < 10) { h = '0' + h }
-            if (m < 10) { m = '0' + m }
-            if (dd < 10) { dd = '0' + dd }
-            if (mm < 10) { mm = '0' + mm }
-            document.getElementById("timebox").innerHTML = `${h}:${m}`;
-            document.getElementById("datebox").innerHTML = `${dd}-${mm}-${date.getFullYear()}`;
-        }
-    </script>
-{% endblock %}
 {% block maincontent %}
-<div id="topinfo">
-    <div id="timebox"></div>
-    <div id="datebox"></div>
-    <script>gen_datetime(); setInterval(gen_datetime, 60000);</script>
-</div>
 <div class="container down">
     <a class="weatherwidget-io container" href="https://forecast7.com/en/51d281d08/canterbury/" data-font="Roboto"
         data-icons="Climacons" data-days="5" data-theme="pure" data-basecolor="rgba(0, 0, 0, 0.04)"

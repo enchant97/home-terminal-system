@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css?family=Open+Sans|Roboto&display=swap");
+
 html,
 body,
 div,
@@ -86,10 +87,28 @@ h3 {
 }
 
 body {
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
   background-image: url("/static/background.svg");
   background-repeat: repeat;
   background-size: cover;
   background-color: #e6e6e6;
+}
+
+header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+header #datetime {
+  font-size: 2em;
+}
+
+header h1 {
+  margin-bottom: 5px;
 }
 
 a {
@@ -107,48 +126,32 @@ a {
   font-size: 1.2em;
 }
 
-.container, form#login, table {
-  width: 90%;
+.container,
+form#login,
+table {
   padding: 10px;
-  margin-left: auto;
-  margin-right: auto;
-  -webkit-box-shadow: 2px 0px 10px 1px #2e2e2e;
-          box-shadow: 2px 0px 10px 1px #2e2e2e;
+  box-shadow: 2px 0px 10px 1px #2e2e2e;
   background-color: rgba(146, 146, 146, 0.5);
   border-radius: 5px;
   margin-bottom: 12px;
 }
 
 .center {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
+  justify-content: center;
 }
 
 .down {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
+  flex-direction: column;
 }
 
 .two-col {
-  display: -ms-grid;
   display: grid;
-  -ms-grid-columns: max-content auto;
-      grid-template-columns: -webkit-max-content auto;
-      grid-template-columns: max-content auto;
+  grid-template-columns: max-content auto;
 }
 
 .two-col .fillboth {
-  -ms-grid-column: 1;
-  -ms-grid-column-span: 2;
   grid-column: 1 / span 2;
 }
 
@@ -192,8 +195,7 @@ button,
   cursor: pointer;
   text-align: center;
   margin: 5px;
-  -webkit-box-shadow: 2px 0px 5px 1px #2e2e2e;
-          box-shadow: 2px 0px 5px 1px #2e2e2e;
+  box-shadow: 2px 0px 5px 1px #2e2e2e;
   color: black;
 }
 
@@ -225,8 +227,7 @@ button.add,
 
 button:hover,
 .button:hover {
-  -webkit-transition-duration: 500ms;
-          transition-duration: 500ms;
+  transition-duration: 500ms;
   background-color: black;
   color: white;
 }
@@ -244,7 +245,6 @@ button:hover,
   font-size: 22px;
   line-height: 20px;
   cursor: pointer;
-  -webkit-transition: 0.3s;
   transition: 0.3s;
 }
 
@@ -254,47 +254,24 @@ button:hover,
 
 form#login {
   padding: 20px;
-  width: -webkit-fit-content;
-  width: -moz-fit-content;
   width: fit-content;
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
+  flex-direction: column;
+  margin: auto auto;
 }
 
 form#login h2 {
   margin-top: 0;
 }
 
-#topinfo {
-  width: 100%;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: row;
-          flex-direction: row;
-  -ms-flex-pack: distribute;
-      justify-content: space-around;
-  margin-bottom: 15px;
-  font-size: 2em;
-}
-
 table {
   padding: 5px;
   background-color: rgba(133, 133, 133, 0.5);
-  width: 90%;
 }
 
 table tr:hover {
   cursor: pointer;
-  -webkit-transition-duration: 500ms;
-          transition-duration: 500ms;
+  transition-duration: 500ms;
   background-color: black;
   color: white;
 }
@@ -305,7 +282,7 @@ table tr:first-child:hover {
   color: inherit;
 }
 
-table tr:first-child > td {
+table tr:first-child>td {
   font-weight: bold;
 }
 
@@ -319,6 +296,29 @@ table.plain tr {
   color: inherit;
 }
 
-table.plain tr:first-child > td {
+table.plain tr:first-child>td {
   font-weight: initial;
+}
+
+@media(max-width:1200px) {
+  body {
+    width: 100%;
+  }
+}
+
+@media(max-width: 710px) {
+  header {
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  header #datetime {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  header #datetime div {
+    text-align: center;
+  }
 }
