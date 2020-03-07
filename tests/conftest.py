@@ -9,8 +9,8 @@ from os import environ
 import pytest
 
 from HomeTerminal import create_app, db
-from HomeTerminal.dao import new_account
-from HomeTerminal.models import User
+from HomeTerminal.database.dao.user import new_account
+from HomeTerminal.database.models.user import User
 from HomeTerminal.utils import hash_str
 
 
