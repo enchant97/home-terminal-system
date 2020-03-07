@@ -1,6 +1,6 @@
 from flask_login import LoginManager
 
-from .models import User
+from .database.models.user import User
 
 login_manager = LoginManager()
 login_manager.login_view = 'main.index'

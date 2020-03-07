@@ -1,11 +1,11 @@
 from contextlib import wraps
-from datetime import datetime
 
 from flask import Blueprint, abort, jsonify, request
 from flask_login import current_user
 
-from ..dao import (AlreadyUpToDate, RowDoesNotExist, check_api_key,
-                   get_homework_ordered, get_messages, remove_message)
+from ..database.dao.exceptions import AlreadyUpToDate, RowDoesNotExist
+from ..database.dao.hwm import get_homework_ordered
+from ..database.dao.user import check_api_key, get_messages, remove_message
 
 api = Blueprint("api", __name__)
 
@@ -45,14 +45,14 @@ def api_date_checks(fn):
 @api_auth
 @api_date_checks
 def hw():
-    loaded_hw = get_homework_ordered(last_updated = request.args.get("last-update"))
+    loaded_hw = get_homework_ordered(last_updated=request.args.get("last-update"))
     return jsonify(loaded_data=[hw.serialize() for hw in loaded_hw])
 
 @api.route("/messages")
 @api_auth
 @api_date_checks
 def messages():
-    loaded_messages = get_messages(last_updated = request.args.get("last-update"))
+    loaded_messages = get_messages(last_updated=request.args.get("last-update"))
     return jsonify(loaded_data=[message.serialize() for message in loaded_messages])
 
 @api.route("/messages/remove", methods=["POST"])

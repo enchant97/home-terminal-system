@@ -1,7 +1,7 @@
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 
-from ..dao import try_login_user, get_users
+from ..database.dao.user import get_users, try_login_user
 
 main = Blueprint("main", __name__)
 

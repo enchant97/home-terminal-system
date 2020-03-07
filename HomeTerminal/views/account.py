@@ -4,8 +4,9 @@ from flask import (Blueprint, current_app, flash, redirect, render_template,
                    request, url_for)
 from flask_login import current_user, login_required
 
-from ..dao import (RowAlreadyExists, change_user_password, new_account,
-                   update_usersettings)
+from ..database.dao.exceptions import RowAlreadyExists
+from ..database.dao.user import (change_user_password, new_account,
+                                 update_usersettings)
 
 account = Blueprint("account", __name__)
 

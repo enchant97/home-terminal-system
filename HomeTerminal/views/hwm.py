@@ -1,12 +1,12 @@
 from datetime import datetime
 
-from flask import (Blueprint, flash, redirect, render_template,
-                   request, url_for)
+from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import login_required
 
-from ..dao import (RowDoesNotExist, edit_homework, edit_homework_task,
-                   get_homework_ordered, get_homework_tasks,
-                   mark_homework_for_removal)
+from ..database.dao.exceptions import RowDoesNotExist
+from ..database.dao.hwm import (edit_homework, edit_homework_task,
+                                get_homework_ordered, get_homework_tasks,
+                                mark_homework_for_removal)
 
 hwm = Blueprint("hwm", __name__)
 

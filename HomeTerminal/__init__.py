@@ -8,8 +8,8 @@ from flask_login import current_user
 
 from .authentication import login_manager
 from .config import config
-from .dao import new_account, get_notifations
-from .models import db
+from .database.dao.user import get_notifations, new_account
+from .database.database import db
 from .views import account, api, fm4, home, hwm, main, pd1
 
 app = Flask(__name__)

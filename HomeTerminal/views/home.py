@@ -2,8 +2,8 @@ from flask import (Blueprint, current_app, flash, redirect, render_template,
                    request, url_for)
 from flask_login import current_user, login_required
 
-from ..dao import get_messages, get_notifations
-from ..dao import new_message as newMessage
+from ..database.dao.user import get_messages, get_notifations
+from ..database.dao.user import new_message as newMessage
 
 home = Blueprint("home", __name__)
 

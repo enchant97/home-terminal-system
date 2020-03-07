@@ -1,12 +1,12 @@
 from datetime import datetime
 
-from flask import (Blueprint, flash, render_template,
-                   request)
+from flask import Blueprint, flash, render_template, request
 from flask_login import login_required
 
-from ..dao import (RowDoesNotExist, edit_fm4_item, get_fm4_categories,
-                   get_fm4_expiring, get_fm4_item, get_fm4_report)
-from ..models import FM4_Item
+from ..database.dao.exceptions import RowDoesNotExist
+from ..database.dao.fm4 import (edit_fm4_item, get_fm4_categories,
+                                get_fm4_expiring, get_fm4_item, get_fm4_report)
+from ..database.models.fm4 import FM4_Item
 from ..utils import calc_expire_date
 
 fm4 = Blueprint("fm4", __name__)
