@@ -1,5 +1,7 @@
-__version__ = "2.1.2"
+__version__ = "2.1.3"
 
+import os
+import sys
 from datetime import datetime
 from os import getenv
 
@@ -57,5 +59,15 @@ def create_app():
     app.register_blueprint(api, url_prefix="/api")
 
     with app.app_context():
+        # Source: https://gist.github.com/languanghao/a24d74b8ab4232a801312e2a0a107064
+        # Source: https://github.com/davidism/basic_flask
+        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "database", "models")
+        for py in [f[:-3] for f in os.listdir(path) if f.endswith('.py') and f != '__init__.py']:
+            mod = __import__('.'.join(['HomeTerminal.database.models', py]), fromlist=[py])
+            classes = [getattr(mod, x) for x in dir(mod) if isinstance(getattr(mod, x), type)]
+            for cls in classes:
+                if 'flask_sqlalchemy.' in str(type(cls)):
+                    print("auto import db model: {0}".format(cls))
+                    setattr(sys.modules[__name__], cls.__name__, cls)
         db.create_all()
     return app

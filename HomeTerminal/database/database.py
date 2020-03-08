@@ -6,4 +6,5 @@ use:
     from database.dao import Adao
 """
 from flask_sqlalchemy import SQLAlchemy
+
 db = SQLAlchemy()
