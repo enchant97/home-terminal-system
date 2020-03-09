@@ -170,15 +170,15 @@ form select {
   margin-bottom: 10px;
 }
 
-.alert.error {
+.error {
   background-color: rgba(244, 68, 55, 0.8);
 }
 
-.alert.warning {
+.warning {
   background-color: rgba(255, 153, 0, 0.8);
 }
 
-.alert.ok {
+.ok {
   background-color: rgba(0, 177, 0, 0.8);
 }
 

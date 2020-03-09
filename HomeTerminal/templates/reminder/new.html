@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Reminders Edit{% endblock %}
+{% block maincontent %}
+<form class="container two-col" action="{{ url_for('reminder.new') }}" method="POST">
+    <label for="reminder-content">Reminder Content:</label>
+    <input type="text" name="reminder-content" id="reminder-content" required>
+    <label for="user-for">User For:</label>
+    <select name="user-for" id="user-for">
+        <option value="">**All Users**</option>
+        {% for user in users %}
+        <option value="{{ user.username }}">{{ user.username }}</option>
+        {% endfor %}
+    </select>
+    <label for="reminder-type">Reminder Type:</label>
+    <input type="text" name="reminder-type" id="reminder-type" list="reminder-types" required>
+    <datalist id="reminder-types">
+        {% for type in reminder_types %}
+        <option value="{{ type.type_name }}"></option>
+        {% endfor %}
+    </datalist>
+    <label for="removed">Mark Priority:</label>
+    <input type="checkbox" name="priority" id="priority" value="1">
+    <label for="removed">Mark Removed:</label>
+    <input type="checkbox" name="removed" id="removed" value="1">
+    <button class="button ok fillboth" type="submit">Save</button>
+    <a class="button fillboth" href="{{ url_for('reminder.view') }}">Close</a>
+</form>
+{% endblock %}

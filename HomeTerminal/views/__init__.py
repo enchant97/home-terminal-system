@@ -5,3 +5,4 @@ from .home import home
 from .hwm import hwm
 from .main import main
 from .pd1 import pd1
+from .reminder import reminder

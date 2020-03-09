@@ -1,9 +1,9 @@
-__version__ = "2.1.3"
+__version__ = "2.2.3"
 
+import logging
 import os
 import sys
 from datetime import datetime
-from os import getenv
 
 from flask import Flask, render_template
 from flask_login import current_user
@@ -12,7 +12,7 @@ from .authentication import login_manager
 from .config import config
 from .database.dao.user import get_notifations, new_account
 from .database.database import db
-from .views import account, api, fm4, home, hwm, main, pd1
+from .views import account, api, fm4, home, hwm, main, pd1, reminder
 
 app = Flask(__name__)
 
@@ -44,7 +44,7 @@ def create_app():
     returns:
         Flask app
     """
-    config_name = getenv("FLASK_CONFIGURATION", "dev")
+    config_name = os.getenv("FLASK_CONFIGURATION", "dev")
     app.config.from_object(config[config_name])
     app.config["APP_VERSION"] = __version__
     db.init_app(app)
@@ -57,6 +57,7 @@ def create_app():
     app.register_blueprint(fm4, url_prefix="/fm4")
     app.register_blueprint(pd1, url_prefix="/pd1")
     app.register_blueprint(api, url_prefix="/api")
+    app.register_blueprint(reminder, url_prefix="/reminder")
 
     with app.app_context():
         # Source: https://gist.github.com/languanghao/a24d74b8ab4232a801312e2a0a107064
@@ -67,7 +68,7 @@ def create_app():
             classes = [getattr(mod, x) for x in dir(mod) if isinstance(getattr(mod, x), type)]
             for cls in classes:
                 if 'flask_sqlalchemy.' in str(type(cls)):
-                    print("auto import db model: {0}".format(cls))
+                    logging.debug("auto import db model: {0}".format(cls))
                     setattr(sys.modules[__name__], cls.__name__, cls)
         db.create_all()
     return app
