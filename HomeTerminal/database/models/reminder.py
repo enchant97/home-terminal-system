@@ -10,7 +10,7 @@ class Reminder_Type(Base):
     The reminder_type table for storing reminder types
     """
     __tablename__ = "reminder_type"
-    type_name = db.Column(db.String(length=1500), nullable=False, unique=True)
+    type_name = db.Column(db.String(length=1500), nullable=False)
 
 class Reminder(Base):
     """
