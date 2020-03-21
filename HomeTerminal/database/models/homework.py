@@ -1,17 +1,18 @@
+"""
+contains the homework manager models
+"""
 from datetime import datetime
 
-from ..database import db
+from .base import Base, db
 
 
-class Homework_Main(db.Model):
+class Main(Base):
     """
     The homework main entry
     """
-    __tablename__ = "homework_main"
-    id_ = db.Column("id", db.Integer, primary_key=True)
-    message = db.Column("message", db.String(length=1500), nullable=False)
-    datedue = db.Column("datedue", db.DateTime, nullable=False)
-    removed = db.Column("removed", db.Integer, nullable=False, default=0)
+    __tablename__ = "hw_mains"
+    message = db.Column(db.String(length=1500), nullable=False)
+    datedue = db.Column(db.DateTime, nullable=False)
 
     def get_day_first_date(self):
         """
@@ -30,16 +31,16 @@ class Homework_Main(db.Model):
             "datedue":datetime.strftime(self.datedue, "%Y-%m-%d")
         }
 
-class Homework_Task(db.Model):
+class Task(Base):
     """
     The homework task, allowing for
     multiple tasks on one homework
     """
-    __tablename__ = "homework_task"
-    id_ = db.Column("id", db.Integer, primary_key=True)
-    hw_id = db.Column("hw_id", db.Integer, db.ForeignKey("homework_main.id"), nullable=False)
-    content = db.Column("content", db.String(length=2000), nullable=False)
-    removed = db.Column("removed", db.Integer, nullable=False, default=0)
+    __tablename__ = "hw_tasks"
+    hw_id = db.Column(db.Integer, db.ForeignKey("hw_mains.id"), nullable=False)
+    content = db.Column(db.String(length=2000), nullable=False)
+
+    hw_main = db.relation(Main, backref=__tablename__)
 
     def serialize(self):
         return {

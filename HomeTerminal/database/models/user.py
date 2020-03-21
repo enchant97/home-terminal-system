@@ -1,23 +1,42 @@
 from datetime import datetime
 
 from flask_login import UserMixin
+from werkzeug.security import check_password_hash, generate_password_hash
 
 from ..database import db
+from .base import BaseNoUpdate
 
 
-class User(UserMixin, db.Model):
+# source: https://dev.to/kaelscion/authentication-hashing-in-sqlalchemy-1bem
+class User(UserMixin, BaseNoUpdate):
     """
     Stores info about users
     """
-    __tablename__ = "user"
+    __tablename__ = "users"
     username = db.Column("username", db.String(length=80), primary_key=True)
-    password = db.Column("password", db.String(length=128), nullable=False)
-    lastlogin = db.Column("lastlogin", db.DateTime, nullable=False, default=datetime.now)
+    password_hash = db.Column(db.String(length=128), nullable=False)
+    lastlogin = db.Column("lastlogin", db.DateTime, nullable=False, default=datetime.utcnow)
     birthday = db.Column("birthday", db.DateTime, nullable=False)
-    removed = db.Column("removed", db.Integer, nullable=False, default=0)
+
+    def set_password(self, new_password):
+        """
+        Sets a new password and hashes it
+        """
+        self.password_hash = generate_password_hash(new_password, method='sha512')
+
+    def check_password(self, the_password):
+        """
+        Whether the given password matches,
+        return True or False
+        """
+        return check_password_hash(self.password_hash, the_password)
 
     def get_id(self):
-        return self.username
+        """
+        returns the user id,
+        override for UserMixin
+        """
+        return self.id_
 
     def __repr__(self):
         return f"username={self.username}, lastlogin={self.lastlogin}"
@@ -28,12 +47,13 @@ class User_Settings(db.Model):
     Each user should have one of these
     """
     __tablename__ = "user_settings"
-    username = db.Column(
-        "username", db.String(length=80),
-        db.ForeignKey("user.username"), primary_key=True)
-    fm_notif = db.Column("fm_notif", db.Integer, nullable=False, default=0)
-    hwm_notif = db.Column("hwm_notif", db.Integer, nullable=False, default=0)
-    mess_notif = db.Column("mess_notif", db.Integer, nullable=False, default=0)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
+    fm_notif = db.Column(db.Boolean, nullable=False, default=False)
+    hwm_notif = db.Column(db.Boolean, nullable=False, default=False)
+    mess_notif = db.Column(db.Boolean, nullable=False, default=False)
+    removed = db.Column(db.Boolean, nullable=False, default=False)
+
+    user = db.relation(User, backref=__tablename__)
 
     def serialize(self):
         return {
@@ -46,27 +66,25 @@ class Api_Key(db.Model):
     """
     Stores api keys and registers each owner
     """
-    __tablename__ = "api_key"
+    __tablename__ = "api_keys"
     key = db.Column("key", db.String(length=128), primary_key=True)
-    owner = db.Column(
-        "owner", db.String(length=80),
-        db.ForeignKey("user.username"), nullable=False)
-    removed = db.Column("removed", db.Integer, nullable=False, default=0)
+    owner_id = db.Column(db.Integer, db.ForeignKey("users.id"), unique=True)
+    removed = db.Column(db.Boolean, nullable=False, default=False)
 
-class Message(db.Model):
-    __tablename__ = "message"
-    id_ = db.Column("id", db.Integer, primary_key=True)
-    user_from = db.Column(
-        "user_from", db.String(length=80),
-        db.ForeignKey("user.username"), nullable=False)
+    user = db.relation(User, backref=__tablename__)
+
+class Message(BaseNoUpdate):
+    __tablename__ = "messages"
+    user_id_from = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     message = db.Column("message", db.String(length=1500), nullable=False)
-    dateadded = db.Column("dateadded", db.DateTime, nullable=False, default=datetime.now)
-    removed = db.Column("removed", db.Integer, nullable=False, default=0)
+    dateadded = db.Column("dateadded", db.DateTime, nullable=False, default=datetime.utcnow)
+
+    user = db.relation(User, backref=__tablename__)
 
     def serialize(self):
         return {
             "id":self.id_,
-            "user_from":self.user_from,
+            "user_from":self.user.username,
             "message":self.message,
             "dateadded":self.dateadded,
             "removed":self.removed

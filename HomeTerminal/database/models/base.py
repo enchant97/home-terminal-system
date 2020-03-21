@@ -8,8 +8,20 @@ from datetime import datetime
 from ..database import db
 
 
+class BaseNoUpdate(db.Model):
+    """
+    Base row without last_updated
+
+    contains:
+        id
+        removed
+    """
+    __abstract__ = True
+    id_ = db.Column("id", db.Integer, primary_key=True)
+    removed = db.Column(db.Boolean, nullable=False, default=False)
+
 # Source: https://stackoverflow.com/a/37515941
-class Base(db.Model):
+class Base(BaseNoUpdate):
     """
     The Base row model
 
@@ -19,9 +31,7 @@ class Base(db.Model):
         removed
     """
     __abstract__ = True
-    id_ = db.Column("id", db.Integer, primary_key=True)
     last_updated = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    removed = db.Column(db.Boolean, nullable=False, default=False)
 
     def update_last_updated(self):
         """
