@@ -4,7 +4,7 @@ from flask import Blueprint, abort, jsonify, request
 from flask_login import current_user
 
 from ..database.dao.exceptions import AlreadyUpToDate, RowDoesNotExist
-from ..database.dao.hwm import get_homework_ordered
+from ..database.dao.homework import get_homework_ordered
 from ..database.dao.user import check_api_key, get_messages, remove_message
 
 api = Blueprint("api", __name__)

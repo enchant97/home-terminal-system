@@ -33,7 +33,7 @@ def new():
             user_for = request.form["user-for"]
             r_type = request.form["reminder-type"]
             is_priority = request.form.get("priority", False)
-            removed = request.form.get("removed", False)
+            removed = bool(request.form.get("removed", False))
             new_reminder(content, user_for, r_type, is_priority, removed)
             flash("added entry!")
         except KeyError:
@@ -46,7 +46,7 @@ def new():
 @login_required
 def edit(reminder_id):
     if request.method == "POST":
-        removed = request.form.get("removed", False)
+        removed = bool(request.form.get("removed", False))
         try:
             if removed:
                 remove_reminder(reminder_id)

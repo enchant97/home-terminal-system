@@ -4,13 +4,13 @@ from flask import Blueprint, flash, jsonify, render_template, request
 from flask_login import login_required
 
 from ..database.dao.exceptions import RowDoesNotExist
-from ..database.dao.pd1 import (edit_pd1_event, get_pd1_event, get_pd1_mainloc,
+from ..database.dao.photo_manager import (edit_pd1_event, get_pd1_event, get_pd1_mainloc,
                                 get_pd1_subloc)
 from ..database.dao.user import get_users
 
-pd1 = Blueprint("pd1", __name__)
+pm = Blueprint("pm", __name__)
 
-@pd1.route("/report-subloc", methods=["GET"])
+@pm.route("/report-subloc", methods=["GET"])
 @login_required
 def get_subloc():
     main_loc = request.args.get("mainloc", default="", type=str)
@@ -19,7 +19,7 @@ def get_subloc():
         return jsonify(main_loc=main_loc, sublocs=[subloc.serialize() for subloc in sublocations])
     return jsonify(sublocs=[])
 
-@pd1.route("/", methods=["GET", "POST"])
+@pm.route("/", methods=["GET", "POST"])
 @login_required
 def view():
     loaded_entries = ()
@@ -42,10 +42,10 @@ def view():
                 flash(f"sub location '{subloc}' does not exist", "error")
     main_locations = get_pd1_mainloc()
     return render_template(
-        "/pd1/view.html", main_locations=main_locations,
+        "/photo_manager/view.html", main_locations=main_locations,
         loaded_entries=loaded_entries, filter_by=filter_by)
 
-@pd1.route("/edit", methods=["GET", "POST"])
+@pm.route("/edit", methods=["GET", "POST"])
 @login_required
 def edit():
     if request.method == "POST":
@@ -67,6 +67,6 @@ def edit():
         except KeyError:
             flash("Missing required fields!", "error")
     main_locations = get_pd1_mainloc()
-    return render_template("pd1/edit.html", main_locations=main_locations, users=get_users())
+    return render_template("photo_manager/edit.html", main_locations=main_locations, users=get_users())
 
 #TODO: make a new function allowing for new location to be added

@@ -12,7 +12,8 @@ from .authentication import login_manager
 from .config import config
 from .database.dao.user import get_notifations, new_account
 from .database.database import db
-from .views import account, api, fm4, home, hwm, main, pd1, reminder
+from .views import (account, api, freezer_manager, home, homework, main,
+                    photo_manager, reminder)
 
 app = Flask(__name__)
 
@@ -53,9 +54,9 @@ def create_app():
     app.register_blueprint(main)
     app.register_blueprint(account)
     app.register_blueprint(home, url_prefix="/home")
-    app.register_blueprint(hwm, url_prefix="/hwm")
-    app.register_blueprint(fm4, url_prefix="/fm4")
-    app.register_blueprint(pd1, url_prefix="/pd1")
+    app.register_blueprint(homework, url_prefix="/homework-manager")
+    app.register_blueprint(freezer_manager, url_prefix="/freezer-manager")
+    app.register_blueprint(photo_manager, url_prefix="/photo-manager")
     app.register_blueprint(api, url_prefix="/api")
     app.register_blueprint(reminder, url_prefix="/reminder")
 
