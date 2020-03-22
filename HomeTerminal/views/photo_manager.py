@@ -4,8 +4,7 @@ from flask import Blueprint, flash, jsonify, render_template, request
 from flask_login import login_required
 
 from ..database.dao.exceptions import RowDoesNotExist
-from ..database.dao.photo_manager import (edit_pd1_event, get_pd1_event, get_pd1_mainloc,
-                                get_pd1_subloc)
+from ..database.dao import photo_manager as dao_pm
 from ..database.dao.user import get_users
 
 pm = Blueprint("pm", __name__)
@@ -14,7 +13,7 @@ pm = Blueprint("pm", __name__)
 @login_required
 def get_subloc():
     main_loc = request.args.get("mainloc", default="", type=str)
-    sublocations = get_pd1_subloc(main_loc)
+    sublocations = dao_pm.get_subloc(main_loc)
     if len(sublocations) > 0:
         return jsonify(main_loc=main_loc, sublocs=[subloc.serialize() for subloc in sublocations])
     return jsonify(sublocs=[])
@@ -29,7 +28,7 @@ def view():
         subloc = request.form.get("sub-location").capitalize()
         if not mainloc:
             filter_by = "no filter"
-            loaded_entries = get_pd1_event()
+            loaded_entries = dao_pm.get_event()
         elif mainloc and not subloc:
             filter_by = "main-loc"
             #loaded_entries = get_pd1_event(mainloc)
@@ -37,10 +36,10 @@ def view():
         else:
             filter_by = "sub-loc"
             try:
-                loaded_entries = get_pd1_event(mainloc, subloc)
+                loaded_entries = dao_pm.get_event(mainloc, subloc)
             except RowDoesNotExist:
                 flash(f"sub location '{subloc}' does not exist", "error")
-    main_locations = get_pd1_mainloc()
+    main_locations = dao_pm.get_mainloc()
     return render_template(
         "/photo_manager/view.html", main_locations=main_locations,
         loaded_entries=loaded_entries, filter_by=filter_by)
@@ -60,13 +59,13 @@ def edit():
             lng = request.form.get("lng", 0, int)
 
             if users:
-                edit_pd1_event(mainloc, subloc, datetaken, notes, users, lat, lng)
+                dao_pm.edit_pd1_event(mainloc, subloc, datetaken, notes, users, lat, lng)
                 flash("added entry")
             else:
                 flash("not added as no users were selected", "warning")
         except KeyError:
             flash("Missing required fields!", "error")
-    main_locations = get_pd1_mainloc()
+    main_locations = dao_pm.get_mainloc()
     return render_template("photo_manager/edit.html", main_locations=main_locations, users=get_users())
 
 #TODO: make a new function allowing for new location to be added

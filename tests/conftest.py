@@ -11,15 +11,14 @@ import pytest
 from HomeTerminal import create_app, db
 from HomeTerminal.database.dao.user import new_account
 from HomeTerminal.database.models.user import User
-from HomeTerminal.utils import hash_str
 
 
 @pytest.fixture(scope='module')
 def new_user():
     user = User(
         username="testuser123",
-        password=hash_str("testuser123"),
         birthday=datetime.now())
+    user.set_password("testuser123")
     return user
 
 @pytest.fixture(scope='module')

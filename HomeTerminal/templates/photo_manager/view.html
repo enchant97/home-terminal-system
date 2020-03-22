@@ -1,12 +1,12 @@
 {% extends "base.html" %}
-{% block title %}PD1 Report{% endblock %}
+{% block title %}Photo Manager - Report{% endblock %}
 {% block maincontent %}
 <div class="center down">
-    <a class="button add" href="{{ url_for('pd1.edit') }}">Add Entry</a>
-    <form class="container two-col" action="{{ url_for('pd1.view') }}" method="POST">
+    <a class="button add" href="{{ url_for('pm.edit') }}">Add Entry</a>
+    <form class="container two-col" action="{{ url_for('pm.view') }}" method="POST">
         <label for="main-location">Main Location:</label>
         <select
-            onchange="start_load_options_to_select('sub-location','/pd1/report-subloc',this.options[this.selectedIndex].text)"
+            onchange="start_load_options_to_select('sub-location',`{{ url_for('pm.get_subloc') }}`,this.options[this.selectedIndex].text)"
             name="main-location" id="main-location">
             <option value="">Show All</option>
             {% for i in main_locations %}

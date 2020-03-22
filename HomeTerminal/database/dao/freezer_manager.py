@@ -64,7 +64,7 @@ def edit_fm4_item(name, categoryname, quantity, expire=None, removed=False, id_=
     if id_:
         fm_item = get_fm4_item(id_)
     else:
-        fm_item = fm_item()
+        fm_item = Item()
 
     fm_item.name = name
     if expire:

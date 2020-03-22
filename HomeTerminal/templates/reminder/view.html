@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Reminders View{% endblock %}
+{% block title %}Reminders - View{% endblock %}
 {% block maincontent %}
 <div class="container down">
     <a href="{{ url_for('reminder.new') }}" class="button ok">New Reminder</a>
@@ -24,9 +24,9 @@
             <td>User For</td>
         </tr>
         {% for i in reminders %}
-        <tr onclick="window.location = '/reminder/edit/{{ i.id_ }}'">
+        <tr onclick="window.location = `{{ url_for('reminder.edit', reminder_id=i.id_)}}`">
             <td>{{ i.content }}</td>
-            <td>{{ i.reminder_type }}</td>
+            <td>{{ i.reminder_type.type_name }}</td>
             {% if i.is_priority %}
             <td class="error">True</td>
             {% else %}

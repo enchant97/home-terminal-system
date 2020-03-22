@@ -3,8 +3,8 @@
 {% block maincontent %}
 <div class="container down">
     <a href="{{ url_for('hwm.homework') }}" class="button">Back</a>
-    <a href="/hwm/remove?homework_id={{ hw_id }}" class="button">Remove Homework</a>
-    <button class="button ok" onclick="window.location = '/hwm/new-task?homework_id={{ hw_id }}'">New Task</button>
+    <a href="{{ url_for('hwm.remove_homework') + '?homework_id=' + hw_id|string }}" class="button">Remove Homework</a>
+    <button class="button ok" onclick="window.location = `{{ url_for('hwm.new_homework_task') + '?homework_id=' + hw_id|string }}`">New Task</button>
 
     <table>
         <caption>Homework: {{ hw_id }}</caption>

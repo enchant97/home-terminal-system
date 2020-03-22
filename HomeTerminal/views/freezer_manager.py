@@ -54,7 +54,7 @@ def edit():
     categories = get_fm4_categories()
     edit_item_id = request.args.get("item_id", default="", type=str)
     if edit_item_id == "":
-        default_item = FM_Item(name="", expire_date="", categoryname="", quantity=0, id_=-1)
+        default_item = FM_Item(name="", expire_date="", category_id="", quantity=0, id_=-1)
     else:
         try:
             default_item = get_fm4_item(edit_item_id)

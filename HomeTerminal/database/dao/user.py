@@ -1,3 +1,5 @@
+import uuid
+import hashlib
 from datetime import datetime
 
 from ...utils import Notification
@@ -96,6 +98,27 @@ def check_api_key(api_key):
         return True
     return False
 
+def get_api_key(username):
+    """
+    returns a api key given to the given username
+
+    args:
+        username : the username of the User table
+    """
+    the_user = User.query.filter_by(username=username).first()
+    if not the_user:
+        # TODO: make this into a function?
+        raise RowDoesNotExist(f"username {username} not found")
+
+    the_key = Api_Key.query.filter_by(owner_id=the_user.id_).first()
+    if not the_key:
+        # make the api key if it does not exist
+        key = str(hashlib.sha512(str(uuid.uuid4()).encode()).hexdigest())
+        the_key = Api_Key(key=key,owner_id=the_user.id_)
+        db.session.add(the_key)
+        db.session.commit()
+    return the_key
+
 def get_messages(removed=False, last_updated=None):
     """
     Returns the messages,
@@ -129,7 +152,7 @@ def update_usersettings(username, hwm_notif=None, fm_notif=None, mess_notif=None
     """
     the_user = User.query.filter_by(username=username).first()
     if the_user:
-        user_setting = User_Settings.query.filter_by(username=the_user.id_).first()
+        user_setting = User_Settings.query.filter_by(user_id=the_user.id_).first()
         if not user_setting:
             raise RowDoesNotExist("User settings row does not exist")
         if hwm_notif is not None:
@@ -152,7 +175,7 @@ def get_notifations(username):
     """
     the_user = User.query.filter_by(username=username).first()
     if the_user:
-        usr_setting = User_Settings.query.filter_by(username=the_user.id_).first()
+        usr_setting = User_Settings.query.filter_by(user_id=the_user.id_).first()
         if usr_setting.fm_notif is True:
             fm_expiring = get_fm4_expiring(count=True)
             if fm_expiring > 0:
@@ -163,7 +186,8 @@ def get_notifations(username):
             hw_due = Homework_Main.query.filter_by(removed=False).count()
             if hw_due > 0:
                 yield Notification(f"You have {hw_due} outstanding homeworks", "warning")
-    raise RowDoesNotExist(f"username {username} does not exist")
+    else:
+        raise RowDoesNotExist(f"username {username} does not exist")
 
 def get_users(removed=False):
     """

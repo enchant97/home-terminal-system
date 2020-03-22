@@ -17,7 +17,7 @@ def get_subloc(main_loc):
     main = MainLocation.query.filter_by(name=main_loc).first()
     if not main_loc:
         raise RowDoesNotExist(f"mainlocation {main_loc} does not exist")
-    return SubLocation.query.filter_by(main_loc_id=main).all()
+    return SubLocation.query.filter_by(main_loc_id=main.id_).all()
 
 def get_mainloc():
     """

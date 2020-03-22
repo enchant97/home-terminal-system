@@ -2,16 +2,17 @@
 {% block title %}User Settings{% endblock %}
 {% block maincontent %}
 <form class="container two-col" action="{{ url_for('account.settings') }}" method="POST">
+    <!-- TODO: use checkboxes instead with function to set default option -->
     <label for="hwm_notif">Homework Notifications</label>
-    <input type="number" name="hwm_notif" id="hwm_notif" min="0" max="1" value="{{ the_settings.hwm_notif }}" required>
+    <input type="number" name="hwm_notif" id="hwm_notif" min="0" max="1" value="{{ the_settings.hwm_notif|int }}" required>
     <label for="fm_notif">Freezer Manager Notifications</label>
-    <input type="number" name="fm_notif" id="fm_notif" min="0" max="1" value="{{ the_settings.fm_notif }}" required>
+    <input type="number" name="fm_notif" id="fm_notif" min="0" max="1" value="{{ the_settings.fm_notif|int }}" required>
     <label for="mess_notif">Message Notifications</label>
-    <input type="number" name="mess_notif" id="mess_notif" min="0" max="1" value="{{ the_settings.mess_notif }}"
+    <input type="number" name="mess_notif" id="mess_notif" min="0" max="1" value="{{ the_settings.mess_notif|int }}"
         required>
     <button class="button ok fillboth" type="submit">Save</button>
     <a class="button fillboth" href="{{ url_for('home.command_center') }}">Close</a>
 </form>
 <a class="button" href="{{ url_for('account.changepassword') }}">Change Password</a>
-<!-- <a class="button" href="">Get Api-key</a> -->
+<a class="button" href="{{ url_for('account.api_key_manage') }}">Get Api-key</a>
 {% endblock %}

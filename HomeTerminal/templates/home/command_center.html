@@ -2,9 +2,9 @@
 {% block title %}Command Center{% endblock %}
 {% block maincontent %}
 <menu class="container down">
-    <a class="button" href="{{ url_for('fm4.report') }}">Freezer Manager 4.0</a>
+    <a class="button" href="{{ url_for('fm.report') }}">Freezer Manager 4.0</a>
     <a class="button" href="{{ url_for('hwm.homework') }}">Homework Manager 1.0</a>
-    <a class="button" href="{{ url_for('pd1.view') }}">Photo Database 1.0</a>
+    <a class="button" href="{{ url_for('pm.view') }}">Photo Database 1.0</a>
     <a href="{{ url_for('reminder.view') }}" class="button">Reminders</a>
     <a href="{{ url_for('account.settings') }}" class="button">User Settings</a>
     {% if admin %}

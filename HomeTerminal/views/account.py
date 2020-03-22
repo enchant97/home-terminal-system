@@ -5,8 +5,8 @@ from flask import (Blueprint, current_app, flash, redirect, render_template,
 from flask_login import current_user, login_required
 
 from ..database.dao.exceptions import RowAlreadyExists
-from ..database.dao.user import (change_user_password, new_account,
-                                 update_usersettings)
+from ..database.dao.user import (change_user_password, get_api_key,
+                                 new_account, update_usersettings)
 
 account = Blueprint("account", __name__)
 
@@ -50,7 +50,7 @@ def changepassword():
 def settings():
     username = current_user.username
     if request.method == "POST":
-        hwm_notif =bool(request.form.get("hwm_notif", 0, int))
+        hwm_notif = bool(request.form.get("hwm_notif", 0, int))
         fm_notif = bool(request.form.get("fm_notif", 0, int))
         mess_notif = bool(request.form.get("mess_notif", 0, int))
         user_setting = update_usersettings(
@@ -59,3 +59,8 @@ def settings():
     else:
         user_setting = update_usersettings(current_user.username)
     return render_template("account/user_settings.html", the_settings=user_setting)
+
+@account.route("/api-key")
+@login_required
+def api_key_manage():
+    return render_template("account/api_key.html", key=get_api_key(current_user.username).key)

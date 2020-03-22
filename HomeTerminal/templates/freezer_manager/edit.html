@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}FM4 Edit{% endblock %}
+{% block title %}Freezer Manager Edit{% endblock %}
 {% block extrahead %}
 <script>
     function custom_expire_onclick() {
@@ -24,7 +24,7 @@
 </script>
 {% endblock %}
 {% block maincontent %}
-<form class="container two-col" action="{{ url_for('fm4.edit') }}" method="POST">
+<form class="container two-col" action="{{ url_for('fm.edit') }}" method="POST">
     <label for="id">id:</label>
     <input type="text" name="id" id="id" placeholder="AUTO" value={{ def_item.id_ }} readonly>
     <label for="name">name:</label>
@@ -45,7 +45,7 @@
     <input type="number" name="amount" id="amount" step="1" min="0" value={{ def_item.quantity }}>
     <label for="category">category:</label>
     <input type="text" name="category" id="category" list="categories" autocomplete="off"
-        value="{{ def_item.categoryname }}" required>
+        value="{{ def_item.category.name }}" required>
     <datalist name="categories" id="categories">
         {% for cat in categories %}
         <option value="{{ cat.name }}">{{ cat.name }}</option>
@@ -55,6 +55,6 @@
     <input type="checkbox" name="removed" id="removed" value="1">
 
     <button class="button ok fillboth" type="submit">Save</button>
-    <a class="button fillboth" href="{{ url_for('fm4.report') }}">Close</a>
+    <a class="button fillboth" href="{{ url_for('fm.report') }}">Close</a>
 </form>
 {% endblock %}

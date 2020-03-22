@@ -1,9 +1,9 @@
 {% extends "base.html" %}
-{% block title %}PD1 Edit{% endblock %}
+{% block title %}Photo Manager - Edit{% endblock %}
 {% block maincontent %}
-<form class="container two-col" action="{{ url_for('pd1.edit') }}" method="POST">
+<form class="container two-col" action="{{ url_for('pm.edit') }}" method="POST">
     <label for="mainloc">Main Location:</label>
-    <input onchange="start_load_options_to_select('sublocations','/pd1/report-subloc',this.value)" type="text"
+    <input onchange="start_load_options_to_select('sublocations',`{{ url_for('pm.get_subloc') }}`,this.value)" type="text"
         name="mainloc" id="mainloc" list="mainlocations" autocomplete="off" required>
     <datalist name="mainlocations" id="mainlocations">
         {% for mainloc in main_locations %}
@@ -31,6 +31,6 @@
     <label for="notes">Notes:</label>
     <textarea name="notes" id="notes" cols="30" rows="5" placeholder="Enter notes here..."></textarea>
     <button class="button ok fillboth" type="submit">Save</button>
-    <a href="{{ url_for('pd1.view') }}" class="button fillboth">Cancel</a>
+    <a href="{{ url_for('pm.view') }}" class="button fillboth">Cancel</a>
 </form>
 {% endblock %}

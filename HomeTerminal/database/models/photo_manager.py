@@ -41,7 +41,7 @@ class FullEvent(Base):
     date_taken = db.Column(db.DateTime, nullable=False)
     notes = db.Column("notes", db.String(length=2000), nullable=False)
 
-    sub_location = db.relation(MainLocation, backref=__tablename__)
+    sub_location = db.relation(SubLocation, backref=__tablename__)
 
 
 class UserEvent(Base):

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}HWM1 New Tasks{% endblock %}
 {% block maincontent %}
-<form class="container two-col" id="hw-tasks_form" action="/hwm/new-task" method="POST">
+<form class="container two-col" id="hw-tasks_form" action="{{ url_for('hwm.new_homework_task') }}" method="POST">
     <label for="hw_id">Homework id:</label>
     <input type="text" name="hw_id" id="hw_id" value="{{ hw_id }}" required readonly>
     <button type="button" class="button fillboth" onclick="new_task()">New Task</button>
@@ -9,6 +9,7 @@
         <!-- where new tasks are added -->
     </div>
     <button class="button ok fillboth" type="submit">Save</button>
-    <a class="button fillboth" href="/hwm/view-tasks?homework_id={{ hw_id }}">Close</a>
+    <a class="button fillboth" href="{{ url_for('hwm.homework_tasks') + '?homework_id=' + hw_id|string }}">Close</a>
+    <!-- /hwm/view-tasks?homework_id={{ hw_id }} -->
 </form>
 {% endblock %}
