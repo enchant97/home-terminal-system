@@ -14,7 +14,7 @@ class User(UserMixin, BaseNoUpdate):
     """
     __tablename__ = "users"
     username = db.Column("username", db.String(length=80))
-    password_hash = db.Column(db.String(length=128), nullable=False)
+    password_hash = db.Column(db.String(length=512), nullable=False)
     lastlogin = db.Column("lastlogin", db.DateTime, nullable=False, default=datetime.utcnow)
     birthday = db.Column("birthday", db.DateTime, nullable=False)
 
