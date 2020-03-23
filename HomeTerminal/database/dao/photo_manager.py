@@ -1,23 +1,26 @@
 """
 functions for abstracting the photo database models
 """
+import os
 from datetime import datetime
+
+from flask import current_app
 
 from ..database import db
 from ..models.photo_manager import (FullEvent, MainLocation, SubLocation,
-                                    UserEvent)
+                                    Thumbnail, UserEvent)
 from ..models.user import User
 from .exceptions import RowDoesNotExist
-
+from ...utils import get_hash_image
 
 def get_subloc(main_loc):
     """
     returns the sublocations related to the main_loc given
     """
     main = MainLocation.query.filter_by(name=main_loc).first()
-    if not main_loc:
-        raise RowDoesNotExist(f"mainlocation {main_loc} does not exist")
-    return SubLocation.query.filter_by(main_loc_id=main.id_).all()
+    if main_loc:
+        return SubLocation.query.filter_by(main_loc_id=main.id_).all()
+    raise RowDoesNotExist(f"mainlocation {main_loc} does not exist")
 
 def get_mainloc():
     """
@@ -25,6 +28,12 @@ def get_mainloc():
     ordered by mainlocation name
     """
     return MainLocation.query.order_by(MainLocation.name).all()
+
+def get_image_by_event(event_id, removed=False):
+    """
+    returns the Thumbnail obj
+    """
+    return Thumbnail.query.filter_by(full_event_id=event_id, removed=removed).first()
 
 def get_event(mainloc=None, subloc=None):
     """
@@ -51,10 +60,9 @@ def get_event(mainloc=None, subloc=None):
             raise RowDoesNotExist(f"main location name {mainloc} does not exist")
     raise Exception("Not a supported filter")
 
-def edit_pd1_event(mainloc, subloc, datetaken: datetime, notes, users, lat, lng, id_=None):
+def new_event(mainloc, subloc, datetaken: datetime, notes, users, lat, lng, img_raw=None):
     """
-    Allows for editing or adding a new PD1_FullEvent,
-    editing is not implemented,
+    Allows for adding a new PD1_FullEvent,
     returns PD1_FullEvent obj
 
     args:
@@ -65,12 +73,8 @@ def edit_pd1_event(mainloc, subloc, datetaken: datetime, notes, users, lat, lng,
         users: list/tuple of usernames
         lat:
         lng:
-        id_: id of the full event if editing
+        img_raw : io.BytesIO object for the image file
     """
-
-    if id_:
-        #TODO: implement
-        raise NotImplementedError("edit fullevent not available :(")
 
     # get or create then get mainlocation
     if not MainLocation.query.filter_by(name=mainloc).scalar():
@@ -93,6 +97,15 @@ def edit_pd1_event(mainloc, subloc, datetaken: datetime, notes, users, lat, lng,
     fullevent = FullEvent(subloc_id=subloc.id_, date_taken=datetaken, notes=notes)
     db.session.add(fullevent)
     db.session.commit()
+    if img_raw:
+        # if a img_path was provided add it to the database and write image to file
+        full_path = get_hash_image(img_raw.read(), ".jpg", current_app.config["IMG_LOCATION"])
+        img_raw.seek(0)# go back to start of file
+        with open(full_path, "wb") as fo:
+            fo.write(img_raw.read())
+        img_raw.close()# close the image (allows garbage cleanup to remove)
+        filename = os.path.basename(full_path)
+        db.session.add(Thumbnail(full_event_id=fullevent.id_, file_path=filename))
     for username in users:
         # adds all the user events by selected user
         the_user = User.query.filter_by(username=username).first()

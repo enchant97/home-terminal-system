@@ -1,7 +1,7 @@
 {% extends "base.html" %}
-{% block title %}Photo Manager - Edit{% endblock %}
+{% block title %}Photo Manager - New{% endblock %}
 {% block maincontent %}
-<form class="container two-col" action="{{ url_for('pm.edit') }}" method="POST">
+<form class="container two-col" action="{{ url_for('pm.new') }}" method="POST", enctype=multipart/form-data>
     <label for="mainloc">Main Location:</label>
     <input onchange="start_load_options_to_select('sublocations',`{{ url_for('pm.get_subloc') }}`,this.value)" type="text"
         name="mainloc" id="mainloc" list="mainlocations" autocomplete="off" required>
@@ -30,7 +30,11 @@
     <input type="date" name="datetaken" id="datetaken" required>
     <label for="notes">Notes:</label>
     <textarea name="notes" id="notes" cols="30" rows="5" placeholder="Enter notes here..."></textarea>
+    <label for="pic">Thumbnail:</label>
+
+    <!-- TODO: get allowed types here instead -->
+    <input type="file" name="pic" id="pic" accept="image/*">
     <button class="button ok fillboth" type="submit">Save</button>
-    <a href="{{ url_for('pm.view') }}" class="button fillboth">Cancel</a>
+    <a href="{{ url_for('pm.view') }}" class="button fillboth">Close</a>
 </form>
 {% endblock %}

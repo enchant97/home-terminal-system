@@ -15,7 +15,12 @@ class Base:
     ADMINUSERNAME = "terminal"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = "abf5f6a68b734dc38332278c83ae8bb1"
-    SQLALCHEMY_DATABASE_URI = "sqlite://"
+    SQLALCHEMY_DATABASE_URI = "sqlite://:memory:"
+    MAX_IMAGE_SIZE = (800, 800)
+    JPEG_QUALITY = 65
+    ALLOWED_IMG_EXT = ("jpg", "jpeg", "png", "bmp")
+    # folder to store folders with uploaded pictures, set to None to stop saving
+    IMG_LOCATION = None
 
 class Testing(Base):
     """
