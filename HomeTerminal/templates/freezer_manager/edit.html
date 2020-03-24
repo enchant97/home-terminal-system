@@ -26,10 +26,10 @@
 {% block maincontent %}
 <form class="container two-col" action="{{ url_for('fm.edit') }}" method="POST">
     <label for="id">id:</label>
-    <input type="text" name="id" id="id" placeholder="AUTO" value={{ def_item.id_ }} readonly>
+    <input type="text" name="id" id="id" placeholder="AUTO" {% if def_item.id_ %}value={{ def_item.id_ }}{% endif %}readonly>
     <label for="name">name:</label>
     <input type="text" name="name" id="name" placeholder="Name..." value="{{ def_item.name }}" required>
-    {% if def_item.id_ == -1 %}
+    {% if def_item.id_ == None %}
     <label for="custom_expire">Custom Expire:</label>
     <input onchange="custom_expire_onclick()" type="checkbox" name="custom_expire" id="custom_expire" value="1">
     <label for="expire_date">Expire Date:</label>

@@ -34,13 +34,13 @@ def report_expiring():
 def edit():
     if request.method == "POST":
         try:
-            id_ = int(request.form.get("id", -1))
+            id_ = request.form.get("id", None)
             name = request.form["name"]
             amount = request.form["amount"]
             category = request.form["category"].capitalize()
             removed = bool(request.form.get("removed", 0))
-            if id_ == -1:
-                id_ = None #TODO: handle this better (use empty string instead in form)
+            expire = None
+            if not id_:
                 if request.form.get("custom_expire", False) == "1":
                     expire = datetime.strptime(request.form["expire_date"], "%Y-%m-%d")
                 else:
@@ -54,7 +54,7 @@ def edit():
     categories = get_fm4_categories()
     edit_item_id = request.args.get("item_id", default="", type=str)
     if edit_item_id == "":
-        default_item = FM_Item(name="", expire_date="", category_id="", quantity=0, id_=-1)
+        default_item = FM_Item(name="", expire_date="", category_id="", quantity=0, id_=None)
     else:
         try:
             default_item = get_fm4_item(edit_item_id)
