@@ -28,7 +28,6 @@ class Testing(Base):
 
     """
     ENV = "test"
-    SQLALCHEMY_DATABASE_URI = "sqlite://:memory:"
     TESTING = True
 
 class Development(Base):
@@ -37,7 +36,6 @@ class Development(Base):
     """
     ENV = "dev"
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
 
 class Production(Base):
     ENV = "prod"
