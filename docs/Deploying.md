@@ -1,4 +1,5 @@
 # Deploying
+[Back Home](index.md)
 ## Notes:
 * ufw = firewall
 * nginx = static file webserver
@@ -18,38 +19,32 @@ sudo ufw enable
 ```
 ### Clone project folder
 ```
-git clone https://github.com/enchant97/House_Terminal_System.git PROJECTNAME
-cd /PROJECTNAME
-python3 -m venv PROJECTNAME/venv
+git clone https://github.com/enchant97/House_Terminal_System.git hometerminal
+cd /hometerminal
+python3 -m venv hometerminal/venv
 source venv/bin/activate
 ```
 ### Setup Nginx
 make sure to edit the default file with the project name
 ```
 sudo rm /etc/nginx/sites-enabled/default
-sudo cp setup-files/nginx-sitesenabled.conf /etc/nginx/sites-enabled/PROJECTNAME.conf
+sudo cp setup-files/nginx-sitesenabled.conf /etc/nginx/sites-enabled/hometerminal.conf
 sudo systemctl restart nginx`
 ```
 ### Setup supervisor
 ```
-sudo mkdir -p /var/log/PROJECTNAME
-sudo touch /var/log/PROJECTNAME/PROJECTNAME.err.log
-sudo touch /var/log/PROJECTNAME/PROJECTNAME.out.log
-sudo nano /etc/supervisor/conf.d/PROJECTNAME.conf
+sudo mkdir -p /var/log/hometerminal
+sudo touch /var/log/hometerminal/hometerminal.err.log
+sudo touch /var/log/hometerminal/hometerminal.out.log
+sudo nano /etc/supervisor/conf.d/hometerminal.conf
 sudo supervisorctl reload
-```
-## Updating the HTS
-Warning  any local files without commits will be **lost**!
-```
-cd PROJECTPATH/PROJECTNAME
-git pull
 ```
 ## Further setup for https
 ```
 sudo ufw allow 443
-sudo cp setup-files/nginx-sitesenabled_https.conf /etc/nginx/sites-enabled/PROJECTNAME.conf
+sudo cp setup-files/nginx-sitesenabled_https.conf /etc/nginx/sites-enabled/hometerminal.conf
 ```
-## Create a self-signed https cetificate
+### Create a self-signed https cetificate
 ```
 openssl req -newkey rsa:4096 \
     -x509 \
