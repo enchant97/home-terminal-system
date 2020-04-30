@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Idle{% endblock %}
+{% block extrahead %}
+<script>
+function not_idle(){
+    location.replace("{{ url_for('home.dashboard') }}");
+}
+add_active_events(not_idle);
+</script>
+{% endblock %}
+{% block body %}
+<main id="idle" class="down">
+    <div id="datetime">
+        <div id="timebox"></div>
+        <div id="datebox"></div>
+        <script>gen_datetime(); setInterval(gen_datetime, 60000);</script>
+    </div>
+    <h3>Tap screen to go back</h3>
+</main>
+{% endblock %}

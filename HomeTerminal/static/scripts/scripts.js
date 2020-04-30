@@ -42,6 +42,7 @@ function togg_element_onclick(checkbox_id, ...elements) {
     }
   }
 }
+
 function password_char_check(password) {
   // at least one number, one lowercase and one uppercase letter
   // at least 8 characters
@@ -103,13 +104,21 @@ function start_load_options_to_select(select_id, url, main_loc) {
     .then((response) => {
       return response.json();
     })
-    .then((conv_json) =>{
+    .then((conv_json) => {
       remove_elem_children(select_elem);
       for (i in conv_json.sublocs) {
         create_option_into_select(select_elem, conv_json.sublocs[i].name);
       }
     })
-    .catch((error) =>{
+    .catch((error) => {
       console.error("Error", error);
     });
+}
+
+function add_active_events(func, useCapture = true) {
+  // adds move and button listeners to a function
+  const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
+  events.forEach(function (name) {
+    document.addEventListener(name, func, useCapture);
+  });
 }

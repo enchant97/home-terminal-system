@@ -1,5 +1,8 @@
 {% extends "base.html" %}
 {% block title %}Dashboard{% endblock %}
+{% block extrahead %}
+<script src="/static/scripts/dashboard.js"></script>
+{% endblock %}
 {% block maincontent %}
 <div id="weather" class="container down">
     <a class="weatherwidget-io container" href="https://forecast7.com/en/51d281d08/canterbury/" data-font="Roboto"

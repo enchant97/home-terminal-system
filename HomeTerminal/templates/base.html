@@ -16,6 +16,7 @@
 </head>
 
 <body>
+    {% block body %}
     <header>
         {% block header %}
         <div id="datetime">
@@ -59,6 +60,7 @@
         {% block maincontent %}
         {% endblock %}
     </main>
+    {% endblock %}
 </body>
 
 </html>

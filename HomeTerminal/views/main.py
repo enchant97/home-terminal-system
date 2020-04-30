@@ -36,3 +36,8 @@ def do_logout():
     logout_user()
     flash("You have now logged out")
     return redirect(url_for(".index"))
+
+@main.route("/idle-display")
+@login_required
+def idle_display():
+    return render_template("main/idle-display.html")
