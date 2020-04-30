@@ -114,6 +114,8 @@ textarea {
 h1,
 h2,
 h3 {
+  margin: 0;
+  margin-bottom: 12px;
   color: var(--dark-text);
   font-family: "Roboto", sans-serif;
   text-align: center;
