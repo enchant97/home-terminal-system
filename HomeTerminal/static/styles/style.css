@@ -1,5 +1,33 @@
 @import url("https://fonts.googleapis.com/css?family=Open+Sans|Roboto&display=swap");
 
+:root {
+  --bg-image: url("/static/background.svg");
+  --main-background: #e6e6e6;
+  --content-background: rgba(145, 145, 145, 0.502);
+  --dark-text: #000000;
+  --light-text: #ffffff;
+  --bnt-col: #919191;
+  --green: #007800;
+  --orange: #ff9900;
+  --blue: #2195f3;
+  --red: #f44437;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-image: url("/static/background-dark.svg");
+    --main-background: #152020;
+    --content-background: #1a1a1a9a;
+    --dark-text: #e9e9e9;
+    --light-text: #e9e9e9;
+    --bnt-col: #3b3b3b;
+    --green: #015801;
+    --orange: #c27400;
+    --blue: #1e76be;
+    --red: #b4281e;
+  }
+}
+
 html,
 body,
 div,
@@ -74,7 +102,11 @@ summary,
 time,
 mark,
 audio,
-video {
+video,
+input,
+select,
+textarea {
+  color: var(--dark-text);
   font-family: "Open Sans", sans-serif;
   font-size: 1em;
 }
@@ -82,6 +114,7 @@ video {
 h1,
 h2,
 h3 {
+  color: var(--dark-text);
   font-family: "Roboto", sans-serif;
   text-align: center;
 }
@@ -90,10 +123,10 @@ body {
   width: 90%;
   margin-left: auto;
   margin-right: auto;
-  background-image: url("/static/background.svg");
+  background-image: var(--bg-image);
   background-repeat: repeat;
   background-size: cover;
-  background-color: #e6e6e6;
+  background-color: var(--main-background);
 }
 
 header {
@@ -131,7 +164,7 @@ form#login,
 table {
   padding: 10px;
   box-shadow: 2px 0px 10px 1px #2e2e2e;
-  background-color: rgba(146, 146, 146, 0.5);
+  background-color: var(--content-background);
   border-radius: 5px;
   margin-bottom: 12px;
 }
@@ -155,9 +188,17 @@ table {
   grid-column: 1 / span 2;
 }
 
+form fieldset {
+  border: none;
+}
+
+textarea,
 form input,
 form select {
-  font-size: 1.2em;
+  padding: 4px;
+  border: 1px solid black;
+  color: var(--dark-text);
+  background-color: var(--bnt-col);
 }
 
 .alert {
@@ -165,38 +206,38 @@ form select {
   padding: 10px;
   border-radius: 5px;
   background-color: rgba(0, 0, 0, 0.8);
-  color: white;
+  color: var(--light-text);
   margin-top: 10px;
   margin-bottom: 10px;
 }
 
 .error {
-  background-color: rgba(244, 68, 55, 0.8);
+  background-color: var(--red);
 }
 
 .warning {
-  background-color: rgba(255, 153, 0, 0.8);
+  background-color: var(--orange);
 }
 
 .ok {
-  background-color: rgba(0, 177, 0, 0.8);
+  background-color: var(--green);
 }
 
 .alert.message {
-  background-color: rgba(33, 149, 243, 0.8);
+  background-color: var(--blue);
 }
 
 button,
 .button {
   border: none;
-  background-color: #919191;
+  background-color: var(--bnt-col);
   padding: 5px;
   border-radius: 5px;
   cursor: pointer;
   text-align: center;
   margin: 5px;
   box-shadow: 2px 0px 5px 1px #2e2e2e;
-  color: black;
+  color: var(--dark-text);
 }
 
 .button:focus {
@@ -209,7 +250,7 @@ button,
 
 button.ok,
 .button.ok {
-  background-color: #007800;
+  background-color: var(--green);
   color: white;
 }
 
@@ -273,7 +314,7 @@ table tr:hover {
   cursor: pointer;
   transition-duration: 500ms;
   background-color: black;
-  color: white;
+  color: var(--light-text);
 }
 
 table tr:first-child:hover {
