@@ -1,23 +1,25 @@
 {% extends "base.html" %}
 {% block title %}HW Manager - View Tasks{% endblock %}
 {% block maincontent %}
-<div class="container down">
-    <a href="{{ url_for('hwm.homework') }}" class="button">Back</a>
-    <a href="{{ url_for('hwm.remove_homework') + '?homework_id=' + hw_id|string }}" class="button">Remove Homework</a>
-    <button class="button ok" onclick="window.location = `{{ url_for('hwm.new_homework_task') + '?homework_id=' + hw_id|string }}`">New Task</button>
+<a href="{{ url_for('hwm.homework') }}" class="button">Back</a>
+<a href="{{ url_for('hwm.remove_homework') + '?homework_id=' + hw_id|string }}" class="button">Remove Homework</a>
+<button class="button ok" onclick="window.location = `{{ url_for('hwm.new_homework_task') + '?homework_id=' + hw_id|string }}`">New Task</button>
 
-    <table>
-        <caption>Homework: {{ hw_id }}</caption>
+<table>
+    <caption>Homework: {{ hw_id }}</caption>
+    <thead>
         <tr>
-            <td>id</td>
-            <td>content</td>
+            <th>id</th>
+            <th>content</th>
         </tr>
+    </thead>
+    <tbody>
         {% for i in tasks %}
         <tr>
             <td>{{ i.id_ }}</td>
             <td>{{ i.content }}</td>
         </tr>
         {% endfor %}
-    </table>
-</div>
+    </tbody>
+</table>
 {% endblock %}

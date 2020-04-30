@@ -9,6 +9,7 @@
   --orange: #ff9900;
   --blue: #2195f3;
   --red: #f44437;
+  --b-radius: 5px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -165,7 +166,7 @@ table {
   padding: 10px;
   box-shadow: 2px 0px 10px 1px #2e2e2e;
   background-color: var(--content-background);
-  border-radius: 5px;
+  border-radius: var(--b-radius);
   margin-bottom: 12px;
 }
 
@@ -204,7 +205,7 @@ form select {
 .alert {
   font-family: "Roboto", sans-serif;
   padding: 10px;
-  border-radius: 5px;
+  border-radius: var(--b-radius);
   background-color: rgba(0, 0, 0, 0.8);
   color: var(--light-text);
   margin-top: 10px;
@@ -232,7 +233,7 @@ button,
   border: none;
   background-color: var(--bnt-col);
   padding: 5px;
-  border-radius: 5px;
+  border-radius: var(--b-radius);
   cursor: pointer;
   text-align: center;
   margin: 5px;
@@ -306,42 +307,41 @@ form#login h2 {
 }
 
 table {
-  padding: 5px;
+  margin-left: 4px;
+  margin-right: 4px;
+  border-spacing: 0;
+  border-collapse: collapse;
   background-color: rgba(133, 133, 133, 0.5);
+
 }
 
-table tr:hover {
+table thead tr th,
+table tbody tr td {
+  padding: 4px;
+}
+
+table tbody tr:hover {
   cursor: pointer;
   transition-duration: 500ms;
   background-color: black;
   color: var(--light-text);
 }
 
-table tr:first-child:hover {
-  cursor: initial;
-  background-color: inherit;
-  color: inherit;
+table tbody td {
+  border: 2px solid #414141;
 }
 
-table tr:first-child>td {
+table thead tr {
   font-weight: bold;
 }
 
-table td {
-  border: 1px solid black;
-}
-
-table.plain tr {
+table.plain tbody tr {
   cursor: initial;
   background-color: inherit;
   color: inherit;
 }
 
-table.plain tr:first-child>td {
-  font-weight: initial;
-}
-
-#idle{
+#idle {
   text-align: center;
 }
 

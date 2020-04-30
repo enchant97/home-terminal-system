@@ -24,20 +24,24 @@
     </form>
     <h2>Filter by: {{ filter_by }}</h2>
     <table>
-        <tr>
-            <td>Id</td>
-            <td>date_taken</td>
-            <td>notes</td>
-            <td>Image</td>
-        </tr>
-        {% for i in loaded_entries %}
-        <tr>
-            <td>{{ i.id_ }}</td>
-            <td>{{ i.date_taken }}</td>
-            <td>{{ i.notes }}</td>
-            <td><img style="width: 200px;" src="{{ url_for('pm.thumbnail', event_id=i.id_) }}" alt="event image"></td>
-        </tr>
-        {% endfor %}
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>date_taken</th>
+                <th>notes</th>
+                <th>Image</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in loaded_entries %}
+            <tr>
+                <td>{{ i.id_ }}</td>
+                <td>{{ i.date_taken }}</td>
+                <td>{{ i.notes }}</td>
+                <td><img style="width: 200px;" src="{{ url_for('pm.thumbnail', event_id=i.id_) }}" alt="event image"></td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
 </div>
 {% endblock %}

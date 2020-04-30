@@ -1,15 +1,17 @@
 {% extends "base.html" %}
 {% block title %}Freezer Manager - Expiring{% endblock %}
 {% block maincontent %}
-<div class="container down">
-    <a href="{{ url_for('fm.report') }}" class="button">Back</a>
-    <table>
+<a href="{{ url_for('fm.report') }}" class="button">Back</a>
+<table>
+    <thead>
         <tr>
-            <td>Name</td>
-            <td>Expire</td>
-            <td>Quantity</td>
-            <td>Category</td>
+            <th>Name</th>
+            <th>Expire</th>
+            <th>Quantity</th>
+            <th>Category</th>
         </tr>
+    </thead>
+    <tbody>
         {% for i in items %}
         <tr onclick="window.location = `{{ url_for('fm.edit') + '?item_id=' + i.id_|string }}`">
             <td>{{ i.name }}</td>
@@ -18,6 +20,6 @@
             <td>{{ i.categoryname }}</td>
         </tr>
         {% endfor %}
-    </table>
-</div>
+    </tbody>
+</table>
 {% endblock %}

@@ -1,16 +1,18 @@
 {% extends "base.html" %}
 {% block title %}HW Manager - View Homework{% endblock %}
 {% block maincontent %}
-<div class="container down">
-    <a href="{{ url_for('hwm.homework') + '?showremoved=1' }}" class="button">Show Removed</a>
-    <a href="{{ url_for('hwm.new_homework') }}" class="button ok">New Homework</a>
+<a href="{{ url_for('hwm.homework') + '?showremoved=1' }}" class="button">Show Removed</a>
+<a href="{{ url_for('hwm.new_homework') }}" class="button ok">New Homework</a>
 
-    <table>
+<table>
+    <thead>
         <tr>
-            <td>id</td>
-            <td>comment</td>
-            <td>datedue</td>
+            <th>id</th>
+            <th>comment</th>
+            <th>datedue</th>
         </tr>
+    </thead>
+    <tbody>
         {% for i in due_homework %}
         <tr onclick="window.location = `{{ url_for('hwm.homework_tasks') + '?homework_id=' + i.id_|string }}`">
             <!-- /hwm/view-tasks?homework_id={{ i.id_ }} -->
@@ -19,6 +21,6 @@
             <td>{{ i.get_day_first_date() }}</td>
         </tr>
         {% endfor %}
-    </table>
-</div>
+    </tbody>
+</table>
 {% endblock %}

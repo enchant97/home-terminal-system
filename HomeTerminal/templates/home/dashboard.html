@@ -19,12 +19,14 @@
     <h2>Messages</h2>
     <a class="button" href="{{ url_for('home.new_message') }}">New Message</a>
     <table class="plain" id="loadedmessages">
-        {% for message in messages %}
-        <tr id="message_{{ message.id_ }}">
-            <td>{{ message.message }}</td>
-            <td><button onclick="delete_message({{ message.id_ }})">Close</button></td>
-        </tr>
-        {% endfor %}
+        <tbody>
+            {% for message in messages %}
+            <tr id="message_{{ message.id_ }}">
+                <td>{{ message.message }}</td>
+                <td><button onclick="delete_message({{ message.id_ }})">Close</button></td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
 
     <script>setInterval(do_messages_refresh, 900000);</script> <!-- starts the refresh message cycle -->

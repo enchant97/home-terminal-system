@@ -1,28 +1,30 @@
 {% extends "base.html" %}
 {% block title %}Reminders - View{% endblock %}
 {% block maincontent %}
-<div class="container down">
-    <a href="{{ url_for('reminder.new') }}" class="button ok">New Reminder</a>
-    <form class="two-col" action="{{ url_for('reminder.view') }}" method="POST">
-        <label for="typename">Type:</label>
-        <select name="reminder-type" id="reminder-type">
-            <option value="">SELECT ALL</option>
-            {% for type in types %}
-            <option value="{{ type.type_name }}">{{ type.type_name }}</option>
-            {% endfor %}
-        </select>
-        <label for="show-removed">Show Removed:</label>
-        <input type="checkbox" name="show-removed" id="show-removed" value="1">
-        <button type="submit" class="fillboth">Display</button>
-    </form>
+<a href="{{ url_for('reminder.new') }}" class="button ok">New Reminder</a>
+<form class="two-col" action="{{ url_for('reminder.view') }}" method="POST">
+    <label for="typename">Type:</label>
+    <select name="reminder-type" id="reminder-type">
+        <option value="">SELECT ALL</option>
+        {% for type in types %}
+        <option value="{{ type.type_name }}">{{ type.type_name }}</option>
+        {% endfor %}
+    </select>
+    <label for="show-removed">Show Removed:</label>
+    <input type="checkbox" name="show-removed" id="show-removed" value="1">
+    <button type="submit" class="fillboth">Display</button>
+</form>
 
-    <table>
+<table>
+    <thead>
         <tr>
-            <td>Content</td>
-            <td>Type</td>
-            <td>Priority</td>
-            <td>User For</td>
+            <th>Content</th>
+            <th>Type</th>
+            <th>Priority</th>
+            <th>User For</th>
         </tr>
+    </thead>
+    <tbody>
         {% for i in reminders %}
         <tr onclick="window.location = `{{ url_for('reminder.edit', reminder_id=i.id_)}}`">
             <td>{{ i.content }}</td>
@@ -35,6 +37,6 @@
             <td>{{ i.user_for }}</td>
         </tr>
         {% endfor %}
-    </table>
-</div>
+    </tbody>
+</table>
 {% endblock %}
