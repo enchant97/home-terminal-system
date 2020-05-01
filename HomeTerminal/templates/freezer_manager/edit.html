@@ -1,28 +1,5 @@
 {% extends "base.html" %}
 {% block title %}Freezer Manager - Edit{% endblock %}
-{% block extrahead %}
-<script>
-    function custom_expire_onclick() {
-        var custom_expire = document.getElementById("custom_expire");
-        var expire_3 = document.getElementById("expire_3");
-        var expire_6 = document.getElementById("expire_6");
-        var expire_12 = document.getElementById("expire_12");
-        var expire_date = document.getElementById("expire_date");
-        if (custom_expire.checked == false) {
-            expire_3.disabled = false;
-            expire_6.disabled = false;
-            expire_12.disabled = false;
-            expire_date.disabled = true;
-        }
-        else if (custom_expire.checked == true) {
-            expire_3.disabled = true;
-            expire_6.disabled = true;
-            expire_12.disabled = true;
-            expire_date.disabled = false;
-        }
-    }
-</script>
-{% endblock %}
 {% block maincontent %}
 <form class="container two-col" action="{{ url_for('fm.edit', item_id=def_item.id_) }}" method="POST">
     <label for="id">id:</label>

@@ -1,3 +1,7 @@
+"use strict";
+
+const active_events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
+
 function gen_datetime() {
   var date = new Date();
   var h = date.getHours();
@@ -115,10 +119,30 @@ function start_load_options_to_select(select_id, url, main_loc) {
     });
 }
 
-function add_active_events(func, useCapture = true) {
+function add_active_events(func, useCapture = true, triggers = active_events) {
   // adds move and button listeners to a function
-  const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
-  events.forEach(function (name) {
+  active_events.forEach(function (name) {
     document.addEventListener(name, func, useCapture);
   });
+}
+
+function custom_expire_onclick() {
+  // allows for the custom expire or pre set dates to be picked, used on fm/edit
+  const custom_expire = document.getElementById("custom_expire");
+  const expire_3 = document.getElementById("expire_3");
+  const expire_6 = document.getElementById("expire_6");
+  const expire_12 = document.getElementById("expire_12");
+  const expire_date = document.getElementById("expire_date");
+  if (custom_expire.checked == false) {
+    expire_3.disabled = false;
+    expire_6.disabled = false;
+    expire_12.disabled = false;
+    expire_date.disabled = true;
+  }
+  else if (custom_expire.checked == true) {
+    expire_3.disabled = true;
+    expire_6.disabled = true;
+    expire_12.disabled = true;
+    expire_date.disabled = false;
+  }
 }

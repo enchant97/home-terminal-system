@@ -1,3 +1,5 @@
+"use strict";
+
 // source: https://stackoverflow.com/a/10126042/8075455
 var inactivityTime = function () {
     var time;

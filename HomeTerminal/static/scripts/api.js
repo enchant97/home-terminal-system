@@ -1,3 +1,5 @@
+"use strict";
+
 function pad_zero(str_to_pad) {
     // pads a string/int e.g. 1 becomes 01
     str_to_pad = str_to_pad.toString()
