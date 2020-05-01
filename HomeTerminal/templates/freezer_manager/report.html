@@ -27,7 +27,7 @@
     </thead>
     <tbody>
         {% for i in items %}
-        <tr onclick="window.location = `{{ url_for('fm.edit') + '?item_id=' + i.id_|string }}`">
+        <tr onclick="window.location = `{{ url_for('fm.edit', item_id=i.id_) }}`">
             <td>{{ i.id_ }}</td>
             <td>{{ i.name }}</td>
             <td>{{ i.get_day_first_date() }}</td>

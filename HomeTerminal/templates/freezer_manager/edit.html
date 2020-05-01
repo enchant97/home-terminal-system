@@ -24,9 +24,9 @@
 </script>
 {% endblock %}
 {% block maincontent %}
-<form class="container two-col" action="{{ url_for('fm.edit') }}" method="POST">
+<form class="container two-col" action="{{ url_for('fm.edit', item_id=def_item.id_) }}" method="POST">
     <label for="id">id:</label>
-    <input type="text" name="id" id="id" placeholder="AUTO" {% if def_item.id_ %}value={{ def_item.id_ }}{% endif %}readonly>
+    <input type="text" name="id" id="id" placeholder="AUTO" {% if def_item.id_ %}value="{{ def_item.id_ }}"{% endif %}readonly>
     <label for="name">name:</label>
     <input type="text" name="name" id="name" placeholder="Name..." value="{{ def_item.name }}" required>
     {% if def_item.id_ == None %}
@@ -42,7 +42,7 @@
     </fieldset>
     {% endif %}
     <label for="amount">quantity:</label>
-    <input type="number" name="amount" id="amount" step="1" min="0" value={{ def_item.quantity }}>
+    <input type="number" name="amount" id="amount" step="1" min="0" value="{{ def_item.quantity }}">
     <label for="category">category:</label>
     <input type="text" name="category" id="category" list="categories" autocomplete="off"
         value="{{ def_item.category.name }}" required>
