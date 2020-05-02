@@ -13,6 +13,7 @@
     <button class="button ok fillboth" type="submit">Save</button>
     <a class="button fillboth" href="{{ url_for('home.command_center') }}">Close</a>
 </form>
+<a class="button" href="{{ url_for('account.dashboard_settings') }}">Customise Dashboard</a>
 <a class="button" href="{{ url_for('account.changepassword') }}">Change Password</a>
 <a class="button" href="{{ url_for('account.api_key_manage') }}">Get Api-key</a>
 {% endblock %}

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Customise Dashboard{% endblock %}
+{% block extrahead %}
+<script>
+    function shortcut_change(select_elem){
+        if (select_elem.value == ''){
+            remove_shortcut(select_elem);
+        }
+        else if (select_elem.parentElement.lastChild.value != ''){
+            const new_shortcut = select_elem.cloneNode(true);
+            const next_index = parseInt(select_elem.id.substring(9, select_elem.id.length))  + 1;
+            new_shortcut.id = `shortcut_${next_index}`;
+            new_shortcut.name = `shortcut_${next_index}`;
+            select_elem.parentElement.appendChild(new_shortcut);
+        }
+    }
+
+    function remove_shortcut(shortcut_elem){
+        const parent_elem = shortcut_elem.parentElement;
+        const num_of_shortcuts = parent_elem.childNodes.length;
+        if (num_of_shortcuts > 1){
+            // make sure there is always one shortcut element available
+            parent_elem.removeChild(shortcut_elem);
+        }
+    }
+</script>
+{% endblock %}
+{% block maincontent %}
+<a class="button" href="{{ url_for('account.dashboard_new_shortcut') }}">New Shortcut</a>
+<form class="container down" action="" method="post">
+    <h3>Your Shortcut Screen:</h3>
+    <div class="down" id="shortcuts">
+        {% for i in range(0, user_sc|length) %}
+        <select onchange="shortcut_change(this)" name="shortcut_{{ i }}" id="shortcut_{{ i }}">
+            <option value=""></option>
+            {% for s in shortcuts %}
+            <option value="{{ s.id_ }}" {% if user_sc[i].shortcut_id == s.id_ %}selected {% endif %}>{{ s.name }}</option>
+            {% endfor %}
+        </select>
+        {% endfor %}
+        {# allows for new shortcut box at the end #}
+        <select onchange="shortcut_change(this)" name="shortcut_{{ user_sc|length }}" id="shortcut_{{ user_sc|length }}">
+            <option value=""></option>
+            {% for s in shortcuts %}
+            <option value="{{ s.id_ }}">{{ s.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <button type="submit">Save</button>
+</form>
+{% endblock %}
