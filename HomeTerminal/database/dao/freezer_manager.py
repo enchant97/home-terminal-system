@@ -56,7 +56,8 @@ def get_fm4_item(id_):
         raise RowDoesNotExist(f"Row with id {id_} does not exist")
     return fm_item
 
-def edit_fm4_item(name, categoryname, quantity, expire=None, removed=False, id_=None):
+def edit_fm4_item(name: str, categoryname: str, quantity: int,
+                  expire=None, removed=False, id_=None):
     """
     Used to create an fm4 Item or edit an existing one,
     returns the edited item

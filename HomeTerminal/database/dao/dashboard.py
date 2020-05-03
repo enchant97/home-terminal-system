@@ -24,7 +24,7 @@ def remove_user_shortcuts(user_id: int):
     db.session.commit()
     return rows_deleted
 
-def new_shortcut(name, url_endpoint, **url_variables):
+def new_shortcut(name: str, url_endpoint: str, **url_variables):
     """
     adds a new shortcut using provided values,
     returns the created shortcut
