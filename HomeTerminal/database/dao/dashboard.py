@@ -1,6 +1,5 @@
 from ..database import db
 from ..models.dashboard import Shortcut, User_Shortcut
-from .exceptions import RowAlreadyExists, RowDoesNotExist
 
 
 def get_shortcuts(removed=False):
@@ -13,7 +12,17 @@ def get_user_shortcuts(user_id: int, removed=False):
     """
     returns user shortcuts for the specified user_id
     """
-    return User_Shortcut.query.filter_by(user_id=user_id, removed=removed).all()
+    return User_Shortcut.query.filter_by(
+        user_id=user_id, removed=removed).order_by(User_Shortcut.priority).all()
+
+def remove_user_shortcuts(user_id: int):
+    """
+    removes all entries with the given user_id,
+    returns the number of rows deleted
+    """
+    rows_deleted = User_Shortcut.query.filter_by(user_id=user_id).delete()
+    db.session.commit()
+    return rows_deleted
 
 def new_shortcut(name, url_endpoint, **url_variables):
     """

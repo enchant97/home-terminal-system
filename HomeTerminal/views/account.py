@@ -6,7 +6,8 @@ from flask import (Blueprint, current_app, flash, redirect, render_template,
 from flask_login import current_user, login_required
 
 from ..database.dao.dashboard import (get_shortcuts, get_user_shortcuts,
-                                      new_shortcut, update_user_shortcut)
+                                      new_shortcut, remove_user_shortcuts,
+                                      update_user_shortcut)
 from ..database.dao.exceptions import RowAlreadyExists
 from ..database.dao.user import (change_user_password, get_api_key,
                                  new_account, update_usersettings)
@@ -67,6 +68,7 @@ def settings():
 @login_required
 def dashboard_settings():
     if request.method == "POST":
+        remove_user_shortcuts(current_user.id_)
         shortcuts_layout = request.form
         for key in shortcuts_layout.keys():
             if shortcuts_layout[key]:
@@ -95,7 +97,6 @@ def dashboard_new_shortcut():
         except KeyError:
             flash("missing required form values", "error")
     return render_template("/account/new-shortcut.html")
-
 
 @account.route("/api-key")
 @login_required

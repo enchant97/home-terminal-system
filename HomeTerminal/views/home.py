@@ -4,6 +4,7 @@ from flask_login import current_user, login_required
 
 from ..database.dao.user import get_messages, get_notifations
 from ..database.dao.user import new_message as newMessage
+from ..database.dao.dashboard import get_user_shortcuts
 
 home = Blueprint("home", __name__)
 
@@ -17,7 +18,8 @@ def dashboard():
         "home/dashboard.html",
         username=username,
         messages=get_messages(),
-        notifications=notifications
+        notifications=notifications,
+        shortcuts=get_user_shortcuts(current_user.id_)
         )
 
 @home.route("/newmessage", methods=["POST", "GET"])
@@ -31,12 +33,6 @@ def new_message():
         else:
             flash("required form details missing", "error")
     return render_template("home/new_message.html")
-
-@home.route("/timer", methods=["POST", "GET"])
-@login_required
-def timer():
-    #TODO: better implementation later
-    return redirect(url_for(".dashboard"))
 
 @home.route("/cc")
 @login_required
