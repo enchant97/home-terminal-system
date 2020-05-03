@@ -56,8 +56,7 @@ def get_event(mainloc=None, subloc=None):
             if subloc:
                 return FullEvent.query.filter_by(subloc_id=subloc.id_).all()
             raise RowDoesNotExist("sub location does not exist")
-        else:
-            raise RowDoesNotExist(f"main location name {mainloc} does not exist")
+        raise RowDoesNotExist(f"main location name {mainloc} does not exist")
     raise Exception("Not a supported filter")
 
 def new_event(mainloc, subloc, datetaken: datetime, notes, users, lat, lng, img_raw=None):
