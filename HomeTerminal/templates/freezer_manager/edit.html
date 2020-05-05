@@ -19,7 +19,7 @@
     </fieldset>
     {% endif %}
     <label for="amount">quantity:</label>
-    <input type="number" name="amount" id="amount" step="1" min="0" value="{{ def_item.quantity }}">
+    <input type="number" name="amount" id="amount" step="1" min="1" value="{{ def_item.quantity }}">
     <label for="category">category:</label>
     <input type="text" name="category" id="category" list="categories" autocomplete="off"
         value="{{ def_item.category.name }}" required>

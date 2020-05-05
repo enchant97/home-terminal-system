@@ -93,7 +93,7 @@ def dashboard_new_shortcut():
                 url_variables = json.loads(request.form["url_variables"])
             new_shortcut(name, url_endpoint, **url_variables)
             flash("added new shortcut")
-            return redirect("account.dashboard_settings")
+            return redirect(url_for("account.dashboard_settings"))
         except KeyError:
             flash("missing required form values", "error")
     return render_template("/account/new-shortcut.html")

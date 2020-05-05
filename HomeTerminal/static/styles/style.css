@@ -307,6 +307,7 @@ form#login h2 {
 }
 
 table {
+  width: 100%;
   margin-left: 4px;
   margin-right: 4px;
   border-spacing: 0;
