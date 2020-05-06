@@ -1,19 +1,18 @@
-__version__ = "3.4.5"
+__version__ = "3.5.5"
 
-import logging
 import os
 import sys
 from datetime import datetime
 
 from flask import Flask, render_template
 from flask_login import current_user
+from werkzeug.utils import find_modules, import_string
 
 from .authentication import login_manager
 from .config import config
 from .database.dao.user import get_notifations, new_account
 from .database.database import db
-from .views import (account, api, fm, home, hwm, main,
-                    pm, reminder)
+from .views import account, api, fm, home, hwm, main, pm, reminder
 
 app = Flask(__name__)
 
@@ -38,6 +37,74 @@ def create_default_db():
         app.config["ADMINUSERNAME"], app.config["ADMINUSERNAME"],
         datetime.utcnow(), ignore_duplicate=True)
 
+def get_plugins():
+    """
+    imports the plugins and registers the blueprints,
+
+    yields:
+        dir name,
+        PluginData
+    """
+    plugins_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "plugins")
+    for path in os.listdir(plugins_dir):
+        joined = os.path.join(plugins_dir, path)
+        if os.path.isdir(joined) and path != "__pycache__":
+            plugin = import_string("HomeTerminal.plugins." + path)
+            if hasattr(plugin, "blueprint"):
+                if hasattr(plugin, "PluginData"):
+                    app.register_blueprint(plugin.blueprint)
+                    yield path, plugin.PluginData # yield the plugin name and its setup data
+                    app.logger.debug(f"loaded plugin: {plugin.blueprint.name}")
+                else:
+                    app.logger.error(f"could not load plugin {path} as load_plugin() could not be found")
+            else:
+                app.logger.error(f"could not load plugin {path} as blueprint could not be found")
+
+def load_plugins():
+    """
+    Run once inside create_app(), this registers the plugins for use,
+    also imports the models if they have any so is run for db.create_all()
+    """
+    version_now = __version__.split(".")
+    for plugin in get_plugins():
+        # check if plugin is compatable
+        if plugin[1].written_for_version.split(".")[0] == version_now[0]:
+            if plugin[1].has_models:
+                # import the models if the plugin has indicated they have any
+                import_models(
+                    os.path.join(
+                        os.path.dirname(os.path.abspath(__file__)), "plugins", plugin[0], "models"
+                        ),
+                    f"HomeTerminal.plugins.{plugin[0]}.models"
+                )
+            # store the PluginData in app.config for potential use within app
+            app.config["LOADED_PLUGINS"] = {plugin[1].unique_name : plugin[1]}
+        else:
+            app.logger.error(f"plugin {plugin[0]} incompatable as is version {plugin[1].written_for_version}")
+
+def import_models(models_dir, import_path):
+    """
+    used to import all database models found in given directory,
+    can be run several times if there are different model directories
+
+    args:
+        models_dir : the directory where db models are located
+        import_path : the import path for the models directory
+
+    example:
+        models_dir : path to models
+        import_path :  HomeTerminal.database.models
+    """
+    # Source: https://gist.github.com/languanghao/a24d74b8ab4232a801312e2a0a107064
+    # Source: https://github.com/davidism/basic_flask
+    for py in [f[:-3] for f in os.listdir(models_dir) if f.endswith('.py') and f != '__init__.py']:
+        mod = __import__('.'.join([import_path, py]), fromlist=[py])
+        classes = [getattr(mod, x) for x in dir(mod) if isinstance(getattr(mod, x), type)]
+        for cls in classes:
+            if 'flask_sqlalchemy.' in str(type(cls)):
+                app.logger.debug("auto import db model: {0}".format(cls))
+                setattr(sys.modules[__name__], cls.__name__, cls)
+
 def create_app():
     """
     Creates the app and configures SQLALCHEMY
@@ -60,16 +127,21 @@ def create_app():
     app.register_blueprint(api, url_prefix="/api")
     app.register_blueprint(reminder, url_prefix="/reminder")
 
+    import_models(
+        os.path.join(
+            os.path.dirname(os.path.abspath(__file__)), "database", "models"
+            ),
+        "HomeTerminal.database.models"
+        )
+
+    if app.config.get("ENABLE_PLUGINS", True):
+        app.logger.info("loading plugins...")
+        load_plugins()
+        app.logger.info("finished loading plugins")
+    else:
+        app.logger.info("not loading plugins as it is disabled in config")
+
     with app.app_context():
-        # Source: https://gist.github.com/languanghao/a24d74b8ab4232a801312e2a0a107064
-        # Source: https://github.com/davidism/basic_flask
-        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "database", "models")
-        for py in [f[:-3] for f in os.listdir(path) if f.endswith('.py') and f != '__init__.py']:
-            mod = __import__('.'.join(['HomeTerminal.database.models', py]), fromlist=[py])
-            classes = [getattr(mod, x) for x in dir(mod) if isinstance(getattr(mod, x), type)]
-            for cls in classes:
-                if 'flask_sqlalchemy.' in str(type(cls)):
-                    logging.debug("auto import db model: {0}".format(cls))
-                    setattr(sys.modules[__name__], cls.__name__, cls)
         db.create_all()
+
     return app
