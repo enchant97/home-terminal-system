@@ -9,5 +9,5 @@ house to digitize certain tasks.
 -   [Guides](Guides.md) (WIP)
 -   [Updates](Updating.md)
 -   [Roadmap (planned future features)](Roadmap.md)
--   [Extensions](Extensions.md) (WIP)
+-   [Plugins](Plugins.md)
 -   [Contributing](Contributing.md)
