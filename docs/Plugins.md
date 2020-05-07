@@ -31,4 +31,4 @@ scripts, or may not be compatible with certain versions of the Home Terminal Sys
 - use the base.html template and site styles to keep it consistent for the user
 
 Take to look at the example plugin
-[here](https://github.com/enchant97/HTS-example-plugin) if you want a starting point.
+[here](https://github.com/enchant97/HTS-sketchpad-plugin) if you want a starting point.
