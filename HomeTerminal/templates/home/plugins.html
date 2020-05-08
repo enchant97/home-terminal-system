@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Command Center{% endblock %}
+{% block maincontent %}
+<a class="button" href="{{ url_for('home.command_center') }}">Back</a>
+
+<div class="container down">
+    {% for key in config.LOADED_PLUGINS.keys() %}
+    <a class="button" href="{{ url_for(config.LOADED_PLUGINS[key].home_url_endpoint) }}">{{ config.LOADED_PLUGINS[key].name }}</a>
+    {% endfor %}
+</div>
+
+{% endblock %}

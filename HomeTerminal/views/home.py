@@ -41,3 +41,8 @@ def command_center():
     if current_user.username == current_app.config.get("ADMINUSERNAME"):
         return render_template("home/command_center.html", admin=True)
     return render_template("home/command_center.html", admin=False)
+
+@home.route("/view-plugins")
+@login_required
+def view_plugins():
+    return render_template("home/plugins.html")

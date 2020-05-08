@@ -2,6 +2,7 @@
 {% block title %}Command Center{% endblock %}
 {% block maincontent %}
 <menu class="container down">
+    <a class="button" href="{{ url_for('home.view_plugins') }}">Plugins</a>
     <a class="button" href="{{ url_for('fm.report') }}">Freezer Manager</a>
     <a class="button" href="{{ url_for('hwm.homework') }}">Homework Manager</a>
     <a class="button" href="{{ url_for('pm.view') }}">Photo Manager</a>
