@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Inventory Manager{% endblock %}
+{% block maincontent %}
+<h2>New Item</h2>
+<form class="container two-col" action="" method="post">
+    <label for="item-name">Name:</label>
+    <input type="text" name="item-name" id="item-name" required>
+    <label for="item-box">Box:</label>
+    <select name="item-box" id="item-box" required>
+        <option value=""></option>
+        {% for i in boxes %}
+        <option value="{{ i.id_ }}">{{ i.name }}</option>
+        {% endfor %}
+    </select>
+    <label for="item-type">Type:</label>
+    <select name="item-type" id="item-type" required>
+        <option value=""></option>
+        {% for i in types %}
+        <option value="{{ i.id_ }}">{{ i.name }}</option>
+        {% endfor %}
+    </select>
+    <label for="item-quantity">Quantity:</label>
+    <input type="number" min="1" name="item-quantity" id="item-quantity" value="1">
+    <label for="item-inbox">In-Box:</label>
+    <input type="checkbox" name="item-inbox" id="item-inbox" value="1" checked>
+
+    <button class="ok fillboth" type="submit">Save</button>
+    <a class="fillboth button" href="{{ url_for('im.view') }}" class="button">Cancel</a>
+</form>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Inventory Manager{% endblock %}
+{% block maincontent %}
+<h2>New Location</h2>
+<form class="container two-col" action="" method="post">
+    <label for="loc-name">Name:</label>
+    <input type="text" name="loc-name" id="loc-name" required>
+    <label for="loc-comment">Comment:</label>
+    <input type="text" name="loc-comment" id="loc-comment">
+    <button class="ok fillboth" type="submit">Save</button>
+    <a class="fillboth button" href="{{ url_for('im.view') }}" class="button">Cancel</a>
+</form>
+{% endblock %}

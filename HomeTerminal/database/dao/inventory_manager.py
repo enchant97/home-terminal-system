@@ -62,3 +62,43 @@ def new_item(name: str, box_id: int, quantity: int = 1, type_id: int = None, in_
     db.session.add(new_item_row)
     db.session.commit()
     return new_item_row
+
+def get_type(type_id: int = None, type_name: str = None, removed: bool = False):
+    """
+    returns the type row where either the id
+    or name is given, if none is given will get all
+    will default to id if both are given
+    """
+    if type_id:
+        the_row = Type.query.filter_by(id_=type_id, removed=removed).first()
+    elif type_name:
+        the_row = Type.query.filter_by(name=type_name, removed=removed).first()
+    else:
+        the_row = Type.query.filter_by(removed=removed).all()
+    return the_row
+
+def get_locations(removed: bool = False):
+    """
+    returns the locations
+    """
+    return Location.query.filter_by(removed=removed).all()
+
+def get_box(box_id: int = None, loc_id: int = None, removed: bool = False):
+    """
+    returns the box
+    """
+    if box_id and loc_id:
+        return Box.query.filter_by(id_=box_id, loc_id=loc_id, removed=removed).all()
+    if loc_id:
+        return Box.query.filter_by(loc_id=loc_id, removed=removed).all()
+    return Box.query.filter_by(removed=removed).all()
+
+def get_item(removed: bool = False, **filters):
+    """
+    returns a Item rows,
+
+    args:
+        removed: whether to show removed entries
+        filters: other row columns to filter by
+    """
+    return Item.query.filter_by(removed=removed, **filters).all()

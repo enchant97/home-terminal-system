@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Inventory Manager{% endblock %}
+{% block maincontent %}
+<h2>New Box</h2>
+<form class="container two-col" action="" method="post">
+    <label for="box-name">Name:</label>
+    <input type="text" name="box-name" id="box-name" required>
+    <label for="box-loc">Location:</label>
+    <select name="box-loc" id="box-loc" required>
+        <option value=""></option>
+        {% for i in locations %}
+        <option value="{{ i.id_ }}">{{ i.name }}</option>
+        {% endfor %}
+    </select>
+
+    <button class="ok fillboth" type="submit">Save</button>
+    <a class="fillboth button" href="{{ url_for('im.view') }}" class="button">Cancel</a>
+</form>
+{% endblock %}
