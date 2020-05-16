@@ -1,30 +1,57 @@
 {% extends "base.html" %}
 {% block title %}Inventory Manager{% endblock %}
 {% block maincontent %}
+{% if item %}
+<h2>Edit Item</h2>
+{% else %}
 <h2>New Item</h2>
+{% endif %}
+
 <form class="container two-col" action="" method="post">
     <label for="item-name">Name:</label>
-    <input type="text" name="item-name" id="item-name" required>
+    <input type="text" name="item-name" id="item-name" required{% if item %} value="{{ item.name }}" {% endif %}>
     <label for="item-box">Box:</label>
     <select name="item-box" id="item-box" required>
         <option value=""></option>
-        {% for i in boxes %}
-        <option value="{{ i.id_ }}">{{ i.name }}</option>
-        {% endfor %}
+        {% if item %}
+            {% for i in boxes %}
+            <option value="{{ i.id_ }}"{% if item.box_id == i.id_ %} selected{% endif %}>{{ i.name }}</option>
+            {% endfor %}
+        {% else %}
+            {% for i in boxes %}
+            <option value="{{ i.id_ }}">{{ i.name }}</option>
+            {% endfor %}
+        {% endif %}
     </select>
     <label for="item-type">Type:</label>
     <select name="item-type" id="item-type" required>
         <option value=""></option>
-        {% for i in types %}
-        <option value="{{ i.id_ }}">{{ i.name }}</option>
-        {% endfor %}
+        {% if item %}
+            {% for i in types %}
+            <option value="{{ i.id_ }}"{% if item.type_id == i.id_ %} selected{% endif %}>{{ i.name }}</option>
+            {% endfor %}
+        {% else %}
+            {% for i in types %}
+            <option value="{{ i.id_ }}">{{ i.name }}</option>
+            {% endfor %}
+        {% endif %}
     </select>
     <label for="item-quantity">Quantity:</label>
-    <input type="number" min="1" name="item-quantity" id="item-quantity" value="1">
+    <input type="number" min="1" name="item-quantity" id="item-quantity" {% if item %} value="{{ item.quantity }}"
+        {% else %}value="1" {% endif %}>
     <label for="item-inbox">In-Box:</label>
+
+    {% if item %}
+    <input type="checkbox" name="item-inbox" id="item-inbox" value="1"{% if item.in_box == True %} checked{% endif %}>
+    {% else %}
     <input type="checkbox" name="item-inbox" id="item-inbox" value="1" checked>
+    {% endif %}
 
     <button class="ok fillboth" type="submit">Save</button>
     <a class="fillboth button" href="{{ url_for('im.view') }}" class="button">Cancel</a>
 </form>
+{% if item %}
+<a href="{{ url_for('im.edit_box', box_id=item.box_id) }}" class="button">Edit Box '{{ item.box.name }}'</a>
+<a href="{{ url_for('im.edit_type', type_id=item.type_id) }}" class="button">Edit Type '{{ item.type_.name }}'</a>
+{% endif %}
 {% endblock %}

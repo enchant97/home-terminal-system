@@ -12,7 +12,7 @@ from .authentication import login_manager
 from .config import config
 from .database.dao.user import get_notifations, new_account
 from .database.database import db
-from .views import account, api, fm, home, hwm, main, pm, reminder
+from .views import account, api, fm, home, hwm, im, main, pm, reminder
 
 app = Flask(__name__)
 
@@ -124,6 +124,7 @@ def create_app():
     app.register_blueprint(hwm, url_prefix="/homework-manager")
     app.register_blueprint(fm, url_prefix="/freezer-manager")
     app.register_blueprint(pm, url_prefix="/photo-manager")
+    app.register_blueprint(im, url_prefix="/inventory-manager")
     app.register_blueprint(api, url_prefix="/api")
     app.register_blueprint(reminder, url_prefix="/reminder")
 

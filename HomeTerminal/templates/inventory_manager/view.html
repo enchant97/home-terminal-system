@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Inventory Manager{% endblock %}
+{% block maincontent %}
+<a class="button" href="{{ url_for('im.edit_location') }}">New Location</a>
+<a class="button" href="{{ url_for('im.edit_type') }}">New Type</a>
+<a class="button" href="{{ url_for('im.edit_box') }}">New Box</a>
+<a class="button" href="{{ url_for('im.edit_item') }}">New Item</a>
+<form class="two-col" action="{{ url_for('im.view') }}" method="post">
+    <h2 class="fillboth">Item Filter</h2>
+
+    <label for="box-filter">By Box:</label>
+    <select name="box-filter" id="box-filter">
+        <option value="">**No Filter**</option>
+        {% for i in boxes %}
+        <option value="{{ i.id_ }}">{{ i.name }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="type-filter">By Type:</label>
+    <select name="type-filter" id="type-filter">
+        <option value="">**No Filter**</option>
+        {% for i in types %}
+        <option value="{{ i.id_ }}">{{ i.name }}</option>
+        {% endfor %}
+    </select>
+
+    <button class="fillboth ok" type="submit">Display</button>
+</form>
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Box</th>
+            <th>Location</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for i in items %}
+            <tr onclick="window.location = `{{ url_for('im.edit_item', item_id=i.id_) }}`">
+                <td>{{ i.name }}</td>
+                <td>{{ i.type_.name }}</td>
+                <td>{{ i.box.name }}</td>
+                <td>{{ i.box.location.name }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

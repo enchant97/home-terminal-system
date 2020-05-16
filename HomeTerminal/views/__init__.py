@@ -6,3 +6,4 @@ from .homework import hwm
 from .main import main
 from .photo_manager import pm
 from .reminder import reminder
+from .inventory_manager import im

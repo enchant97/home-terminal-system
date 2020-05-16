@@ -63,42 +63,54 @@ def new_item(name: str, box_id: int, quantity: int = 1, type_id: int = None, in_
     db.session.commit()
     return new_item_row
 
-def get_type(type_id: int = None, type_name: str = None, removed: bool = False):
+def get_type(removed: bool = False, first=False, **filters):
     """
-    returns the type row where either the id
-    or name is given, if none is given will get all
-    will default to id if both are given
-    """
-    if type_id:
-        the_row = Type.query.filter_by(id_=type_id, removed=removed).first()
-    elif type_name:
-        the_row = Type.query.filter_by(name=type_name, removed=removed).first()
-    else:
-        the_row = Type.query.filter_by(removed=removed).all()
-    return the_row
-
-def get_locations(removed: bool = False):
-    """
-    returns the locations
-    """
-    return Location.query.filter_by(removed=removed).all()
-
-def get_box(box_id: int = None, loc_id: int = None, removed: bool = False):
-    """
-    returns the box
-    """
-    if box_id and loc_id:
-        return Box.query.filter_by(id_=box_id, loc_id=loc_id, removed=removed).all()
-    if loc_id:
-        return Box.query.filter_by(loc_id=loc_id, removed=removed).all()
-    return Box.query.filter_by(removed=removed).all()
-
-def get_item(removed: bool = False, **filters):
-    """
-    returns a Item rows,
+    returns Type rows
 
     args:
         removed: whether to show removed entries
+        first: whether to return first entry only or multiple
         filters: other row columns to filter by
     """
+    if first:
+        return Type.query.filter_by(removed=removed, **filters).first()
+    return Type.query.filter_by(removed=removed, **filters).all()
+
+def get_locations(removed: bool = False, first=False, **filters):
+    """
+    returns Location rows
+
+    args:
+        removed: whether to show removed entries
+        first: whether to return first entry only or multiple
+        filters: other row columns to filter by
+    """
+    if first:
+        return Location.query.filter_by(removed=removed, **filters).first()
+    return Location.query.filter_by(removed=removed, **filters).all()
+
+def get_box(removed: bool = False, first=False, **filters):
+    """
+    returns Box rows
+
+    args:
+        removed: whether to show removed entries
+        first: whether to return first entry only or multiple
+        filters: other row columns to filter by
+    """
+    if first:
+        return Box.query.filter_by(removed=removed, **filters).first()
+    return Box.query.filter_by(removed=removed, **filters).all()
+
+def get_item(removed: bool = False, first=False, **filters):
+    """
+    returns Item rows
+
+    args:
+        removed: whether to show removed entries
+        first: whether to return first entry only or multiple
+        filters: other row columns to filter by
+    """
+    if first:
+        return Item.query.filter_by(removed=removed, **filters).first()
     return Item.query.filter_by(removed=removed, **filters).all()
