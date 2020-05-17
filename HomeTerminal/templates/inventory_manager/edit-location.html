@@ -11,6 +11,14 @@
     <input type="text" name="loc-name" id="loc-name" required{% if location %} value="{{ location.name }}"{% endif %}>
     <label for="loc-comment">Comment:</label>
     <input type="text" name="loc-comment" id="loc-comment"{% if location %} value="{{ location.comment }}"{% endif %}>
+
+    <label for="removed">Removed:</label>
+    {% if location %}
+    <input type="checkbox" name="removed" id="removed" value="1" {% if location.removed == True %} checked{% endif %}>
+    {% else %}
+    <input type="checkbox" name="removed" id="removed" value="1">
+    {% endif %}
+
     <button class="ok fillboth" type="submit">Save</button>
     <a class="fillboth button" href="{{ url_for('im.view') }}" class="button">Cancel</a>
 </form>

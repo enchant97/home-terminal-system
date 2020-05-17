@@ -39,12 +39,19 @@
     <label for="item-quantity">Quantity:</label>
     <input type="number" min="1" name="item-quantity" id="item-quantity" {% if item %} value="{{ item.quantity }}"
         {% else %}value="1" {% endif %}>
-    <label for="item-inbox">In-Box:</label>
 
+    <label for="item-inbox">In-Box:</label>
     {% if item %}
     <input type="checkbox" name="item-inbox" id="item-inbox" value="1"{% if item.in_box == True %} checked{% endif %}>
     {% else %}
     <input type="checkbox" name="item-inbox" id="item-inbox" value="1" checked>
+    {% endif %}
+
+    <label for="removed">Removed:</label>
+    {% if item %}
+    <input type="checkbox" name="removed" id="removed" value="1" {% if item.removed == True %} checked{% endif %}>
+    {% else %}
+    <input type="checkbox" name="removed" id="removed" value="1">
     {% endif %}
 
     <button class="ok fillboth" type="submit">Save</button>

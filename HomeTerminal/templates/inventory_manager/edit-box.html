@@ -23,6 +23,12 @@
         {% endif %}
     </select>
 
+    <label for="removed">Removed:</label>
+    {% if box %}
+    <input type="checkbox" name="removed" id="removed" value="1" {% if box.removed == True %} checked{% endif %}>
+    {% else %}
+    <input type="checkbox" name="removed" id="removed" value="1">
+    {% endif %}
     <button class="ok fillboth" type="submit">Save</button>
     <a class="fillboth button" href="{{ url_for('im.view') }}" class="button">Cancel</a>
 </form>

@@ -23,7 +23,8 @@
         <option value="{{ i.id_ }}">{{ i.name }}</option>
         {% endfor %}
     </select>
-
+    <label for="removed">Show Removed:</label>
+    <input type="checkbox" name="removed" id="removed" value="1">
     <button class="fillboth ok" type="submit">Display</button>
 </form>
 <table>
