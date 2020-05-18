@@ -119,54 +119,54 @@ def edit_item(item_id, **kwargs):
     db.session.commit()
     return item_row
 
-def get_type(removed: bool = False, first=False, **filters):
+def get_type(first=False, **filters):
     """
     returns Type rows
 
     args:
-        removed: whether to show removed entries
         first: whether to return first entry only or multiple
         filters: other row columns to filter by
     """
+    query = Type.query.filter_by(**filters)
     if first:
-        return Type.query.filter_by(removed=removed, **filters).first()
-    return Type.query.filter_by(removed=removed, **filters).all()
+        return query.first()
+    return query.all()
 
-def get_locations(removed: bool = False, first=False, **filters):
+def get_locations(first=False, **filters):
     """
     returns Location rows
 
     args:
-        removed: whether to show removed entries
         first: whether to return first entry only or multiple
         filters: other row columns to filter by
     """
+    query = Location.query.filter_by(**filters)
     if first:
-        return Location.query.filter_by(removed=removed, **filters).first()
-    return Location.query.filter_by(removed=removed, **filters).all()
+        return query.first()
+    return query.all()
 
-def get_box(removed: bool = False, first=False, **filters):
+def get_box(first=False, **filters):
     """
     returns Box rows
 
     args:
-        removed: whether to show removed entries
         first: whether to return first entry only or multiple
         filters: other row columns to filter by
     """
+    query = Box.query.filter_by(**filters)
     if first:
-        return Box.query.filter_by(removed=removed, **filters).first()
-    return Box.query.filter_by(removed=removed, **filters).all()
+        return query.first()
+    return query.all()
 
-def get_item(removed: bool = False, first=False, **filters):
+def get_item(first=False, **filters):
     """
     returns Item rows
 
     args:
-        removed: whether to show removed entries
         first: whether to return first entry only or multiple
         filters: other row columns to filter by
     """
+    query = Item.query.filter_by(**filters)
     if first:
-        return Item.query.filter_by(removed=removed, **filters).first()
-    return Item.query.filter_by(removed=removed, **filters).all()
+        return query.first()
+    return query.all()

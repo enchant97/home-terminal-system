@@ -13,15 +13,15 @@ def view():
         type_filter = request.form.get("type-filter", None)
         removed = request.form.get("removed", False, bool)
         if box_filter and type_filter:
-            items = im_dao.get_item(removed, box_id=box_filter, type_id=type_filter)
+            items = im_dao.get_item(box_id=box_filter, type_id=type_filter, removed=removed)
         elif box_filter:
-            items = im_dao.get_item(removed, box_id=box_filter)
+            items = im_dao.get_item(box_id=box_filter, removed=removed)
         elif type_filter:
-            items = im_dao.get_item(removed, type_id=type_filter)
+            items = im_dao.get_item(type_id=type_filter, removed=removed)
         else:
-            items = im_dao.get_item(removed)
-    boxes = im_dao.get_box()
-    types = im_dao.get_type()
+            items = im_dao.get_item(removed=removed)
+    boxes = im_dao.get_box(removed=False)
+    types = im_dao.get_type(removed=False)
     return render_template("inventory_manager/view.html", items=items, boxes=boxes, types=types)
 
 @im.route("/edit-box/", defaults={"box_id": None}, methods=["GET", "POST"])
@@ -38,14 +38,14 @@ def edit_box(box_id):
             else:
                 im_dao.new_box(loc_id, name)
                 flash("added new box!")
-        locs = im_dao.get_locations()
+        locs = im_dao.get_locations(removed=False)
         if box_id:
             return render_template(
                 "inventory_manager/edit-box.html",
-                locations=locs, box=im_dao.get_box(True, True, id_=box_id))
+                locations=locs, box=im_dao.get_box(True, id_=box_id))
     except RowDoesNotExist:
         flash("box row does not exist", "error")
-        locs = im_dao.get_locations()
+        locs = im_dao.get_locations(removed=False)
     return render_template("inventory_manager/edit-box.html", locations=locs)
 
 @im.route("/edit-item/", defaults={"item_id": None}, methods=["GET", "POST"])
@@ -68,16 +68,16 @@ def edit_item(item_id):
             else:
                 im_dao.new_item(name, box_id, quantity, type_id, in_box)
                 flash("added new item!")
-        boxes = im_dao.get_box()
-        types = im_dao.get_type()
+        boxes = im_dao.get_box(removed=False)
+        types = im_dao.get_type(removed=False)
         if item_id:
             return render_template(
                 "inventory_manager/edit-item.html", types=types,
-                boxes=boxes, item=im_dao.get_item(True, True, id_=item_id))
+                boxes=boxes, item=im_dao.get_item(True, id_=item_id))
     except RowDoesNotExist:
         flash("item row does not exist", "error")
-        boxes = im_dao.get_box()
-        types = im_dao.get_type()
+        boxes = im_dao.get_box(removed=False)
+        types = im_dao.get_type(removed=False)
     return render_template("inventory_manager/edit-item.html", types=types, boxes=boxes)
 
 @im.route("/edit-type/", defaults={"type_id": None}, methods=["GET", "POST"])
@@ -96,7 +96,7 @@ def edit_type(type_id):
         if type_id:
             return render_template(
                 "inventory_manager/edit-type.html",
-                item_type=im_dao.get_type(True, True, id_=type_id))
+                item_type=im_dao.get_type(True, id_=type_id))
     except RowDoesNotExist:
         flash("type row does not exist", "error")
     return render_template("inventory_manager/edit-type.html")
@@ -118,7 +118,7 @@ def edit_location(location_id):
         if location_id:
             return render_template(
                 "inventory_manager/edit-location.html",
-                location=im_dao.get_locations(True, True, id_=location_id))
+                location=im_dao.get_locations(True, id_=location_id))
     except RowDoesNotExist:
         flash("location row does not exist", "error")
     return render_template("inventory_manager/edit-location.html")
