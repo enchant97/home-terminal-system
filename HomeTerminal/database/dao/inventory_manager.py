@@ -170,3 +170,17 @@ def get_item(first=False, **filters):
     if first:
         return query.first()
     return query.all()
+
+def get_like_item_names(name, limit: int = None):
+    """
+    returns Items, using like
+    comparison for item name
+
+    args:
+        name : name to match entries to
+        limit : limit the selected rows to a certain amount
+    """
+    query = Item.query.filter(Item.name.like(name + "%"))
+    if limit:
+        return query.limit(limit).all()
+    return query.all()

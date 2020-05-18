@@ -3,6 +3,7 @@ from contextlib import wraps
 from flask import Blueprint, abort, jsonify, request
 from flask_login import current_user
 
+from ..database import dao
 from ..database.dao.exceptions import AlreadyUpToDate, RowDoesNotExist
 from ..database.dao.homework import get_homework_ordered
 from ..database.dao.user import check_api_key, get_messages, remove_message
@@ -66,3 +67,11 @@ def message_remove():
     except KeyError:
         return jsonify({"status":"invalid body content"})
     return jsonify({"status":"ok"})
+
+@api.route("/im/get-names", methods=["POST"])
+@api_auth
+def get_im_getnames():
+    name = request.json["itemname"]
+    item_rows = dao.inventory_manager.get_like_item_names(name, 4)
+
+    return jsonify({"item_names": [i.name for i in item_rows]})

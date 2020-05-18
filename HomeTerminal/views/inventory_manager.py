@@ -9,10 +9,13 @@ im = Blueprint("im", __name__)
 def view():
     items = ()
     if request.method == "POST":
+        live_item_name = request.form.get("live-item-input", None)
         box_filter = request.form.get("box-filter", None)
         type_filter = request.form.get("type-filter", None)
         removed = request.form.get("removed", False, bool)
-        if box_filter and type_filter:
+        if live_item_name:
+            items = im_dao.get_like_item_names(live_item_name.lower())
+        elif box_filter and type_filter:
             items = im_dao.get_item(box_id=box_filter, type_id=type_filter, removed=removed)
         elif box_filter:
             items = im_dao.get_item(box_id=box_filter, removed=removed)
