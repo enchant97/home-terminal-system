@@ -110,7 +110,11 @@ function start_load_options_to_select(select_id, url, main_loc) {
     })
     .then((conv_json) => {
       remove_elem_children(select_elem);
-      for (i in conv_json.sublocs) {
+      const show_all_option = document.createElement("option");
+      show_all_option.value = "";
+      show_all_option.innerText = "Show All";
+      select_elem.append(show_all_option);
+      for (const i in conv_json.sublocs) {
         create_option_into_select(select_elem, conv_json.sublocs[i].name);
       }
     })
