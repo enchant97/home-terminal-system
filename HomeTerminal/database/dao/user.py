@@ -2,7 +2,7 @@ import uuid
 import hashlib
 from datetime import datetime
 
-from ...utils import Notification
+from ...helpers.types import Notification
 from ..database import db
 from ..models.homework import Main as Homework_Main
 from ..models.user import Api_Key, Message, User, User_Settings

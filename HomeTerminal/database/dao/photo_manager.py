@@ -6,12 +6,12 @@ from datetime import datetime
 
 from flask import current_app
 
+from ...helpers.photos import get_hash_image
 from ..database import db
 from ..models.photo_manager import (FullEvent, MainLocation, SubLocation,
                                     Thumbnail, UserEvent)
 from ..models.user import User
 from .exceptions import RowDoesNotExist
-from ...utils import get_hash_image
 
 def get_subloc(main_loc):
     """

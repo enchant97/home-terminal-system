@@ -8,7 +8,7 @@ from ..database.dao.freezer_manager import (edit_fm4_item, get_fm4_categories,
                                             get_fm4_expiring, get_fm4_item,
                                             get_fm4_report)
 from ..database.models.freezer_manager import Item as FM_Item
-from ..utils import calc_expire_date
+from ..helpers.calculations import calc_expire_date
 
 fm = Blueprint("fm", __name__)
 

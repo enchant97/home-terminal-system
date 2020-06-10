@@ -8,7 +8,8 @@ from flask_login import login_required
 from ..database.dao import photo_manager as dao_pm
 from ..database.dao.exceptions import RowDoesNotExist
 from ..database.dao.user import get_users
-from ..utils import compress_jpg_thumbnail, is_allowed_img_file
+from ..helpers.paths import is_allowed_img_file
+from ..helpers.photos import compress_jpg_thumbnail
 
 pm = Blueprint("pm", __name__)
 
