@@ -1,4 +1,3 @@
-import os
 from datetime import datetime
 
 from flask import (Blueprint, abort, current_app, flash, jsonify, redirect,
@@ -8,7 +7,7 @@ from flask_login import login_required
 from ..database.dao import photo_manager as dao_pm
 from ..database.dao.exceptions import RowDoesNotExist
 from ..database.dao.user import get_users
-from ..helpers.paths import is_allowed_img_file
+from ..helpers.paths import get_image_folder, is_allowed_img_file
 from ..helpers.photos import compress_jpg_thumbnail
 
 pm = Blueprint("pm", __name__)
@@ -27,7 +26,7 @@ def get_subloc():
 def thumbnail(event_id):
     file_path = dao_pm.get_image_by_event(event_id)
     if file_path:
-        full_path = os.path.join(current_app.config["IMG_LOCATION"], file_path.file_path)
+        full_path = get_image_folder("PHOTO_MANAGER") / file_path.file_path
         return send_file(full_path)
     return abort(404)
 
@@ -73,7 +72,7 @@ def new():
             lng = request.form.get("lng", 0, int)
 
             if users:
-                if picture and current_app.config.get("IMG_LOCATION"):
+                if picture:
                     if is_allowed_img_file(picture.filename):
                         bytes_picture = compress_jpg_thumbnail(
                             picture,

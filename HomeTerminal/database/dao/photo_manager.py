@@ -1,17 +1,16 @@
 """
 functions for abstracting the photo database models
 """
-import os
 from datetime import datetime
 
-from flask import current_app
-
+from ...helpers.paths import get_image_folder
 from ...helpers.photos import get_hash_image
 from ..database import db
 from ..models.photo_manager import (FullEvent, MainLocation, SubLocation,
                                     Thumbnail, UserEvent)
 from ..models.user import User
 from .exceptions import RowDoesNotExist
+
 
 def get_subloc(main_loc):
     """
@@ -98,13 +97,12 @@ def new_event(mainloc, subloc, datetaken: datetime, notes, users, lat, lng, img_
     db.session.commit()
     if img_raw:
         # if a img_path was provided add it to the database and write image to file
-        full_path = get_hash_image(img_raw.read(), ".jpg", current_app.config["IMG_LOCATION"])
+        file_name = get_hash_image(img_raw.read(), ".jpg")
+        full_path = get_image_folder("PHOTO_MANAGER") / file_name
         img_raw.seek(0)# go back to start of file
-        with open(full_path, "wb") as fo:
-            fo.write(img_raw.read())
+        full_path.write_bytes(img_raw.read())
         img_raw.close()# close the image (allows garbage cleanup to remove)
-        filename = os.path.basename(full_path)
-        db.session.add(Thumbnail(full_event_id=fullevent.id_, file_path=filename))
+        db.session.add(Thumbnail(full_event_id=fullevent.id_, file_path=file_name))
     for username in users:
         # adds all the user events by selected user
         the_user = User.query.filter_by(username=username).first()

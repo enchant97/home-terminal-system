@@ -3,7 +3,6 @@ helpers to handle photo convertion
 """
 
 import hashlib
-import os
 from io import BytesIO
 
 from PIL import Image
@@ -27,21 +26,13 @@ def compress_jpg_thumbnail(img_bytes, max_size, quality) -> BytesIO:
     converted_img.seek(0)
     return converted_img
 
-def get_hash_image(img_bytes, ext=None, base_path=None) -> str:
+def get_hash_image(img_bytes, ext="") -> str:
     """
-    returns the filename/path with the hash of the image
+    returns the filename as the hash of the image
 
         :param img_bytes: the bytes to hash
-        :param ext: the extention to give the filename (if provided)
-        :param base_path: path to add before filename (if provided)
-        :return: the full filepath
+        :param ext: the extention to give the filename e.g .jpg
+        :return: filename
         :rtype: str
-
-    .. todo:: #TODO convert to using pathlib.Path instead of os.path
     """
-    path = hashlib.sha256(img_bytes).hexdigest().__str__()
-    if ext:
-        path = path + ext
-    if base_path:
-        path = os.path.join(base_path, path)
-    return path
+    return hashlib.sha256(img_bytes).hexdigest() + ext

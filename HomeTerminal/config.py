@@ -19,8 +19,14 @@ class Base:
     MAX_IMAGE_SIZE = (800, 800)
     JPEG_QUALITY = 65
     ALLOWED_IMG_EXT = ("jpg", "jpeg", "png", "bmp")
-    # folder to store folders with uploaded pictures, set to None to stop saving
-    IMG_LOCATION = None
+    # the base path that all relative paths will use
+    # controls where the app's dynamic images will be stored
+    BASE_IMG_PATH = "dynamic_images"
+    DYNAMIC_IMG_LOCATIONS = {
+        # folder where photo manager images will be stored
+        "PHOTO_MANAGER": "photo_manager"
+    }
+
 
 class Testing(Base):
     """
@@ -30,12 +36,14 @@ class Testing(Base):
     ENV = "test"
     TESTING = True
 
+
 class Development(Base):
     """
     The development config
     """
     ENV = "dev"
     DEBUG = True
+
 
 class Production(Base):
     ENV = "prod"
