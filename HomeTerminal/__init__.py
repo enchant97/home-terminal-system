@@ -11,6 +11,7 @@ __author__ = "Leo Spratt"
 import os
 import sys
 from datetime import datetime
+from pathlib import Path
 
 from flask import Flask, render_template
 from flask_login import current_user
@@ -53,15 +54,15 @@ def get_plugins():
         dir name,
         PluginData
     """
-    plugins_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "plugins")
-    for path in os.listdir(plugins_dir):
-        joined = os.path.join(plugins_dir, path)
-        if os.path.isdir(joined) and path != "__pycache__":
-            plugin = import_string("HomeTerminal.plugins." + path)
+    plugins_dir = Path(__file__).resolve(strict=True).parent / "plugins"
+    for path in plugins_dir.iterdir():
+        folder_name = path.name
+        if path.is_dir() and folder_name != "__pycache__":
+            plugin = import_string(f"HomeTerminal.plugins.{folder_name}")
             if hasattr(plugin, "blueprint"):
                 if hasattr(plugin, "PluginData"):
                     app.register_blueprint(plugin.blueprint)
-                    yield path, plugin.PluginData # yield the plugin name and its setup data
+                    yield folder_name, plugin.PluginData # yield the plugin name and its setup data
                     app.logger.debug(f"loaded plugin: {plugin.blueprint.name}")
                 else:
                     app.logger.error(f"could not load plugin {path} as load_plugin() could not be found")
@@ -79,12 +80,9 @@ def load_plugins():
         if plugin[1].written_for_version.split(".")[0] == version_now[0]:
             if plugin[1].has_models:
                 # import the models if the plugin has indicated they have any
-                import_models(
-                    os.path.join(
-                        os.path.dirname(os.path.abspath(__file__)), "plugins", plugin[0], "models"
-                        ),
-                    f"HomeTerminal.plugins.{plugin[0]}.models"
-                )
+                models_dir = Path(__file__).resolve(strict=True).parent / "plugins" / plugin[0] / "models"
+                import_path = f"HomeTerminal.plugins.{plugin[0]}.models"
+                import_models(models_dir, import_path)
             # store the PluginData in app.config for potential use within app
             app.config["LOADED_PLUGINS"] = {plugin[1].unique_name : plugin[1]}
         else:
@@ -136,13 +134,12 @@ def create_app():
     app.register_blueprint(api, url_prefix="/api")
     app.register_blueprint(reminder, url_prefix="/reminder")
 
-    import_models(
-        os.path.join(
-            os.path.dirname(os.path.abspath(__file__)), "database", "models"
-            ),
-        "HomeTerminal.database.models"
-        )
+    # import database models from the apps model folder
+    models_dir = Path(__file__).resolve(strict=True).parent / "database" / "models"
+    import_path = "HomeTerminal.database.models"
+    import_models(models_dir, import_path)
 
+    # import plugins or not
     if app.config.get("ENABLE_PLUGINS", True):
         app.logger.info("loading plugins...")
         load_plugins()
