@@ -21,8 +21,9 @@ def compress_jpg_thumbnail(img_bytes, max_size, quality) -> BytesIO:
     raw_image = Image.open(img_bytes)
     converted_img = BytesIO()
     raw_image = raw_image.convert("RGB")
+    exif = raw_image.info["exif"]
     raw_image.thumbnail(max_size)
-    raw_image.save(converted_img, format="JPEG", quality=quality)
+    raw_image.save(converted_img, format="JPEG", quality=quality, exif=exif)
     converted_img.seek(0)
     return converted_img
 
