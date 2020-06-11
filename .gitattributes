@@ -1,0 +1,10 @@
+*.txt   text
+*.md    text
+*.py    text diff=python
+*.html  text diff=html
+*.svg   text
+*.css   text
+
+*.ico   binary
+
+*       text=auto

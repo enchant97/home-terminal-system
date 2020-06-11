@@ -1,0 +1,11 @@
+.vscode
+*__pycache__
+pylintrc
+*.DS_Store
+[Tt]humbs.db
+~$*
+.pytest_cache
+HomeTerminal/plugins/*
+!/HomeTerminal/plugins/__init__.py
+HomeTerminal/appdata.db
+venv/
