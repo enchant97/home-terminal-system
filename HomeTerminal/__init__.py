@@ -5,7 +5,7 @@ certain tasks that can be done around the home
 to use import create_app() which returns an flask app for running
 """
 
-__version__ = "3.6.6"
+__version__ = "3.7.6"
 __author__ = "Leo Spratt"
 
 import os
