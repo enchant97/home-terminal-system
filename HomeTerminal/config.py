@@ -47,3 +47,4 @@ class Development(Base):
 
 class Production(Base):
     ENV = "prod"
+    SQLALCHEMY_DATABASE_URI = "sqlite:///appdata.db"
