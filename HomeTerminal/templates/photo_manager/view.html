@@ -2,7 +2,8 @@
 {% block title %}Photo Manager - Report{% endblock %}
 {% block maincontent %}
 <div class="center down">
-    <a class="button add" href="{{ url_for('pm.new') }}">Add Entry</a>
+    <a class="button" href="{{ url_for('pm.edit_sub_location') }}">Add Location</a>
+    <a class="button" href="{{ url_for('pm.new') }}">Add Entry</a>
     <form class="container two-col" action="{{ url_for('pm.view') }}" method="POST">
         <label for="main-location">Main Location:</label>
         <select
@@ -37,7 +38,7 @@
             <tr>
                 <td>{{ i.id_ }}</td>
                 <td>{{ i.date_taken }}</td>
-                <td>{{ i.notes }}</td>
+                <td><pre>{{ i.notes }}</pre></td>
                 <td><img style="width: 200px;" src="{{ url_for('pm.thumbnail', event_id=i.id_) }}" alt="event image"></td>
             </tr>
             {% endfor %}

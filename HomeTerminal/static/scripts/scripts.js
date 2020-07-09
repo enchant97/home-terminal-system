@@ -100,8 +100,16 @@ function create_option_into_select(select_elem, option_val) {
   select_elem.appendChild(the_option);
 }
 
-function start_load_options_to_select(select_id, url, main_loc) {
-  // calls the async func to load new options into select element
+function start_load_options_to_select(select_id, url, main_loc, first_option_inner = 'Show All') {
+  /**
+   * To load options into a select element using fetch
+   *
+   * @param {String} select_id - the id of the select element
+   * @param {String} url - the url for the request
+   * @param {String} main_loc - the main location (photo database)
+   * @param {String} first_option_inner - what the inner text of the first option should be
+  */
+  if (main_loc == '') { return }
   var select_elem = document.getElementById(select_id);
   url = url + "?mainloc=" + main_loc
   fetch(url)
@@ -112,7 +120,7 @@ function start_load_options_to_select(select_id, url, main_loc) {
       remove_elem_children(select_elem);
       const show_all_option = document.createElement("option");
       show_all_option.value = "";
-      show_all_option.innerText = "Show All";
+      show_all_option.innerText = first_option_inner;
       select_elem.append(show_all_option);
       for (const i in conv_json.sublocs) {
         create_option_into_select(select_elem, conv_json.sublocs[i].name);

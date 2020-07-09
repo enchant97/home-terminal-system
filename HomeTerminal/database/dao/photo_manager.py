@@ -58,7 +58,7 @@ def get_event(mainloc=None, subloc=None):
         raise RowDoesNotExist(f"main location name {mainloc} does not exist")
     raise Exception("Not a supported filter")
 
-def new_event(mainloc, subloc, datetaken: datetime, notes, users, lat, lng, img_raw=None):
+def new_event(mainloc, subloc, datetaken: datetime, notes, users, img_raw=None):
     """
     Allows for adding a new PD1_FullEvent,
     returns PD1_FullEvent obj
@@ -69,30 +69,18 @@ def new_event(mainloc, subloc, datetaken: datetime, notes, users, lat, lng, img_
         datetaken:
         notes:
         users: list/tuple of usernames
-        lat:
-        lng:
         img_raw : io.BytesIO object for the image file
     """
 
-    # get or create then get mainlocation
-    if not MainLocation.query.filter_by(name=mainloc).scalar():
-        # add main location if it does not exist
-        main_loc = MainLocation(name=mainloc)
-        db.session.add(main_loc)
-        db.session.commit()
-    else:
-        main_loc = MainLocation.query.filter_by(name=mainloc).first()
+    main_loc = MainLocation.query.filter_by(name=mainloc).first()
+    if not main_loc:
+        raise RowDoesNotExist(f"main location {mainloc} does not exist")
 
+    sub_loc = SubLocation.query.filter_by(name=subloc, main_loc_id=main_loc.id_).first()
+    if not sub_loc:
+        raise RowDoesNotExist(f"sub location {subloc} does not exist")
 
-    # get or create then get sublocation
-    if not SubLocation.query.filter_by(name=subloc, main_loc_id=main_loc.id_).scalar():
-        # add sub location if it does not exist
-        subloc = SubLocation(name=subloc, main_loc_id=main_loc.id_, lat=lat, lng=lng)
-        db.session.add(subloc)
-        db.session.commit()
-    else:
-        subloc = SubLocation.query.filter_by(name=subloc, main_loc_id=main_loc.id_).first()
-    fullevent = FullEvent(subloc_id=subloc.id_, date_taken=datetaken, notes=notes)
+    fullevent = FullEvent(subloc_id=sub_loc.id_, date_taken=datetaken, notes=notes)
     db.session.add(fullevent)
     db.session.commit()
     if img_raw:
@@ -110,3 +98,35 @@ def new_event(mainloc, subloc, datetaken: datetime, notes, users, lat, lng, img_
             raise RowDoesNotExist(f"username {username} does not exist")
         db.session.add(UserEvent(full_event_id=fullevent.id_, user_id=the_user.id_))
     db.session.commit()
+    return fullevent
+
+def new_subloc(sub_loc_name, lat, lng, main_loc_name, removed=False):
+    """
+    allow for a new sub location to be added
+
+        :param sub_loc_name: the sub location name
+        :param lat: the sub locations latitude
+        :param lng: the sub locations longitude
+        :param main_loc_name: the main locations name
+        :param removed: whether it is removed
+        :return: the added sublocation
+        :rtype: SubLocation
+    """
+    main_loc = MainLocation.query.filter_by(name=main_loc_name).first()
+    if not main_loc:
+        main_loc = MainLocation(name=main_loc)
+        db.session.add(main_loc)
+        db.session.commit()
+
+    sub_loc = SubLocation(
+        name=sub_loc_name,
+        main_loc_id=main_loc.id_,
+        lat=lat,
+        lng=lng,
+        removed=removed
+    )
+
+    db.session.add(sub_loc)
+    db.session.commit()
+
+    return sub_loc

@@ -1,24 +1,17 @@
 {% extends "base.html" %}
 {% block title %}Photo Manager - New{% endblock %}
 {% block maincontent %}
-<form class="container two-col" action="{{ url_for('pm.new') }}" method="POST", enctype=multipart/form-data>
+<form class="container two-col" action="{{ url_for('pm.new') }}" method="POST" , enctype=multipart/form-data>
     <label for="mainloc">Main Location:</label>
-    <input onchange="start_load_options_to_select('sublocations',`{{ url_for('pm.get_subloc') }}`,this.value)" type="text"
-        name="mainloc" id="mainloc" list="mainlocations" autocomplete="off" required>
-    <datalist name="mainlocations" id="mainlocations">
+    <select name="mainloc" id="mainloc" required
+        onchange="start_load_options_to_select('subloc',`{{ url_for('pm.get_subloc') }}`,this.value, '')">
+        <option value=""></option>
         {% for mainloc in main_locations %}
         <option value="{{ mainloc.name }}">{{ mainloc.name }}</option>
         {% endfor %}
-    </datalist>
+    </select>
     <label for="subloc">Sub Location:</label>
-    <input type="text" name="subloc" id="subloc" list="sublocations" autocomplete="off" required>
-    <datalist name="sublocations" id="sublocations"></datalist>
-    <label for="loc_selections">Co-ordinates</label>
-    <div id="loc_selections" class="down">
-        <input type="number" name="lat" id="lat" placeholder="lat..." value="0">
-        <input type="number" name="lng" id="lng" placeholder="lng..." value="0">
-    </div>
-
+    <select name="subloc" id="subloc" required></select>
     <label for="">Users:</label>
     <div class="down">
         {% for user in users %}

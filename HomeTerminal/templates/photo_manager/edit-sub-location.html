@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Photo Manager - Edit Sub Location{% endblock %}
+{% block maincontent %}
+<form action="" class="container two-col" method="POST">
+    <label for="mainloc-name">Main Location:</label>
+    <input type="text" name="mainloc-name" id="mainloc-name" list="mainlocs" required>
+    <datalist id="mainlocs">
+        <option value=""></option>
+        {% for mainloc in main_locations %}
+        <option value="{{ mainloc.name }}">{{ mainloc.name }}</option>
+        {% endfor %}
+    </datalist>
+    <label for="subloc-name">Name:</label>
+    <input type="text" name="subloc-name" id="subloc-name" required>
+    <label for="loc_selections">Co-ordinates:</label>
+    <div class="two-col" id="loc_selections" class="down">
+        <label for="subloc-lat">Latitude:</label>
+        <input type="number" name="subloc-lat" id="subloc-lat" placeholder="lat..." value="0" required>
+        <label for="subloc-lng">Longitude:</label>
+        <input type="number" name="subloc-lng" id="subloc-lng" placeholder="lng..." value="0" required>
+    </div>
+    <label for="removed">Removed:</label>
+    <input type="checkbox" name="removed" id="removed" value="1">
+
+    <button class="fillboth ok" type="submit">Save</button>
+    <a href="{{ url_for('pm.view') }}" class="button fillboth">Close</a>
+</form>
+{% endblock %}

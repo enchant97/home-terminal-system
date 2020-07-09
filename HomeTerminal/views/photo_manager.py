@@ -36,8 +36,8 @@ def view():
     loaded_entries = ()
     filter_by = "(Please use display button to filter)"
     if request.method == "POST":
-        mainloc = request.form.get("main-location").capitalize()
-        subloc = request.form.get("sub-location").capitalize()
+        mainloc = request.form.get("main-location")
+        subloc = request.form.get("sub-location")
         if not mainloc:
             filter_by = "no filter"
             loaded_entries = dao_pm.get_event()
@@ -61,15 +61,12 @@ def view():
 def new():
     if request.method == "POST":
         try:
-            mainloc = request.form["mainloc"].capitalize()
-            subloc = request.form["subloc"].capitalize()
+            mainloc = request.form["mainloc"]
+            subloc = request.form["subloc"]
             datetaken = datetime.strptime(request.form["datetaken"], "%Y-%m-%d")
             notes = request.form["notes"]
             users = request.form.getlist("user", type=str)
             picture = request.files.get("pic", None)
-
-            lat = request.form.get("lat", 0, int)
-            lng = request.form.get("lng", 0, int)
 
             if users:
                 if picture:
@@ -83,7 +80,7 @@ def new():
                         return redirect(url_for(".new"))
                 else:
                     bytes_picture = None
-                dao_pm.new_event(mainloc, subloc, datetaken, notes, users, lat, lng, bytes_picture)
+                dao_pm.new_event(mainloc, subloc, datetaken, notes, users, bytes_picture)
                 flash("added entry")
             else:
                 flash("not added as no users were selected", "warning")
@@ -93,4 +90,21 @@ def new():
     users = get_users()
     return render_template("photo_manager/new.html", main_locations=main_locations, users=users)
 
-#TODO: make a new function allowing for new location to be added
+@pm.route("/edit-sub-location", methods=["GET", "POST"])
+@login_required
+def edit_sub_location():
+    if request.method == "POST":
+        try:
+            main_loc_name = request.form["mainloc-name"]
+            sub_loc_name = request.form["subloc-name"]
+            lat = request.form["subloc-lat"]
+            lng = request.form["subloc-lng"]
+            removed = request.form.get("removed", False, bool)
+        except KeyError:
+            flash("Missing required fields!", "error")
+
+        dao_pm.new_subloc(sub_loc_name, lat, lng, main_loc_name, removed)
+        flash("added new location")
+
+    main_locations = dao_pm.get_mainloc()
+    return render_template("photo_manager/edit-sub-location.html", main_locations=main_locations)
