@@ -45,17 +45,20 @@ def get_event(mainloc=None, subloc=None):
     if not mainloc and not subloc:
         # select all (no-filter)
         return FullEvent.query.all()
-    if mainloc and not subloc:
-        #TODO: implement search by mainloc
-        raise NotImplementedError("filter by mainloc not implemented")
-    if mainloc and subloc:
+
+    elif mainloc:
         main_loc = MainLocation.query.filter_by(name=mainloc).first()
-        if main_loc:
+        if not main_loc:
+            raise RowDoesNotExist(f"main location name {mainloc} does not exist")
+
+        if subloc:
+            # if mainloc and subloc are given
             subloc = SubLocation.query.filter_by(name=subloc, main_loc_id=main_loc.id_).first()
             if subloc:
                 return FullEvent.query.filter_by(subloc_id=subloc.id_).all()
             raise RowDoesNotExist("sub location does not exist")
-        raise RowDoesNotExist(f"main location name {mainloc} does not exist")
+        # if just mainloc was specified
+        return FullEvent.query.filter(FullEvent.sub_location.has(main_loc_id=main_loc.id_)).all()
     raise Exception("Not a supported filter")
 
 def new_event(mainloc, subloc, datetaken: datetime, notes, users, img_raw=None):

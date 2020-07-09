@@ -43,8 +43,7 @@ def view():
             loaded_entries = dao_pm.get_event()
         elif mainloc and not subloc:
             filter_by = "main-loc"
-            #loaded_entries = get_pd1_event(mainloc)
-            flash("Searching just by mainloc not supported yet :(", "error")
+            loaded_entries = dao_pm.get_event(mainloc)
         else:
             filter_by = "sub-loc"
             try:
