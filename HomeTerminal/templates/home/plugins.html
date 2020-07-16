@@ -4,9 +4,13 @@
 <a class="button" href="{{ url_for('home.command_center') }}">Back</a>
 
 <div class="container down">
+    {% if config.LOADED_PLUGINS %}
     {% for key in config.LOADED_PLUGINS.keys() %}
     <a class="button" href="{{ url_for(config.LOADED_PLUGINS[key].home_url_endpoint) }}">{{ config.LOADED_PLUGINS[key].name }}</a>
     {% endfor %}
+    {% else %}
+    <h3>No Plugins Loaded</h3>
+    {% endif %}
 </div>
 
 {% endblock %}
