@@ -39,7 +39,7 @@
                 <td>{{ i.id_ }}</td>
                 <td>{{ i.date_taken }}</td>
                 <td><pre>{{ i.notes }}</pre></td>
-                <td><img style="width: 200px;" src="{{ url_for('pm.thumbnail', event_id=i.id_) }}" alt="event image"></td>
+                <td><img style="width: 200px;" onerror="this.style.display='none'" src="{{ url_for('pm.thumbnail', event_id=i.id_) }}" alt="event image"></td>
             </tr>
             {% endfor %}
         </tbody>

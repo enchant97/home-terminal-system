@@ -66,25 +66,24 @@ def new():
             notes = request.form["notes"]
             users = request.form.getlist("user", type=str)
             picture = request.files.get("pic", None)
-
-            if users:
-                if picture:
-                    if is_allowed_img_file(picture.filename):
-                        bytes_picture = compress_jpg_thumbnail(
-                            picture,
-                            current_app.config["MAX_IMAGE_SIZE"],
-                            current_app.config["JPEG_QUALITY"])
-                    else:
-                        flash("image is not in allowed format", "error")
-                        return redirect(url_for(".new"))
+        except KeyError as err:
+            flash(f"Missing required fields!, {err.args}", "error")
+        if users:
+            if picture:
+                if is_allowed_img_file(picture.filename):
+                    bytes_picture = compress_jpg_thumbnail(
+                        picture,
+                        current_app.config["MAX_IMAGE_SIZE"],
+                        current_app.config["JPEG_QUALITY"])
                 else:
-                    bytes_picture = None
-                dao_pm.new_event(mainloc, subloc, datetaken, notes, users, bytes_picture)
-                flash("added entry")
+                    flash("image is not in allowed format", "error")
+                    return redirect(url_for(".new"))
             else:
-                flash("not added as no users were selected", "warning")
-        except KeyError:
-            flash("Missing required fields!", "error")
+                bytes_picture = None
+            dao_pm.new_event(mainloc, subloc, datetaken, notes, users, bytes_picture)
+            flash("added entry")
+        else:
+            flash("not added as no users were selected", "warning")
     main_locations = dao_pm.get_mainloc()
     users = get_users()
     return render_template("photo_manager/new.html", main_locations=main_locations, users=users)
