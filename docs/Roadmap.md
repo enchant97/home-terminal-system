@@ -9,11 +9,9 @@
 |   ?  | Further Thought Is Required |
 
 ## The Roadmap
-- [ ] Use Flask-WTF for forms
+- [ ] use openweather for the weather
 - [ ] UTC time on server, timezone configured by a admin
 - [ ] allow user to customise the way notifications are show
     - small icon with number
     - large banner across the whole screen
-- [ ] Inventory Manager (In Development)
 - ? Full AJAX (make all requests use fetch)
-- [ ] Add a way of creating extentions (In Development)
