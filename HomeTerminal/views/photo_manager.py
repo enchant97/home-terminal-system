@@ -39,13 +39,15 @@ def view():
         mainloc = request.form.get("main-location")
         subloc = request.form.get("sub-location")
         if not mainloc:
-            filter_by = "no filter"
+            filter_by = "Showing All"
             loaded_entries = dao_pm.get_event()
         elif mainloc and not subloc:
-            filter_by = "main-loc"
+            filter_by = mainloc
             loaded_entries = dao_pm.get_event(mainloc)
         else:
-            filter_by = "sub-loc"
+            filter_by = mainloc
+            if subloc:
+                filter_by = filter_by + " > " + subloc
             try:
                 loaded_entries = dao_pm.get_event(mainloc, subloc)
             except RowDoesNotExist:
