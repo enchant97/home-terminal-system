@@ -117,7 +117,7 @@ def new_subloc(sub_loc_name, lat, lng, main_loc_name, removed=False):
     """
     main_loc = MainLocation.query.filter_by(name=main_loc_name).first()
     if not main_loc:
-        main_loc = MainLocation(name=main_loc)
+        main_loc = MainLocation(name=main_loc_name)
         db.session.add(main_loc)
         db.session.commit()
 
