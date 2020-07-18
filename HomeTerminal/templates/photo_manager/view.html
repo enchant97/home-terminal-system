@@ -28,8 +28,9 @@
         <thead>
             <tr>
                 <th>Id</th>
-                <th>date_taken</th>
-                <th>notes</th>
+                <th>Date</th>
+                <th>Notes</th>
+                <th>Location</th>
                 <th>Image</th>
             </tr>
         </thead>
@@ -39,6 +40,7 @@
                 <td>{{ i.id_ }}</td>
                 <td>{{ i.date_taken }}</td>
                 <td><pre>{{ i.notes }}</pre></td>
+                <td>{{ i.sub_location.main_location.name }} > {{ i.sub_location.name }}</td>
                 <td><img style="width: 200px;" onerror="this.style.display='none'" src="{{ url_for('pm.thumbnail', event_id=i.id_) }}" alt="event image"></td>
             </tr>
             {% endfor %}
