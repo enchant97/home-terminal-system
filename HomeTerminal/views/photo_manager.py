@@ -38,18 +38,19 @@ def view():
     if request.method == "POST":
         mainloc = request.form.get("main-location")
         subloc = request.form.get("sub-location")
+        sort_by_date = bool(request.form.get("sort-by-date", False, int))
         if not mainloc:
             filter_by = "Showing All"
-            loaded_entries = dao_pm.get_event()
+            loaded_entries = dao_pm.get_event(sort_dated=sort_by_date)
         elif mainloc and not subloc:
             filter_by = mainloc
-            loaded_entries = dao_pm.get_event(mainloc)
+            loaded_entries = dao_pm.get_event(mainloc, sort_dated=sort_by_date)
         else:
             filter_by = mainloc
             if subloc:
                 filter_by = filter_by + " > " + subloc
             try:
-                loaded_entries = dao_pm.get_event(mainloc, subloc)
+                loaded_entries = dao_pm.get_event(mainloc, subloc, sort_by_date)
             except RowDoesNotExist:
                 flash(f"sub location '{subloc}' does not exist", "error")
     main_locations = dao_pm.get_mainloc()

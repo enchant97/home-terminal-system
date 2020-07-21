@@ -21,6 +21,13 @@
             <option value="{{ i.name }}">{{ i.name }}</option>
             {% endfor %}
         </select>
+        <label for="sort-by-date">Sort By Date</label>
+        <fieldset id="sort-by-date">
+            <label for="sort-by-date-desc">Descending</label>
+            <input type="radio" id="sort-by-date-desc" name="sort-by-date" value="0" checked>
+            <label for="sort-by-date-asc">Ascending</label>
+            <input type="radio" id="sort-by-date-asc" name="sort-by-date" value="1">
+        </fieldset>
         <button class="button ok fillboth" type="submit">Display</button>
     </form>
     <h2>Filter by: {{ filter_by }}</h2>

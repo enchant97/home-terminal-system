@@ -34,17 +34,20 @@ def get_image_by_event(event_id, removed=False):
     """
     return Thumbnail.query.filter_by(full_event_id=event_id, removed=removed).first()
 
-def get_event(mainloc=None, subloc=None):
+def get_event(mainloc=None, subloc=None, sort_dated: bool = None):
     """
-    returns PD1_FullEvent objects
+    returns FullEvent objects
 
-    args:
-        mainloc : used to filter by main location
-        subloc : used to filter by sub location
+        :param mainloc: used to filter by main location
+        :param subloc: used to filter by sub location
+        :param sort_dated: used to either sort the date
+                in ascending(True) or descending(False) order
+        :return: FullEvent objects from database
+        :rtype: FullEvent
     """
     if not mainloc and not subloc:
         # select all (no-filter)
-        return FullEvent.query.all()
+        events = FullEvent.query
 
     elif mainloc:
         main_loc = MainLocation.query.filter_by(name=mainloc).first()
@@ -55,11 +58,23 @@ def get_event(mainloc=None, subloc=None):
             # if mainloc and subloc are given
             subloc = SubLocation.query.filter_by(name=subloc, main_loc_id=main_loc.id_).first()
             if subloc:
-                return FullEvent.query.filter_by(subloc_id=subloc.id_).all()
+                events = FullEvent.query.filter_by(subloc_id=subloc.id_)
             raise RowDoesNotExist("sub location does not exist")
         # if just mainloc was specified
-        return FullEvent.query.filter(FullEvent.sub_location.has(main_loc_id=main_loc.id_)).all()
-    raise Exception("Not a supported filter")
+        events = FullEvent.query.filter(FullEvent.sub_location.has(main_loc_id=main_loc.id_))
+    else:
+        raise Exception("Not a supported filter")
+
+    # whether to sort the entries
+    if sort_dated is not None:
+        if sort_dated is True:
+            events = events.order_by(FullEvent.date_taken.asc())
+        elif sort_dated is False:
+            events = events.order_by(FullEvent.date_taken.desc())
+        else:
+            raise ValueError("sort_dated must be None or True/False")
+    events.all()
+    return events
 
 def new_event(mainloc, subloc, datetaken: datetime, notes, users, img_raw=None):
     """
