@@ -1,10 +1,10 @@
-from flask import (Blueprint, current_app, flash, redirect, render_template,
-                   request, url_for)
+from flask import Blueprint, flash, render_template, request
 from flask_login import current_user, login_required
 
+from ..database.dao.dashboard import get_user_shortcuts
 from ..database.dao.user import get_messages, get_notifations
 from ..database.dao.user import new_message as newMessage
-from ..database.dao.dashboard import get_user_shortcuts
+from ..helpers.checkers import is_admin
 
 home = Blueprint("home", __name__)
 
@@ -37,10 +37,7 @@ def new_message():
 @home.route("/cc")
 @login_required
 def command_center():
-    #TODO: move admin check into template?
-    if current_user.username == current_app.config.get("ADMINUSERNAME"):
-        return render_template("home/command_center.html", admin=True)
-    return render_template("home/command_center.html", admin=False)
+    return render_template("home/command_center.html", admin=is_admin(current_user.username))
 
 @home.route("/view-plugins")
 @login_required
