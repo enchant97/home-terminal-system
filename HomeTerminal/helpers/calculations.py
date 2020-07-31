@@ -2,51 +2,33 @@
 functions that perform some kind of calculation
 """
 
-import datetime
+from calendar import monthrange
+from datetime import datetime
 from functools import lru_cache
 
 
 @lru_cache(maxsize=15)
-def calc_expire_date(months: int) -> datetime.datetime:
+def calc_expire_date(months: int, start_dt: datetime = None) -> datetime:
     """
-    Returns date
-    excepts months betweeen 0-12
+    calculates the date from current
+    date incremented by given months
 
-        :param months: the months to calculate
+        :param months: the months to increment by
+        :param start_dt: the datetime to increment will use datetime.now() if None
+        :rtype: datetime.datetime
 
-    .. todo:: #TODO find a better way of handling this
+    ..todo:: #TODO rename this function later to add_months
     """
-    try:
-        months = int(months)
-    except ValueError:
-        months = 0
+    months = int(months)
 
-    if months == 0:
-        days = 7
-    elif months == 1:
-        days = 30
-    elif months == 2:
-        days = 60
-    elif months == 3:
-        days = 91
-    elif months == 4:
-        days = 121
-    elif months == 5:
-        days = 152
-    elif months == 6:
-        days = 182
-    elif months == 7:
-        days = 212
-    elif months == 8:
-        days = 243
-    elif months == 9:
-        days = 273
-    elif months == 10:
-        days = 304
-    elif months == 11:
-        days = 334
-    elif months == 12:
-        days = 365
-    else:
-        return None
-    return datetime.datetime.now() + datetime.timedelta(days=days)
+    if not start_dt:
+        start_dt = datetime.now()
+
+    month = start_dt.month - 1 + months
+    year = start_dt.year + month // 12
+    month = month % 12 + 1
+    day = min(start_dt.day, monthrange(year, month)[1])
+    return datetime(
+        year, month, day, start_dt.hour, start_dt.minute,
+        start_dt.second, start_dt.microsecond, start_dt.tzinfo
+        )
