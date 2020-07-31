@@ -78,7 +78,6 @@ def edit_fm4_item(name: str, categoryname: str, quantity: int,
         db.session.commit()
     else:
         the_category = Category.query.filter_by(name=categoryname).first()
-        the_category.update_last_updated()
 
     fm_item.category_id = the_category.id_
     fm_item.quantity = quantity

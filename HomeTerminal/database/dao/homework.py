@@ -53,7 +53,6 @@ def edit_homework(message, datedue, removed=False, id_=None):
         raise NotImplementedError("edit homework not available :(")
     homework = Main()
 
-    homework.update_last_updated()
     homework.message = message
     homework.datedue = datedue
     homework.removed = removed
@@ -88,7 +87,6 @@ def edit_homework_task(content, hw_id, removed=False, id_=None):
         db.session.commit()
         return tasks
     task = Task(content=content, hw_id=hw_id, removed=removed)
-    task.update_last_updated()
     db.session.add(task)
     db.session.commit()
     return task

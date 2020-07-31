@@ -31,11 +31,6 @@ class Base(BaseNoUpdate):
         removed
     """
     __abstract__ = True
-    last_updated = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-
-    def update_last_updated(self):
-        """
-        Update the last_updated column
-        with the current datetime.utcnow()
-        """
-        self.last_updated = datetime.utcnow()
+    last_updated = db.Column(
+        db.DateTime, nullable=False,
+        default=datetime.utcnow, onupdate=datetime.utcnow)

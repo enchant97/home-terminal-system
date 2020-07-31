@@ -74,7 +74,6 @@ def edit_location(loc_id, **kwargs):
     if not location_row.count():
         raise RowDoesNotExist(f"location row id '{loc_id}' does not exist")
     location_row.update(kwargs)
-    location_row.update_last_updated()
     db.session.commit()
     return location_row
 
@@ -89,7 +88,6 @@ def edit_type(type_id, **kwargs):
     if not type_row.count():
         raise RowDoesNotExist(f"type row id '{type_id}' does not exist")
     type_row.update(kwargs)
-    type_row.update_last_updated()
     db.session.commit()
     return type_row
 
@@ -104,7 +102,6 @@ def edit_box(box_id, **kwargs):
     if not box_row.count():
         raise RowDoesNotExist(f"box row id '{box_id}' does not exist")
     box_row.update(kwargs)
-    box_row.update_last_updated()
     db.session.commit()
     return box_row
 
@@ -119,7 +116,6 @@ def edit_item(item_id, **kwargs):
     if not item_row.count():
         raise RowDoesNotExist(f"item row id '{item_id}' does not exist")
     item_row.update(kwargs)
-    item_row.update_last_updated()
     db.session.commit()
     return item_row
 
