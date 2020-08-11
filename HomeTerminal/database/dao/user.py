@@ -60,9 +60,8 @@ def new_message(user_from, message):
     adds a new message into database,
     returns message obj on success
 
-    args:
-        user_from : the username that the message is from
-        message : the message
+        :param user_from: the username that the message is from
+        :param message: the message
     """
     the_user = User.query.filter_by(username=user_from).first()
     if not the_user:
@@ -76,9 +75,8 @@ def remove_message(mess_id, removed=True):
     """
     marks a message as removed in the database
 
-    args:
-        mess_id : the id of the message to mark removed
-        removed : allows for entry to be unmarked for removal
+        :param mess_id: the id of the message to mark removed
+        :param removed: allows for entry to be unmarked for removal
     """
     the_message = Message.query.filter_by(id_=mess_id).first()
     if not the_message:
@@ -91,8 +89,7 @@ def check_api_key(api_key):
     """
     Checks whether the api key given is valid
 
-    args:
-        api_key : the api key to check
+        :param api_key: the api key to check
     """
     if Api_Key.query.filter_by(key=api_key).scalar():
         return True
@@ -102,8 +99,7 @@ def get_api_key(username):
     """
     returns a api key given to the given username
 
-    args:
-        username : the username of the User table
+        :param username: the username of the User table
     """
     the_user = User.query.filter_by(username=username).first()
     if not the_user:
@@ -125,9 +121,8 @@ def get_messages(removed=False, last_updated=None):
     if last_updated is datetime will raise
     AlreadyUpToDate if it is already up to date
 
-    args:
-        removed : whether to select removed entries or not
-        last_updated : datetime obj or '%Y-%m-%d %H:%M:%S.%f' (expects UTC)
+        :param removed: whether to select removed entries or not
+        :param last_updated: datetime obj or '%Y-%m-%d %H:%M:%S.%f' (expects UTC)
     """
     if last_updated:
         if not isinstance(datetime, last_updated):
@@ -146,9 +141,10 @@ def update_usersettings(username, hwm_notif=None, fm_notif=None, mess_notif=None
     if no new settings were provided will not update,
     will return the usersettings obj
 
-    args:
-        username: the id of the users account
-        hwm_notif, fm_notif, mess_notif: the new value (BOOL)
+        :param username: the id of the users account
+        :param hwm_notif: the new value (BOOL)
+        :param fm_notif: the new value (BOOL)
+        :param mess_notif: the new value (BOOL)
     """
     the_user = User.query.filter_by(username=username).first()
     if the_user:
@@ -170,8 +166,7 @@ def get_notifations(username):
     """
     returns a generator of all notifications as Notification objects
 
-    args:
-        username : the username for getting different notifications
+        :param username: the username for getting different notifications
     """
     the_user = User.query.filter_by(username=username).first()
     if the_user:

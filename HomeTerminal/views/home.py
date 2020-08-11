@@ -5,6 +5,9 @@ from ..database.dao.dashboard import get_user_shortcuts
 from ..database.dao.user import get_messages, get_notifations
 from ..database.dao.user import new_message as newMessage
 from ..helpers.checkers import is_admin
+from ..helpers.server_messaging.types import (DBUpdateTypes, MessageTypes,
+                                              Payload, ServerMessage)
+from ..sockets import message_handler
 
 home = Blueprint("home", __name__)
 
@@ -13,7 +16,6 @@ home = Blueprint("home", __name__)
 def dashboard():
     username = current_user.username
     notifications = get_notifations(username)
-
     return render_template(
         "home/dashboard.html",
         username=username,
@@ -28,7 +30,16 @@ def new_message():
     if request.method == "POST":
         message = request.form.get("message")
         if message:
-            if newMessage(current_user.username, message):
+            added_message = newMessage(current_user.username, message)
+            if added_message:
+                live_update_payload = Payload.create_dbupdate(
+                    DBUpdateTypes.ADD,
+                    "messages",
+                    added_message.id_)
+                live_update_mess = ServerMessage(
+                    MessageTypes.DB_UPDATE,
+                    live_update_payload)
+                message_handler.send_message(live_update_mess)
                 flash("Message saved!")
         else:
             flash("required form details missing", "error")

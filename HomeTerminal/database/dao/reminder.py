@@ -11,12 +11,11 @@ def new_reminder(content, user_for, type_name, is_priority=False, removed=False)
     """
     adds new reminder and returns the reminder obj
 
-    args:
-        content: the content/message of the reminder
-        user_for: the username the notification is for or None
-        type_name: the type name
-        is_priority: whether it is priority
-        removed: whether the entry is marked for removal
+        :param content: the content/message of the reminder
+        :param user_for: the username the notification is for or None
+        :param type_name: the type name
+        :param is_priority: whether it is priority
+        :param removed: whether the entry is marked for removal
     """
     the_reminder = Reminder()
     the_reminder.content = content
@@ -46,9 +45,8 @@ def remove_reminder(reminder_id, is_removed=True):
     Allows for removing a reminder,
     also giving the option to 'undo'
 
-    args:
-        reminder_id : the reminder id
-        is_removed : mark the entry for removal or undo
+        :param reminder_id: the reminder id
+        :param is_removed: mark the entry for removal or undo
     """
     reminder = Reminder.query.filter_by(id_=reminder_id).first()
     if not reminder:

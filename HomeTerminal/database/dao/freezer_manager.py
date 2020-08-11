@@ -10,10 +10,9 @@ def get_fm4_expiring(days=7, count=False):
     returns the number of items that
     will expire between the days given
 
-    args:
-        days: used to compare between
-        expire date less than or equal to days after
-        count: whether it should return the number of or the items
+        :param days: used to compare between
+                     expire date less than or equal to days after
+        :param count: whether it should return the number of or the items
     """
     #TODO: use utc now instead
     days_after = datetime.now() + timedelta(days=days)
@@ -26,9 +25,8 @@ def get_fm4_report(category=None, removed=False):
     """
     returns FM4_Item obj from database
 
-    args:
-        category : category to filter by, if None will return all
-        removed : allows to display removed entries
+        :param category: category to filter by, if None will return all
+        :param removed: allows to display removed entries
     """
     if category:
         the_category = Category.query.filter_by(name=category).first()
