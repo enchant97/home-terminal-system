@@ -39,7 +39,7 @@ def new_message():
                 live_update_mess = ServerMessage(
                     MessageTypes.DB_UPDATE,
                     live_update_payload)
-                message_handler.send_message(live_update_mess)
+                message_handler.send_message(live_update_mess, app_name="messages")
                 flash("Message saved!")
         else:
             flash("required form details missing", "error")

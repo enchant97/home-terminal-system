@@ -95,7 +95,7 @@ class LiveUpdateWS {
      * @param {Object} payload - the payload to send as detail
      */
     process_db_update(payload) {
-        var type = `ws_update_${payload.where}_${payload.row_id}`;
+        var type = `ws_update_${payload.where}`;
         this.create_event(type, payload);
     }
     /**

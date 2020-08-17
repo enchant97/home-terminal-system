@@ -6,24 +6,21 @@ from json import dumps
 from queue import Queue
 from threading import Thread
 
-from geventwebsocket.websocket import WebSocket
 from msgpack import packb
 
 from ...helpers.server_messaging.types import (ConnType, DeviceConnection,
                                                QueuedMessage, ServerMessage)
 
 
-def pack_and_send(socket: WebSocket, msg: DeviceConnection, transport_type: ConnType):
+def pack(msg: ServerMessage):
     """
-    packs and sends the message over a WebSocket
+    packs message as json and msgpack
+
+        :param msg: the ServerMessage obj to send
+        :return: json.dumps and msgpack.packb
     """
-    #TODO make this just a multi packer
-    if transport_type == ConnType.JSON:
-        socket.send(dumps(msg.asdict))
-    elif transport_type == ConnType.MSGPACK:
-        socket.send(packb(msg.asdict))
-    else:
-        raise ValueError(f"Unknown transport type {transport_type}")
+    msg_dict = msg.asdict
+    return dumps(msg_dict), packb(msg_dict)
 
 class MessageSocketsHandler(Thread):
     """
@@ -60,7 +57,7 @@ class MessageSocketsHandler(Thread):
     def put_timout(self, new_timeout):
         self.__wait_timeout = int(new_timeout)
 
-    def send_message(self, message: ServerMessage, client_id=None, device_id=None):
+    def send_message(self, message: ServerMessage, client_id=None, device_id=None, app_name=None):
         """
         allows the sending of a socket message to a client,
         puts it into the message queue
@@ -68,9 +65,10 @@ class MessageSocketsHandler(Thread):
             :param message: the ServerMessage to send through a socket
             :param client_id: the clients current user id
             :param device_id: the clients current current device id
+            :param app_name: the name of the 'app' that the message was sent from
         """
         if client_id is None or self.__connected_clients.get(client_id):
-            mess_to_queue = QueuedMessage(message, client_id, device_id)
+            mess_to_queue = QueuedMessage(message, client_id, device_id, app_name)
             self.__queued_messages.put(mess_to_queue, timeout=self.__wait_timeout)
 
     def new_client(self, client_id, device_id, device_conn: DeviceConnection):
@@ -99,28 +97,33 @@ class MessageSocketsHandler(Thread):
         """
         starts the thread loop
         """
-        #TODO: pack both types before and send later to all clients!
+        #TODO: refactor later
         while True:
             next_message: QueuedMessage = self.__queued_messages.get()
-
+            # (JSON, MSGPACK)
+            packed_msg = pack(next_message.message)
             if next_message.curr_client_id is None:
                 # sending to all connected users/devices
                 for user_id in self.__connected_clients:
                     for device_id in self.__connected_clients[user_id]:
-                        pack_and_send(
-                            self.__connected_clients[user_id][device_id].socket,
-                            next_message.message,
-                            self.__connected_clients[user_id][device_id].transport_type
-                            )
+                        curr_client = self.__connected_clients[user_id][device_id]
+                        # only send the message if the client is listening for the current app
+                        if (next_message.app_name is None) or (next_message.app_name in curr_client.notify_apps):
+                            if curr_client.transport_type == ConnType.MSGPACK:
+                                curr_client.socket.send(packed_msg[1])
+                            else:
+                                curr_client.socket.send(packed_msg[0])
             else:
                 # send to a specific user
                 user_id = next_message.curr_client_id
                 client_sockets: dict = self.__connected_clients[user_id]
                 for device_id in client_sockets:
                     if device_id != next_message.curr_device_id:
-                        pack_and_send(
-                            self.__connected_clients[user_id][device_id].socket,
-                            next_message.message,
-                            self.__connected_clients[user_id][device_id].transport_type
-                            )
+                        curr_client = self.__connected_clients[user_id][device_id]
+                        # only send the message if the client is listening for the current app
+                        if (next_message.app_name is None) or (next_message.app_name in curr_client.notify_apps):
+                            if curr_client.transport_type == ConnType.MSGPACK:
+                                curr_client.socket.send(packed_msg[1])
+                            else:
+                                curr_client.socket.send(packed_msg[0])
             self.__queued_messages.task_done()

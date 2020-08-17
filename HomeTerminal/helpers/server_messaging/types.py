@@ -130,13 +130,17 @@ class QueuedMessage:
     Dataclass that contains needed data
     for when a WebSocket message is queued
 
-        :param message: the ServerMessage that will be sent through a WebSocket
+        :param message: the ServerMessage that will
+                        be sent through a WebSocket
         :param curr_client_id: the clients id, can be None
         :param curr_device_id: the device's id, can be None
+        :param app_name: the name of the 'app' that the
+                         message was sent from, can be None
     """
     message: ServerMessage
     curr_client_id: str = None
     curr_device_id: str = None
+    app_name: str = None
 
 @dataclass
 class DeviceConnection:
@@ -149,4 +153,5 @@ class DeviceConnection:
     """
     socket: WebSocket
     transport_type: ConnType = ConnType.JSON
+    #TODO: change to set type later?
     notify_apps: tuple = ()

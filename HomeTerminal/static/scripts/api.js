@@ -16,12 +16,6 @@ function datetime_for_api() {
     return `${curr_dt.getUTCFullYear()}/${pad_zero(curr_dt.getUTCMonth())}/${pad_zero(curr_dt.getUTCDay())} ${pad_zero(curr_dt.getUTCHours())}:${pad_zero(curr_dt.getUTCMinutes())}:${pad_zero(curr_dt.getUTCSeconds())}.${curr_dt.getUTCMilliseconds()}`;
 }
 
-function refresh_notifications_count() {
-    // loads a new count of notifications
-    // into notification icon
-    //TODO: implement later after 2.0
-}
-
 function new_messages(messages) {
     // adds new messages to the messages box on dashboard
     const mesage_table = document.getElementById("loadedmessages");

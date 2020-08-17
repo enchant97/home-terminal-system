@@ -54,6 +54,11 @@ function togg_element_onclick(checkbox_id, ...elements) {
     }
 }
 
+/**
+ * checks whether the password has at least 8 characters,
+ * one number, lowercase and upper case letter
+ * @param {String} password - the password to check against
+ */
 function password_char_check(password) {
     // at least one number, one lowercase and one uppercase letter
     // at least 8 characters
@@ -61,6 +66,12 @@ function password_char_check(password) {
     return re.test(password);
 }
 
+/**
+ * validates the password to check it
+ * @param {String} pass_1_id - the password element id
+ * @param {*String} pass_2_id - the password confirm element id
+ * @param {String} username_id - the username element id
+ */
 function validate_password(pass_1_id, pass_2_id, username_id) {
     pass_1_id = document.getElementById(pass_1_id).value;
     pass_2_id = document.getElementById(pass_2_id).value;
@@ -108,15 +119,15 @@ function create_option_into_select(select_elem, option_val) {
     select_elem.appendChild(the_option);
 }
 
+/**
+ * To load options into a select element using fetch
+ *
+ * @param {String} select_id - the id of the select element
+ * @param {String} url - the url for the request
+ * @param {String} main_loc - the main location (photo database)
+ * @param {String} first_option_inner - what the inner text of the first option should be
+*/
 function start_load_options_to_select(select_id, url, main_loc, first_option_inner = 'Show All') {
-    /**
-     * To load options into a select element using fetch
-     *
-     * @param {String} select_id - the id of the select element
-     * @param {String} url - the url for the request
-     * @param {String} main_loc - the main location (photo database)
-     * @param {String} first_option_inner - what the inner text of the first option should be
-    */
     if (main_loc == '') { return }
     const select_elem = document.getElementById(select_id);
     url = url + "?mainloc=" + main_loc
@@ -168,4 +179,8 @@ window.addEventListener("ws_notif_mess", (event) => {
     if (event.detail.type_id == TYPES.NOTIFICATION.MESSAGE) {
         createAlert(event.detail.message, event.detail.category);
     }
+});
+
+window.addEventListener("ws_update_messages", (_event) => {
+    do_messages_refresh();
 });
