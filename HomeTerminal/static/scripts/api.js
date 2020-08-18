@@ -40,16 +40,12 @@ function new_messages(messages) {
 }
 
 function delete_message(mess_id) {
-    //sends a xhr POST request to remove a message
+    //sends a xhr DELETE request to remove a message
     //source: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
-    fetch("/api/messages/remove", {
-        method: "POST",
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ id: mess_id }),
+    fetch("/messages/remove/" + mess_id, {
+        method: "DELETE"
     })
-        .then(function () {
+        .then(() => {
             document.getElementById("message_" + mess_id).remove();
         })
         .catch((error) => {
@@ -58,7 +54,7 @@ function delete_message(mess_id) {
 }
 
 function do_messages_refresh() {
-    fetch("/api/messages")
+    fetch("/messages/asjson")
         .then((response) => {
             return response.json();
         })
