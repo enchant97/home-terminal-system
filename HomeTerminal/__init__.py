@@ -24,7 +24,7 @@ from .database.dao.user import get_notifations, new_account
 from .database.database import db
 from .sockets import init_socket_handlers
 from .views import (account, api, fm, home, hwm, im, live_update_ws, main, pm,
-                    reminder)
+                    reminder, messages)
 
 app = Flask(__name__)
 sockets = Sockets()
@@ -137,6 +137,7 @@ def create_app():
     app.register_blueprint(im, url_prefix="/inventory-manager")
     app.register_blueprint(api, url_prefix="/api")
     app.register_blueprint(reminder, url_prefix="/reminder")
+    app.register_blueprint(messages, url_prefix="/messages")
 
     sockets.register_blueprint(live_update_ws, url_prefix="/live-update")
 

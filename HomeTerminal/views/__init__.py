@@ -6,5 +6,6 @@ from .homework import hwm
 from .inventory_manager import im
 from .live_update import live_update_ws
 from .main import main
+from .messages import messages
 from .photo_manager import pm
 from .reminder import reminder
