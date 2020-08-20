@@ -11,9 +11,8 @@ def get_homework_ordered(removed=False, last_updated=None):
     if last_updated is datetime will raise
     AlreadyUpToDate if it is already up to date
 
-    args:
-        removed : whether to select removed entries or not
-        last_updated : datetime obj or '%Y-%m-%d %H:%M:%S.%f'
+        :param removed: whether to select removed entries or not
+        :param last_updated: datetime obj or '%Y-%m-%d %H:%M:%S.%f'
     """
     if last_updated:
         if not isinstance(datetime, last_updated):
@@ -30,9 +29,8 @@ def get_homework_tasks(hw_id, removed=False):
     """
     returns the homework tasks related to the given homework id
 
-    args:
-        hw_id : the homework main id
-        removed : whether to select removed entries or not
+        :param hw_id: the homework main id
+        :param removed: whether to select removed entries or not
     """
     return Task.query.filter_by(removed=removed, hw_id=hw_id).all()
 
@@ -42,11 +40,10 @@ def edit_homework(message, datedue, removed=False, id_=None):
     editing is not implemented,
     returns a Homework_Main obj
 
-    args:
-        message : the message for the homework
-        datedue : datetime obj for when it is due
-        removed : whether entries should be marked for removal
-        id_: the id of the homework if editing
+        :param message: the message for the homework
+        :param datedue: datetime obj for when it is due
+        :param removed: whether entries should be marked for removal
+        :param id_: the id of the homework if editing
     """
     if id_:
         #TODO: implement
@@ -67,11 +64,11 @@ def edit_homework_task(content, hw_id, removed=False, id_=None):
     editing is not implemented,
     returns Homework_Task obj/s
 
-    args:
-        content : the task content, if multiple tasks need to be added send list/tuple
-        hw_id : id for the Homework_Main it relates to
-        removed : whether entries should be marked for removal
-        id_ : the id of the homework task if editing
+        :param content: the task content, if multiple tasks
+                        need to be added send list/tuple
+        :param hw_id: id for the Homework_Main it relates to
+        :param removed: whether entries should be marked for removal
+        :param id_: the id of the homework task if editing
     """
     if id_:
         #TODO: implement
@@ -95,10 +92,19 @@ def mark_homework_for_removal(id_, removed=True):
     """
     marks tasks and homework for removal
 
-    args:
-        id_ : the id of the hw entry
+        :param id_: the id of the hw entry
     """
     #TODO: implement RowDoesNotExist error
     Main.query.filter_by(id_=id_).update(dict(removed=removed))
     Task.query.filter_by(hw_id=id_).update(dict(removed=removed))
+    db.session.commit()
+
+def delete_removed():
+    """
+    delete the rows that are marked as removed
+    """
+    for row in Main.query.filter_by(removed=True).all():
+        db.session.delete(row)
+    for row in Task.query.filter_by(removed=True).all():
+        db.session.delete(row)
     db.session.commit()

@@ -66,9 +66,9 @@ def new_item(name: str, box_id: int, quantity: int = 1, type_id: int = None, in_
 def edit_location(loc_id, **kwargs):
     """
     used to edit a location row
-    args:
-        loc_id : location id for what value to update
-        **kwargs : values to update
+
+        :param loc_id: location id for what value to update
+        :param **kwargs: values to update
     """
     location_row = Location.query.filter_by(id_=loc_id)
     if not location_row.count():
@@ -80,9 +80,9 @@ def edit_location(loc_id, **kwargs):
 def edit_type(type_id, **kwargs):
     """
     used to edit a type row
-    args:
-        type_id : type id for what value to update
-        **kwargs : values to update
+
+        :param type_id: type id for what value to update
+        :param **kwargs: values to update
     """
     type_row = Type.query.filter_by(id_=type_id)
     if not type_row.count():
@@ -94,9 +94,9 @@ def edit_type(type_id, **kwargs):
 def edit_box(box_id, **kwargs):
     """
     used to edit a box row
-    args:
-        box_id : box id for what value to update
-        **kwargs : values to update
+
+        :param box_id: box id for what value to update
+        :param **kwargs: values to update
     """
     box_row = Box.query.filter_by(id_=box_id)
     if not box_row.count():
@@ -108,9 +108,9 @@ def edit_box(box_id, **kwargs):
 def edit_item(item_id, **kwargs):
     """
     used to edit a item row
-    args:
-        item_id : item id for what value to update
-        **kwargs : values to update
+
+        :param item_id: item id for what value to update
+        :param **kwargs: values to update
     """
     item_row = Item.query.filter_by(id_=item_id)
     if not item_row.count():
@@ -123,9 +123,8 @@ def get_type(first=False, **filters):
     """
     returns Type rows
 
-    args:
-        first: whether to return first entry only or multiple
-        filters: other row columns to filter by
+        :param first: whether to return first entry only or multiple
+        :param filters: other row columns to filter by
     """
     query = Type.query.filter_by(**filters)
     if first:
@@ -136,9 +135,8 @@ def get_locations(first=False, **filters):
     """
     returns Location rows
 
-    args:
-        first: whether to return first entry only or multiple
-        filters: other row columns to filter by
+        :param first: whether to return first entry only or multiple
+        :param filters: other row columns to filter by
     """
     query = Location.query.filter_by(**filters)
     if first:
@@ -149,9 +147,8 @@ def get_box(first=False, **filters):
     """
     returns Box rows
 
-    args:
-        first: whether to return first entry only or multiple
-        filters: other row columns to filter by
+        :param first: whether to return first entry only or multiple
+        :param filters: other row columns to filter by
     """
     query = Box.query.filter_by(**filters)
     if first:
@@ -162,9 +159,8 @@ def get_item(first=False, **filters):
     """
     returns Item rows
 
-    args:
-        first: whether to return first entry only or multiple
-        filters: other row columns to filter by
+        :param first: whether to return first entry only or multiple
+        :param filters: other row columns to filter by
     """
     query = Item.query.filter_by(**filters)
     if first:
@@ -176,11 +172,24 @@ def get_like_item_names(name, limit: int = None):
     returns Items, using like
     comparison for item name
 
-    args:
-        name : name to match entries to
-        limit : limit the selected rows to a certain amount
+        :param name: name to match entries to
+        :param limit: limit the selected rows to a certain amount
     """
-    query = Item.query.filter(Item.name.like(name + "%"))
+    query = Item.query.filter(Item.name.like("%" + name + "%"))
     if limit:
         return query.limit(limit).all()
     return query.all()
+
+def delete_removed():
+    """
+    delete the rows that are marked as removed
+    """
+    for row in Box.query.filter_by(removed=True).all():
+        db.session.delete(row)
+    for row in Item.query.filter_by(removed=True).all():
+        db.session.delete(row)
+    for row in Location.query.filter_by(removed=True).all():
+        db.session.delete(row)
+    for row in Type.query.filter_by(removed=True).all():
+        db.session.delete(row)
+    db.session.commit()

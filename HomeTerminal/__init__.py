@@ -15,15 +15,19 @@ from pathlib import Path
 
 from flask import Flask, render_template
 from flask_login import current_user
+from flask_sockets import Sockets
 from werkzeug.utils import find_modules, import_string
 
 from .authentication import login_manager
 from .config import config
 from .database.dao.user import get_notifations, new_account
 from .database.database import db
-from .views import account, api, fm, home, hwm, im, main, pm, reminder
+from .sockets import init_socket_handlers
+from .views import (account, api, fm, home, hwm, im, live_update_ws, main, pm,
+                    reminder, messages)
 
 app = Flask(__name__)
+sockets = Sockets()
 
 @app.errorhandler(404)
 def not_found(e):
@@ -93,13 +97,8 @@ def import_models(models_dir, import_path):
     used to import all database models found in given directory,
     can be run several times if there are different model directories
 
-    args:
-        models_dir : the directory where db models are located
-        import_path : the import path for the models directory
-
-    example:
-        models_dir : path to models
-        import_path :  HomeTerminal.database.models
+        :param models_dir: the directory where db models are located
+        :param import_path: the import path for the models directory
     """
     # Source: https://gist.github.com/languanghao/a24d74b8ab4232a801312e2a0a107064
     # Source: https://github.com/davidism/basic_flask
@@ -121,8 +120,13 @@ def create_app():
     config_name = os.getenv("FLASK_CONFIGURATION", "dev")
     app.config.from_object(config[config_name])
     app.config["APP_VERSION"] = __version__
+    app.logger.info("HTS running version " + __version__)
+    if app.config["SQLALCHEMY_DATABASE_URI"] == "sqlite:///:memory:":
+        app.logger.warning("Running sqlite in-memory database!")
     db.init_app(app)
     login_manager.init_app(app)
+    sockets.init_app(app)
+    init_socket_handlers(app)
 
     app.register_blueprint(main)
     app.register_blueprint(account)
@@ -133,6 +137,9 @@ def create_app():
     app.register_blueprint(im, url_prefix="/inventory-manager")
     app.register_blueprint(api, url_prefix="/api")
     app.register_blueprint(reminder, url_prefix="/reminder")
+    app.register_blueprint(messages, url_prefix="/messages")
+
+    sockets.register_blueprint(live_update_ws, url_prefix="/live-update")
 
     # import database models from the apps model folder
     models_dir = Path(__file__).resolve(strict=True).parent / "database" / "models"

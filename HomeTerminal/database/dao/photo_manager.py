@@ -81,13 +81,12 @@ def new_event(mainloc, subloc, datetaken: datetime, notes, users, img_raw=None):
     Allows for adding a new PD1_FullEvent,
     returns PD1_FullEvent obj
 
-    args:
-        mainloc:
-        subloc:
-        datetaken:
-        notes:
-        users: list/tuple of usernames
-        img_raw : io.BytesIO object for the image file
+        :param mainloc: the mainloc name
+        :param subloc: the subloc name
+        :param datetaken: datetime that it was taken
+        :param notes: the notes
+        :param users: list/tuple of usernames
+        :param img_raw : io.BytesIO object for the image file
     """
 
     main_loc = MainLocation.query.filter_by(name=mainloc).first()
@@ -148,3 +147,19 @@ def new_subloc(sub_loc_name, lat, lng, main_loc_name, removed=False):
     db.session.commit()
 
     return sub_loc
+
+def delete_removed():
+    """
+    delete the rows that are marked as removed
+    """
+    for row in UserEvent.query.filter_by(removed=True).all():
+        db.session.delete(row)
+    for row in Thumbnail.query.filter_by(removed=True).all():
+        db.session.delete(row)
+    for row in FullEvent.query.filter_by(removed=True).all():
+        db.session.delete(row)
+    for row in SubLocation.query.filter_by(removed=True).all():
+        db.session.delete(row)
+    for row in MainLocation.query.filter_by(removed=True).all():
+        db.session.delete(row)
+    db.session.commit()

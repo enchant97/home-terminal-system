@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Messages - View{% endblock %}
+{% block maincontent %}
+<a href="{{ url_for('messages.new_message') }}" class="button">New Message</a>
+<table>
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Message</th>
+            <th>User From</th>
+            <th>Date Added</th>
+            <th>Remove</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for i in messages %}
+        <td>{{ i.id_ }}</td>
+        <td>{{ i.message }}</td>
+        <td>{{ i.user.username }}</td>
+        <td>{{ i.dateadded.strftime('%d-%m-%Y') }}</td>
+        <td><button class="fill" onclick="delete_message({{ i.id_ }});location.reload();">X</button></td>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

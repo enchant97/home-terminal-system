@@ -3,6 +3,7 @@
 {% block maincontent %}
 <menu class="container down">
     <a class="button" href="{{ url_for('home.view_plugins') }}">Plugins</a>
+    <a class="button" href="{{ url_for('messages.view') }}">Messages</a>
     <a class="button" href="{{ url_for('fm.report') }}">Freezer Manager</a>
     <a class="button" href="{{ url_for('hwm.homework') }}">Homework Manager</a>
     <a class="button" href="{{ url_for('pm.view') }}">Photo Manager</a>
@@ -12,6 +13,7 @@
     {% if admin %}
     <h3>Admin Only:</h3>
     <a class="button" href="{{ url_for('account.newaccount') }}">New Account</a>
+    <a class="button" href="{{ url_for('main.cleanup_db') }}">Issue Database Cleanup</a>
     {% endif %}
     <a class="button" href="{{ url_for('main.do_logout') }}">Logout</a>
 </menu>

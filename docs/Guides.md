@@ -8,6 +8,8 @@ You can then copy any config names that you want to change into the production c
 `SQLALCHEMY_DATABASE_URI` can be changed to connect to a different database.
 When running in production mode, by default it will use sqlite and
 save in HomeTerminal/appdata.db otherwise it will be in memory.
+
+[App Configs](Configuration.md)
 ### First Run
 When first run a default user will be created called terminal.
 The password for this account is the same as username.

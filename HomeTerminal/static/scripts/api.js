@@ -16,12 +16,6 @@ function datetime_for_api() {
     return `${curr_dt.getUTCFullYear()}/${pad_zero(curr_dt.getUTCMonth())}/${pad_zero(curr_dt.getUTCDay())} ${pad_zero(curr_dt.getUTCHours())}:${pad_zero(curr_dt.getUTCMinutes())}:${pad_zero(curr_dt.getUTCSeconds())}.${curr_dt.getUTCMilliseconds()}`;
 }
 
-function refresh_notifications_count() {
-    // loads a new count of notifications
-    // into notification icon
-    //TODO: implement later after 2.0
-}
-
 function new_messages(messages) {
     // adds new messages to the messages box on dashboard
     const mesage_table = document.getElementById("loadedmessages");
@@ -46,16 +40,12 @@ function new_messages(messages) {
 }
 
 function delete_message(mess_id) {
-    //sends a xhr POST request to remove a message
+    //sends a xhr DELETE request to remove a message
     //source: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
-    fetch("/api/messages/remove", {
-        method: "POST",
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ id: mess_id }),
+    fetch("/messages/remove/" + mess_id, {
+        method: "DELETE"
     })
-        .then(function () {
+        .then(() => {
             document.getElementById("message_" + mess_id).remove();
         })
         .catch((error) => {
@@ -64,7 +54,7 @@ function delete_message(mess_id) {
 }
 
 function do_messages_refresh() {
-    fetch("/api/messages")
+    fetch("/messages/asjson")
         .then((response) => {
             return response.json();
         })
