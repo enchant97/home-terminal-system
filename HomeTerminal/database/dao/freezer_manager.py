@@ -84,3 +84,13 @@ def edit_fm4_item(name: str, categoryname: str, quantity: int,
     db.session.add(fm_item)
     db.session.commit()
     return fm_item
+
+def delete_removed():
+    """
+    delete the rows that are marked as removed
+    """
+    for row in Item.query.filter_by(removed=True).all():
+        db.session.delete(row)
+    for row in Category.query.filter_by(removed=True).all():
+        db.session.delete(row)
+    db.session.commit()

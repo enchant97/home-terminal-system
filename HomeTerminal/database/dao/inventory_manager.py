@@ -179,3 +179,17 @@ def get_like_item_names(name, limit: int = None):
     if limit:
         return query.limit(limit).all()
     return query.all()
+
+def delete_removed():
+    """
+    delete the rows that are marked as removed
+    """
+    for row in Box.query.filter_by(removed=True).all():
+        db.session.delete(row)
+    for row in Item.query.filter_by(removed=True).all():
+        db.session.delete(row)
+    for row in Location.query.filter_by(removed=True).all():
+        db.session.delete(row)
+    for row in Type.query.filter_by(removed=True).all():
+        db.session.delete(row)
+    db.session.commit()

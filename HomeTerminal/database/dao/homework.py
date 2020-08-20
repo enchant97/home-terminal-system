@@ -98,3 +98,13 @@ def mark_homework_for_removal(id_, removed=True):
     Main.query.filter_by(id_=id_).update(dict(removed=removed))
     Task.query.filter_by(hw_id=id_).update(dict(removed=removed))
     db.session.commit()
+
+def delete_removed():
+    """
+    delete the rows that are marked as removed
+    """
+    for row in Main.query.filter_by(removed=True).all():
+        db.session.delete(row)
+    for row in Task.query.filter_by(removed=True).all():
+        db.session.delete(row)
+    db.session.commit()

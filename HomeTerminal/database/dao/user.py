@@ -189,3 +189,17 @@ def get_users(removed=False):
     returns User obj's
     """
     return User.query.filter_by(removed=removed).all()
+
+def delete_removed():
+    """
+    delete the rows that are marked as removed
+    """
+    for row in User_Settings.query.filter_by(removed=True).all():
+        db.session.delete(row)
+    for row in Api_Key.query.filter_by(removed=True).all():
+        db.session.delete(row)
+    for row in Message.query.filter_by(removed=True).all():
+        db.session.delete(row)
+    for row in User.query.filter_by(removed=True).all():
+        db.session.delete(row)
+    db.session.commit()

@@ -1,7 +1,9 @@
-from flask import Blueprint, flash, redirect, render_template, request, url_for
+from flask import (Blueprint, current_app, flash, redirect, render_template,
+                   request, url_for)
 from flask_login import current_user, login_required, login_user, logout_user
 
-from ..database.dao.user import get_users, try_login_user
+from ..database import dao
+from ..helpers.checkers import is_admin
 
 main = Blueprint("main", __name__)
 
@@ -9,7 +11,7 @@ main = Blueprint("main", __name__)
 def index():
     if current_user.is_authenticated:
         return redirect(url_for("home.dashboard"))
-    return render_template("main/index.html", users=get_users())
+    return render_template("main/index.html", users=dao.user.get_users())
 
 @main.route("/login", methods=["POST"])
 def do_login():
@@ -20,7 +22,7 @@ def do_login():
     remember_me = request.form.get("rememberme", False)
     if not username or not password:
         flash("You have left the form blank", "warning")
-    user = try_login_user(username, password)
+    user = dao.user.try_login_user(username, password)
     if user:
         if remember_me:
             login_user(user, remember=True)
@@ -41,3 +43,21 @@ def do_logout():
 @login_required
 def idle_display():
     return render_template("main/idle-display.html")
+
+@main.route("/cleanup-db")
+@login_required
+def cleanup_db():
+    if is_admin(current_user.username):
+        current_app.logger.info("start permanent deletion of rows marked for removal")
+        dao.reminder.delete_removed()
+        dao.photo_manager.delete_removed()
+        dao.inventory_manager.delete_removed()
+        dao.homework.delete_removed()
+        dao.freezer_manager.delete_removed()
+        dao.dashboard.delete_removed()
+        dao.user.delete_removed()
+        current_app.logger.info("finished permanent deletion of rows marked for removal")
+        flash("Finished cleanup")
+    else:
+        flash("You will need to be a admin to do that", "error")
+    return redirect(url_for("home.dashboard"))

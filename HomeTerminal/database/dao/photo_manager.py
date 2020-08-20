@@ -147,3 +147,19 @@ def new_subloc(sub_loc_name, lat, lng, main_loc_name, removed=False):
     db.session.commit()
 
     return sub_loc
+
+def delete_removed():
+    """
+    delete the rows that are marked as removed
+    """
+    for row in UserEvent.query.filter_by(removed=True).all():
+        db.session.delete(row)
+    for row in Thumbnail.query.filter_by(removed=True).all():
+        db.session.delete(row)
+    for row in FullEvent.query.filter_by(removed=True).all():
+        db.session.delete(row)
+    for row in SubLocation.query.filter_by(removed=True).all():
+        db.session.delete(row)
+    for row in MainLocation.query.filter_by(removed=True).all():
+        db.session.delete(row)
+    db.session.commit()

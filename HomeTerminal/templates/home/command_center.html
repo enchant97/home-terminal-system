@@ -13,6 +13,7 @@
     {% if admin %}
     <h3>Admin Only:</h3>
     <a class="button" href="{{ url_for('account.newaccount') }}">New Account</a>
+    <a class="button" href="{{ url_for('main.cleanup_db') }}">Issue Database Cleanup</a>
     {% endif %}
     <a class="button" href="{{ url_for('main.do_logout') }}">Logout</a>
 </menu>

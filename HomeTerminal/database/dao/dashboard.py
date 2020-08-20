@@ -56,3 +56,13 @@ def update_user_shortcut(user_id: int, shortcut_id: int, priority: int):
     db.session.add(the_user_shortcut)
     db.session.commit()
     return the_user_shortcut
+
+def delete_removed():
+    """
+    delete the rows that are marked as removed
+    """
+    for row in Shortcut.query.filter_by(removed=True).all():
+        db.session.delete(row)
+    for row in User_Shortcut.query.filter_by(removed=True).all():
+        db.session.delete(row)
+    db.session.commit()
