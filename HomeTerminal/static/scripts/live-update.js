@@ -50,7 +50,7 @@ class LiveUpdateWS {
      */
     get_ws_url() {
         const url = window.location.host + "/live-update/listen";
-        if (window.location.protocol == "https") {
+        if (window.location.protocol == "https:") {
             return "wss://" + url;
         }
         return "ws://" + url;
