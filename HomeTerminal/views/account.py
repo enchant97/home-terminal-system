@@ -1,13 +1,9 @@
-import json
 from datetime import datetime
 
 from flask import (Blueprint, current_app, flash, redirect, render_template,
                    request, url_for)
 from flask_login import current_user, login_required
 
-from ..database.dao.dashboard import (get_shortcuts, get_user_shortcuts,
-                                      new_shortcut, remove_user_shortcuts,
-                                      update_user_shortcut)
 from ..database.dao.exceptions import RowAlreadyExists
 from ..database.dao.user import (change_user_password, get_api_key,
                                  new_account, update_usersettings)
@@ -63,40 +59,6 @@ def settings():
     else:
         user_setting = update_usersettings(current_user.username)
     return render_template("account/user_settings.html", the_settings=user_setting)
-
-@account.route("/dashboard-settings", methods=["GET", "POST"])
-@login_required
-def dashboard_settings():
-    if request.method == "POST":
-        remove_user_shortcuts(current_user.id_)
-        shortcuts_layout = request.form
-        for key in shortcuts_layout.keys():
-            if shortcuts_layout[key]:
-                priority = key.strip("shortcut_")
-                update_user_shortcut(current_user.id_, shortcuts_layout[key], priority)
-        flash("updated shortcuts layout")
-    return render_template(
-        "/account/dashboard-settings.html",
-        shortcuts=get_shortcuts(),
-        user_sc=get_user_shortcuts(current_user.id_))
-
-@account.route("/dashboard-settings/new-shortcut", methods=["GET", "POST"])
-@login_required
-def dashboard_new_shortcut():
-    if request.method == "POST":
-        try:
-            name = request.form["name"]
-            url_endpoint = request.form["url_endpoint"]
-            if not request.form["url_variables"]:
-                url_variables = {}
-            else:
-                url_variables = json.loads(request.form["url_variables"])
-            new_shortcut(name, url_endpoint, **url_variables)
-            flash("added new shortcut")
-            return redirect(url_for("account.dashboard_settings"))
-        except KeyError:
-            flash("missing required form values", "error")
-    return render_template("/account/new-shortcut.html")
 
 @account.route("/api-key")
 @login_required

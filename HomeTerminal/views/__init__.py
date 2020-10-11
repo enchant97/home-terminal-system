@@ -9,3 +9,4 @@ from .main import main
 from .messages import messages
 from .photo_manager import pm
 from .reminder import reminder
+from .shortcuts import shortcuts

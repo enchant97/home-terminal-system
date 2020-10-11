@@ -22,9 +22,10 @@ from .authentication import login_manager
 from .config import config
 from .database.dao.user import get_notifations, new_account
 from .database.database import db
+from .helpers.constants import INBUILT_WIDGETS
 from .sockets import init_socket_handlers
-from .views import (account, api, fm, home, hwm, im, live_update_ws, main, pm,
-                    reminder, messages)
+from .views import (account, api, fm, home, hwm, im, live_update_ws, main,
+                    messages, pm, reminder, shortcuts)
 
 app = Flask(__name__)
 sockets = Sockets()
@@ -138,6 +139,7 @@ def create_app():
     app.register_blueprint(api, url_prefix="/api")
     app.register_blueprint(reminder, url_prefix="/reminder")
     app.register_blueprint(messages, url_prefix="/messages")
+    app.register_blueprint(shortcuts, url_prefix="/widget/shortcuts")
 
     sockets.register_blueprint(live_update_ws, url_prefix="/live-update")
 
@@ -153,6 +155,11 @@ def create_app():
         app.logger.info("finished loading plugins")
     else:
         app.logger.info("not loading plugins as it is disabled in config")
+
+    # load the widgets into app.config
+    app.config["WIDGETS"] = {}
+    for widget in INBUILT_WIDGETS:
+        app.config["WIDGETS"][widget.uuid] = widget
 
     with app.app_context():
         db.create_all()

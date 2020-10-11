@@ -1,0 +1,7 @@
+<div class="container down">
+    <h2>Shortcuts</h2>
+    {% for i in shortcuts %}
+    <a class="button"
+        href="{{ url_for(i.url_endpoint, **i.url_variables) }}">{{ i.name }}</a>
+    {% endfor %}
+</div>

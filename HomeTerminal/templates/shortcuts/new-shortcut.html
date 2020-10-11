@@ -1,14 +1,14 @@
 {% extends "base.html" %}
-{% block title %}Customise Dashboard{% endblock %}
+{% block title %}Customise Shorcuts{% endblock %}
 {% block maincontent %}
 <h2>Add New Shortcut</h2>
 <form action="" method="post" class="container two-col">
     <label for="name">Name:</label>
     <input type="text" name="name" id="name" required>
     <label for="url_endpoint">URL Endpoint:</label>
-    <input type="text" name="url_endpoint" id="url_endpoint" required>
+    <input type="text" name="url_endpoint" id="url_endpoint" placeholder="main.do_logout" required>
     <label for="url_variables">URL Variables:</label>
-    <input type="text" name="url_variables" id="url_variables" placeholder="json data is expected...">
+    <input type="text" name="url_variables" id="url_variables" placeholder="{'id': 1, ...}">
     <button class="fillboth" type="submit">Save</button>
 </form>
 {% endblock %}

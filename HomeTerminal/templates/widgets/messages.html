@@ -1,0 +1,15 @@
+<div class="container down">
+    <h2>Messages</h2>
+    <a class="button" href="{{ url_for('messages.new_message') }}">New Message</a>
+    <table class="plain" id="loadedmessages">
+        <tbody>
+            {% for message in get_messages() %}
+            <tr id="message_{{ message.id_ }}">
+                <td>{{ message.message }}</td>
+                <td><button onclick="delete_message({{ message.id_ }})">Close</button></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>

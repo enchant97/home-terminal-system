@@ -65,3 +65,15 @@ function do_messages_refresh() {
             console.error("Error", error);
         });
 }
+
+function api_move_widget_pos(widget_id, id_to_replace) {
+    //TODO this is not part of the api move it!
+    const body = JSON.stringify({ "id": parseInt(widget_id), "id-to-replace": parseInt(id_to_replace) });
+    fetch("/home/dashboard/widgets/move",
+        {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: body
+        })
+        .catch(console.error);
+}

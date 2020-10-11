@@ -1,7 +1,8 @@
 {% extends "base.html" %}
-{% block title %}Customise Dashboard{% endblock %}
+{% block title %}Customise Shortcuts{% endblock %}
 {% block extrahead %}
 <script>
+    //TODO: make this better
     function shortcut_change(select_elem){
         if (select_elem.value == ''){
             remove_shortcut(select_elem);
@@ -26,7 +27,7 @@
 </script>
 {% endblock %}
 {% block maincontent %}
-<a class="button" href="{{ url_for('account.dashboard_new_shortcut') }}">New Shortcut</a>
+<a class="button" href="{{ url_for('shortcuts.new_shortcut', widget_id=widget_id) }}">New Shortcut</a>
 <form class="container down" action="" method="post">
     <h3>Your Shortcut Screen:</h3>
     <div class="down" id="shortcuts">

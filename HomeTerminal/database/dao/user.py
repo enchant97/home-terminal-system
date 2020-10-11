@@ -1,11 +1,13 @@
-import uuid
 import hashlib
+import uuid
 from datetime import datetime
 
+from ...helpers.constants import DEFAULT_WIDGETS
 from ...helpers.types import Notification
 from ..database import db
 from ..models.homework import Main as Homework_Main
 from ..models.user import Api_Key, Message, User, User_Settings
+from .dashboard import add_widget
 from .exceptions import AlreadyUpToDate, RowAlreadyExists, RowDoesNotExist
 from .freezer_manager import get_fm4_expiring
 
@@ -34,11 +36,18 @@ def new_account(username, password, birthday: datetime, ignore_duplicate=False):
             raise RowAlreadyExists(f"username already exists: {username}")
         return None
 
+    # create the user row
     new_user = User(username=username.lower(), birthday=birthday)
     new_user.set_password(password)
     db.session.add(new_user)
     db.session.commit()
+
+    # create the user setting row
     db.session.add(User_Settings(user_id=new_user.id_))
+
+    # create the user widget rows
+    for i, widget in enumerate(DEFAULT_WIDGETS):
+        add_widget(new_user.id_, widget.uuid)
     db.session.commit()
     return new_user
 
@@ -103,7 +112,6 @@ def get_api_key(username):
     """
     the_user = User.query.filter_by(username=username).first()
     if not the_user:
-        # TODO: make this into a function?
         raise RowDoesNotExist(f"username {username} not found")
 
     the_key = Api_Key.query.filter_by(owner_id=the_user.id_).first()
@@ -128,7 +136,8 @@ def get_messages(removed=False, last_updated=None):
         if not isinstance(datetime, last_updated):
             # if the last_updated was a string try to convert
             last_updated = datetime.strptime(last_updated, "%Y-%m-%d %H:%M:%S.%f")
-        last_message = Message.query.filter_by(removed=removed).order_by(Message.last_updated.desc()).first()
+        last_message = Message.query.filter_by(removed=removed)\
+            .order_by(Message.last_updated.desc()).first()
         if last_message:
             if last_message.last_updated <= last_updated:
                 raise AlreadyUpToDate()

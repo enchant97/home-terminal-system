@@ -1,7 +1,6 @@
 from flask import Blueprint, jsonify, request
 
 from ..database import dao
-from ..database.dao.homework import get_homework_ordered
 from ..helpers.api import api_auth, api_date_checks
 
 api = Blueprint("api", __name__)
@@ -10,7 +9,7 @@ api = Blueprint("api", __name__)
 @api_auth
 @api_date_checks
 def hw():
-    loaded_hw = get_homework_ordered(last_updated=request.args.get("last-update"))
+    loaded_hw = dao.homework.get_homework_ordered(last_updated=request.args.get("last-update"))
     return jsonify(loaded_data=[hw.serialize() for hw in loaded_hw])
 
 @api.route("/im/get-names", methods=["POST"])

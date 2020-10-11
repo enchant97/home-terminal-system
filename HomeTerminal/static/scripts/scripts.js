@@ -174,6 +174,10 @@ function custom_expire_onclick() {
     }
 }
 
+function get_child_pos(children, child) {
+    return Array.prototype.indexOf.call(children, child);
+}
+
 // handles showing WebSocket notifications
 window.addEventListener("ws_notif_mess", (event) => {
     if (event.detail.type_id == TYPES.NOTIFICATION.MESSAGE) {

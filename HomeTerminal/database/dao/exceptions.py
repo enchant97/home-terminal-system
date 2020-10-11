@@ -6,3 +6,6 @@ class RowDoesNotExist(Exception):
 
 class AlreadyUpToDate(Exception):
     pass
+
+class AlreadyMarkedAsRemoved(Exception):
+    pass

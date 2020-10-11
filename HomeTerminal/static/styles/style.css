@@ -160,6 +160,19 @@ a {
   font-size: 1.2em;
 }
 
+.popup {
+  position: fixed;
+  z-index: 1;
+  padding: 20px;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: -webkit-fill-available;
+  width: -moz-available;
+  overflow: auto;
+  background-color: rgb(0, 0, 0, 0.84);
+}
+
 .container,
 form#login,
 table {
@@ -170,7 +183,7 @@ table {
   margin-bottom: 12px;
 }
 
-.fill{
+.fill {
   width: 100%;
   padding: 0;
   margin: 0;
@@ -375,5 +388,26 @@ table.plain tbody tr {
 
   header #datetime div {
     text-align: center;
+  }
+}
+
+/* loading spinner */
+.spinload {
+  border: 5px solid rgb(243, 243, 243);
+  border-radius: 50%;
+  border-top: 5px solid var(--blue);
+  width: 50px;
+  height: 50px;
+  animation: spin 700ms linear infinite;
+  margin: auto auto;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
   }
 }

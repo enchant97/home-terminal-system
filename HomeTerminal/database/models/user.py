@@ -41,6 +41,7 @@ class User(UserMixin, BaseNoUpdate):
     def __repr__(self):
         return f"username={self.username}, lastlogin={self.lastlogin}"
 
+
 class User_Settings(db.Model):
     """
     Where user settings are stored.
@@ -62,6 +63,7 @@ class User_Settings(db.Model):
             "mess_notif":self.mess_notif
         }
 
+
 class Api_Key(db.Model):
     """
     Stores api keys and registers each owner
@@ -72,6 +74,7 @@ class Api_Key(db.Model):
     removed = db.Column(db.Boolean, nullable=False, default=False)
 
     user = db.relation(User, backref=__tablename__)
+
 
 class Message(BaseNoUpdate):
     __tablename__ = "messages"
