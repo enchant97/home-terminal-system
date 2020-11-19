@@ -9,3 +9,5 @@ digitize certain tasks that can be done around the home.
 
 ## Checkout the docs located [here](docs/index.md)
 Or go to docs folder on the repository.
+
+## **! In a future update this project will use docker !**

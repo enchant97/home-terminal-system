@@ -9,9 +9,7 @@
 |   ?  | Further Thought Is Required |
 
 ## The Roadmap
-- [ ] use openweather for the weather
-- [ ] UTC time on server, timezone configured by a admin
-- [ ] allow user to customise the way notifications are show
-    - small icon with number
-    - large banner across the whole screen
-- ? Full AJAX (make all requests use fetch)
+- [ ] Convert into a docker 'apps'
+- [ ] Move Homework 'app' into Reminders
+- [?] Use openweather for the weather widget
+- [?] UTC time on server, timezone configured by a admin

@@ -2,6 +2,7 @@
 {% block title %}Command Center{% endblock %}
 {% block maincontent %}
 <menu class="container down">
+    <h3>Currently Logged In User: <strong>{{ current_user.username }}</strong></h3>
     <a class="button" href="{{ url_for('home.view_plugins') }}">Plugins</a>
     <a class="button" href="{{ url_for('messages.view') }}">Messages</a>
     <a class="button" href="{{ url_for('fm.report') }}">Freezer Manager</a>

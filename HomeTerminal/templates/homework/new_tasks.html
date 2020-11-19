@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block title %}HW Manager - New Tasks{% endblock %}
 {% block maincontent %}
+<h3>This app will be removed in favor for the reminders app in the future!</h3>
 <form class="container two-col" id="hw-tasks_form" action="{{ url_for('hwm.new_homework_task') }}" method="POST">
     <label for="hw_id">Homework id:</label>
     <input type="text" name="hw_id" id="hw_id" value="{{ hw_id }}" required readonly>

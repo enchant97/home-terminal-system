@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block title %}HW Manager - View Tasks{% endblock %}
 {% block maincontent %}
+<h3>This app will be removed in favor for the reminders app in the future!</h3>
 <a href="{{ url_for('hwm.homework') }}" class="button">Back</a>
 <a href="{{ url_for('hwm.remove_homework') + '?homework_id=' + hw_id|string }}" class="button">Remove Homework</a>
 <button class="button ok" onclick="window.location = `{{ url_for('hwm.new_homework_task') + '?homework_id=' + hw_id|string }}`">New Task</button>
