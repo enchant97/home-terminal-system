@@ -71,8 +71,6 @@ def delete_removed():
     """
     delete the rows that are marked as removed
     """
-    for row in Reminder.query.filter_by(removed=True).all():
-        db.session.delete(row)
-    for row in Reminder_Type.query.filter_by(removed=True).all():
-        db.session.delete(row)
+    Reminder.query.filter_by(removed=True).delete()
+    Reminder_Type.query.filter_by(removed=True).delete()
     db.session.commit()

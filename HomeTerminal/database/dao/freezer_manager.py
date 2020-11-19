@@ -89,8 +89,6 @@ def delete_removed():
     """
     delete the rows that are marked as removed
     """
-    for row in Item.query.filter_by(removed=True).all():
-        db.session.delete(row)
-    for row in Category.query.filter_by(removed=True).all():
-        db.session.delete(row)
+    Item.query.filter_by(removed=True).delete()
+    Category.query.filter_by(removed=True).delete()
     db.session.commit()

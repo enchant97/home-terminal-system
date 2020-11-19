@@ -203,12 +203,8 @@ def delete_removed():
     """
     delete the rows that are marked as removed
     """
-    for row in User_Settings.query.filter_by(removed=True).all():
-        db.session.delete(row)
-    for row in Api_Key.query.filter_by(removed=True).all():
-        db.session.delete(row)
-    for row in Message.query.filter_by(removed=True).all():
-        db.session.delete(row)
-    for row in User.query.filter_by(removed=True).all():
-        db.session.delete(row)
+    User_Settings.query.filter_by(removed=True).delete()
+    Api_Key.query.filter_by(removed=True).delete()
+    Message.query.filter_by(removed=True).delete()
+    User.query.filter_by(removed=True).delete()
     db.session.commit()

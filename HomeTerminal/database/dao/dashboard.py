@@ -212,8 +212,6 @@ def delete_removed():
     """
     delete the rows that are marked as removed
     """
-    for row in Shortcut.query.filter_by(removed=True).all():
-        db.session.delete(row)
-    for row in Widget.query.filter_by(removed=True).all():
-        db.session.delete(row)
+    Shortcut.query.filter_by(removed=True).delete()
+    Widget.query.filter_by(removed=True).delete()
     db.session.commit()

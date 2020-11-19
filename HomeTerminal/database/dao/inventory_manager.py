@@ -184,12 +184,8 @@ def delete_removed():
     """
     delete the rows that are marked as removed
     """
-    for row in Box.query.filter_by(removed=True).all():
-        db.session.delete(row)
-    for row in Item.query.filter_by(removed=True).all():
-        db.session.delete(row)
-    for row in Location.query.filter_by(removed=True).all():
-        db.session.delete(row)
-    for row in Type.query.filter_by(removed=True).all():
-        db.session.delete(row)
+    Box.query.filter_by(removed=True).delete()
+    Item.query.filter_by(removed=True).delete()
+    Location.query.filter_by(removed=True).delete()
+    Type.query.filter_by(removed=True).delete()
     db.session.commit()

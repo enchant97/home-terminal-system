@@ -103,8 +103,6 @@ def delete_removed():
     """
     delete the rows that are marked as removed
     """
-    for row in Main.query.filter_by(removed=True).all():
-        db.session.delete(row)
-    for row in Task.query.filter_by(removed=True).all():
-        db.session.delete(row)
+    Main.query.filter_by(removed=True).delete()
+    Task.query.filter_by(removed=True).delete()
     db.session.commit()

@@ -152,14 +152,9 @@ def delete_removed():
     """
     delete the rows that are marked as removed
     """
-    for row in UserEvent.query.filter_by(removed=True).all():
-        db.session.delete(row)
-    for row in Thumbnail.query.filter_by(removed=True).all():
-        db.session.delete(row)
-    for row in FullEvent.query.filter_by(removed=True).all():
-        db.session.delete(row)
-    for row in SubLocation.query.filter_by(removed=True).all():
-        db.session.delete(row)
-    for row in MainLocation.query.filter_by(removed=True).all():
-        db.session.delete(row)
+    UserEvent.query.filter_by(removed=True).delete()
+    Thumbnail.query.filter_by(removed=True).delete()
+    FullEvent.query.filter_by(removed=True).delete()
+    SubLocation.query.filter_by(removed=True).delete()
+    MainLocation.query.filter_by(removed=True).delete()
     db.session.commit()
