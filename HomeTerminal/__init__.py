@@ -22,7 +22,7 @@ from .authentication import login_manager
 from .config import config
 from .database.dao.user import get_notifations, new_account
 from .database.database import db
-from .helpers.constants import INBUILT_WIDGETS
+from .helpers.constants import INBUILT_DYNAMIC_IMG_FOLDERS, INBUILT_WIDGETS
 from .sockets import init_socket_handlers
 from .views import (account, api, fm, home, hwm, im, live_update_ws, main,
                     messages, pm, reminder, shortcuts)
@@ -160,6 +160,9 @@ def create_app():
     app.config["WIDGETS"] = {}
     for widget in INBUILT_WIDGETS:
         app.config["WIDGETS"][widget.uuid] = widget
+
+    # load the dynamic image folder names
+    app.config["DYNAMIC_IMG_LOCATIONS"] = INBUILT_DYNAMIC_IMG_FOLDERS
 
     with app.app_context():
         db.create_all()

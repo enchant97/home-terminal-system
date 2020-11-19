@@ -21,10 +21,6 @@ class Base:
     # the base path that all relative paths will use
     # controls where the app's dynamic images will be stored
     BASE_IMG_PATH = "dynamic_images"
-    DYNAMIC_IMG_LOCATIONS = {
-        # folder where photo manager images will be stored
-        "PHOTO_MANAGER": "photo_manager"
-    }
 
 
 class Testing(Base):

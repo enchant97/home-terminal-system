@@ -7,6 +7,11 @@ from .types import Widget
 from .widgets import (generate_message_widget, generate_shortcut_widget,
                       generate_weather_widget)
 
+# the folder names for dynamic images folder
+INBUILT_DYNAMIC_IMG_FOLDERS = {
+    "PHOTO_MANAGER": "photo_manager"
+}
+
 # widgets that are inbuilt to the HTS
 INBUILT_WIDGETS = (
         Widget(
