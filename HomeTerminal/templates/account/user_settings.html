@@ -2,14 +2,13 @@
 {% block title %}User Settings{% endblock %}
 {% block maincontent %}
 <form class="container two-col" action="{{ url_for('account.settings') }}" method="POST">
-    <!-- TODO: use checkboxes instead with function to set default option -->
-    <label for="hwm_notif">Homework Notifications</label>
-    <input type="number" name="hwm_notif" id="hwm_notif" min="0" max="1" value="{{ the_settings.hwm_notif|int }}" required>
-    <label for="fm_notif">Freezer Manager Notifications</label>
-    <input type="number" name="fm_notif" id="fm_notif" min="0" max="1" value="{{ the_settings.fm_notif|int }}" required>
-    <label for="mess_notif">Message Notifications</label>
-    <input type="number" name="mess_notif" id="mess_notif" min="0" max="1" value="{{ the_settings.mess_notif|int }}"
-        required>
+    <h3 class="fillboth">Notifications</h3>
+    <label for="hwm_notif">Homework Due</label>
+    <input type="checkbox" name="hwm_notif" id="hwm_notif" value="1"{% if the_settings.hwm_notif %} checked{% endif %}>
+    <label for="fm_notif">Freezer Manager Expiring</label>
+    <input type="checkbox" name="fm_notif" id="fm_notif" value="1"{% if the_settings.fm_notif %} checked{% endif %}>
+    <label for="mess_notif">New Messages</label>
+    <input type="checkbox" name="mess_notif" id="mess_notif" value="1"{% if the_settings.mess_notif %} checked{% endif %}>
     <button class="button ok fillboth" type="submit">Save</button>
     <a class="button fillboth" href="{{ url_for('home.command_center') }}">Close</a>
 </form>
