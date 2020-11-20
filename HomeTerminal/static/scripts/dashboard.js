@@ -24,35 +24,45 @@ function show_widgets_editmode() {
     editmode_bnt.onclick = hide_widgets_editmode;
     editmode_bnt.innerText = "Stop Editing Widgets";
     const widgets_elem = document.getElementById("widgets");
-    widgets_elem.childNodes.forEach(widget => {
-        const edit_bar = document.createElement("div");
-        edit_bar.classList.add("settings-bar");
-        const add_widget_bnt = document.createElement("button");
-        add_widget_bnt.innerText = "✚";
-        add_widget_bnt.addEventListener("click", _event => { add_widget_menu(widget) })
-        const move_up_bnt = document.createElement("button");
-        move_up_bnt.innerText = "⬆";
-        move_up_bnt.addEventListener("click", _event => { move_widget_posistion(widget, "up") });
-        //TODO: allow for adding below(after) other widgets not just above(before)
-        // const move_down_bnt = document.createElement("button");
-        // move_down_bnt.innerText = "⬇";
-        // move_down_bnt.addEventListener("click", _event => { move_widget_posistion(widget, "down") });
-        const settings_img = document.createElement("img");
-        settings_img.setAttribute("src", "/static/settings-cog.svg");
-        settings_img.setAttribute("width", "15px")
-        const settings_bnt = document.createElement("button");
-        settings_bnt.addEventListener("click", _event => { get_widget_edit_url(widget.id.split("-").pop()) })
-        settings_bnt.appendChild(settings_img);
-        const delete_widget_bnt = document.createElement("button");
-        delete_widget_bnt.innerText = "✖";
-        delete_widget_bnt.addEventListener("click", _event => { delete_widget(widget) })
-        edit_bar.appendChild(add_widget_bnt);
-        edit_bar.appendChild(move_up_bnt);
-        // edit_bar.appendChild(move_down_bnt);
-        edit_bar.appendChild(settings_bnt);
-        edit_bar.appendChild(delete_widget_bnt);
-        widget.insertBefore(edit_bar, widget.firstChild);
-    });
+    if (widgets_elem.childNodes.length === 0) {
+        // if there is no widgets show a new widget button
+        add_widget_menu();
+    }
+    else {
+        widgets_elem.childNodes.forEach(widget => {
+            const edit_bar = document.createElement("div");
+            edit_bar.classList.add("settings-bar");
+            const add_widget_bnt = document.createElement("button");
+            add_widget_bnt.innerText = "✚";
+            add_widget_bnt.addEventListener("click", _event => { add_widget_menu(widget) })
+            const move_up_bnt = document.createElement("button");
+            move_up_bnt.innerText = "⬆";
+            move_up_bnt.addEventListener("click", _event => { move_widget_posistion(widget, "up") });
+            //TODO: allow for adding below(after) other widgets not just above(before)
+            // const move_down_bnt = document.createElement("button");
+            // move_down_bnt.innerText = "⬇";
+            // move_down_bnt.addEventListener("click", _event => { move_widget_posistion(widget, "down") });
+            const settings_img = document.createElement("img");
+            settings_img.setAttribute("src", "/static/settings-cog.svg");
+            settings_img.setAttribute("width", "15px")
+            const settings_bnt = document.createElement("button");
+            settings_bnt.addEventListener("click", _event => { get_widget_edit_url(widget.id.split("-").pop()) })
+            settings_bnt.appendChild(settings_img);
+            const delete_widget_bnt = document.createElement("button");
+            delete_widget_bnt.innerText = "✖";
+            delete_widget_bnt.addEventListener("click", _event => {
+                if (confirm("Are You Sure You Want To Delete This Widget?")){
+                    delete_widget(widget);
+                }
+            });
+            edit_bar.appendChild(add_widget_bnt);
+            edit_bar.appendChild(move_up_bnt);
+            // edit_bar.appendChild(move_down_bnt);
+            edit_bar.appendChild(settings_bnt);
+            edit_bar.appendChild(delete_widget_bnt);
+            widget.insertBefore(edit_bar, widget.firstChild);
+        });
+    }
 }
 
 /**
@@ -120,7 +130,7 @@ function move_widget_posistion(widget_elem, direction) {
  * show the add-widget popup so user can pick and add a widget
  * @param {Element} widget_elem_to_replace - the element to replace/move
  */
-function add_widget_menu(widget_elem_to_replace) {
+function add_widget_menu(widget_elem_to_replace = null) {
     const popup_elem = document.createElement("div");
     popup_elem.classList.add("popup");
     const title = document.createElement("h2");
@@ -144,6 +154,10 @@ function add_widget_menu(widget_elem_to_replace) {
         select_elem.setAttribute("disabled", true);
         ok_elem.setAttribute("disabled", true);
         loading_elem.style.removeProperty("display");
+        let id_to_replace = widget_elem_to_replace;
+        if (id_to_replace !== null){
+            id_to_replace = parseInt(widget_elem_to_replace.id.split("-").pop());
+        }
         fetch(
             "/home/dashboard/widgets/add",
             {
@@ -151,7 +165,7 @@ function add_widget_menu(widget_elem_to_replace) {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(
                     {
-                        "id-to-replace": parseInt(widget_elem_to_replace.id.split("-").pop()),
+                        "id-to-replace": id_to_replace,
                         "widget-uuid": select_elem.options[select_elem.selectedIndex].value
                     })
             })
@@ -160,8 +174,14 @@ function add_widget_menu(widget_elem_to_replace) {
                 // handle success
                 const new_widget = document.createRange().createContextualFragment(result);
                 const widgets_elem = document.getElementById("widgets");
-                //TODO allow for adding below(after) other widgets not just above(before)
-                widgets_elem.insertBefore(new_widget, widget_elem_to_replace);
+                if (widget_elem_to_replace === null) {
+                    // if adding without any root (no widgets)
+                    widgets_elem.appendChild(new_widget);
+                }
+                else {
+                    //TODO allow for adding below(after) other widgets not just above(before)
+                    widgets_elem.insertBefore(new_widget, widget_elem_to_replace);
+                }
                 popup_elem.remove();
                 hide_widgets_editmode();
             })
@@ -216,7 +236,7 @@ function hide_widgets_editmode() {
     const widgets_elem = document.getElementById("widgets");
     widgets_elem.childNodes.forEach(widget => {
         // remove the edit-bar
-        if (widget.childNodes.length > 1){
+        if (widget.childNodes.length > 1) {
             // only remove if there is a edit-bar
             widget.childNodes[0].remove();
         }

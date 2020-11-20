@@ -6,7 +6,7 @@
             {% for message in get_messages() %}
             <tr id="message_{{ message.id_ }}">
                 <td>{{ message.message }}</td>
-                <td><button onclick="delete_message({{ message.id_ }})">Close</button></td>
+                <td><button onclick="delete_message({{ message.id_ }})" style="width: 90%;">✖</button></td>
             </tr>
             {% endfor %}
         </tbody>
