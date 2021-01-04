@@ -36,7 +36,7 @@
             <td class="warning">False</td>
             {% endif %}
             <td>{{ i.get_day_first_date() }}</td>
-            <td>{{ i.user_for }}</td>
+            <td>{{ i.user_for.username }}</td>
         </tr>
         {% endfor %}
     </tbody>

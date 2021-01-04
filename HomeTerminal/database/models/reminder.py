@@ -30,7 +30,7 @@ class Reminder(Base):
     datedue = db.Column(db.DateTime)
 
     reminder_type = db.relation(Reminder_Type, backref=__tablename__)
-    user = db.relation(User, backref=__tablename__)
+    user_for = db.relation(User, backref=__tablename__)
 
     def get_day_first_date(self):
         """
