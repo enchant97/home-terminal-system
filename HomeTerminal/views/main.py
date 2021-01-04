@@ -13,6 +13,10 @@ def index():
         return redirect(url_for("home.dashboard"))
     return render_template("main/index.html", users=dao.user.get_users())
 
+@main.route("/about")
+def about():
+    return render_template("main/about.html")
+
 @main.route("/login", methods=["POST"])
 def do_login():
     if current_user.is_authenticated:
@@ -43,6 +47,7 @@ def do_logout():
 @login_required
 def idle_display():
     return render_template("main/idle-display.html")
+
 
 @main.route("/cleanup-db")
 @login_required
