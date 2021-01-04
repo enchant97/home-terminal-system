@@ -7,7 +7,7 @@
     <select name="reminder-type" id="reminder-type">
         <option value="">SELECT ALL</option>
         {% for type in types %}
-        <option value="{{ type.type_name }}">{{ type.type_name }}</option>
+        <option value="{{ type.id_ }}">{{ type.type_name }}</option>
         {% endfor %}
     </select>
     <label for="show-removed">Show Removed:</label>
@@ -21,6 +21,7 @@
             <th>Content</th>
             <th>Type</th>
             <th>Priority</th>
+            <th>Notify Date</th>
             <th>User For</th>
         </tr>
     </thead>
@@ -34,6 +35,7 @@
             {% else %}
             <td class="warning">False</td>
             {% endif %}
+            <td>{{ i.get_day_first_date() }}</td>
             <td>{{ i.user_for }}</td>
         </tr>
         {% endfor %}

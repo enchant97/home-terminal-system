@@ -50,11 +50,11 @@ def changepassword():
 def settings():
     username = current_user.username
     if request.method == "POST":
-        hwm_notif = bool(request.form.get("hwm_notif", 0, int))
+        rem_notif = bool(request.form.get("rem_notif", 0, int))
         fm_notif = bool(request.form.get("fm_notif", 0, int))
         mess_notif = bool(request.form.get("mess_notif", 0, int))
         user_setting = update_usersettings(
-            current_user.username, hwm_notif, fm_notif, mess_notif)
+            current_user.username, rem_notif, fm_notif, mess_notif)
         flash("updated your settings")
     else:
         user_setting = update_usersettings(current_user.username)

@@ -52,7 +52,6 @@ def cleanup_db():
         dao.reminder.delete_removed()
         dao.photo_manager.delete_removed()
         dao.inventory_manager.delete_removed()
-        dao.homework.delete_removed()
         dao.freezer_manager.delete_removed()
         dao.dashboard.delete_removed()
         dao.user.delete_removed()

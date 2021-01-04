@@ -3,8 +3,8 @@
 {% block maincontent %}
 <form class="container two-col" action="{{ url_for('account.settings') }}" method="POST">
     <h3 class="fillboth">Notifications</h3>
-    <label for="hwm_notif">Homework Due</label>
-    <input type="checkbox" name="hwm_notif" id="hwm_notif" value="1"{% if the_settings.hwm_notif %} checked{% endif %}>
+    <label for="rem_notif">Reminders Due</label>
+    <input type="checkbox" name="rem_notif" id="rem_notif" value="1"{% if the_settings.rem_notif %} checked{% endif %}>
     <label for="fm_notif">Freezer Manager Expiring</label>
     <input type="checkbox" name="fm_notif" id="fm_notif" value="1"{% if the_settings.fm_notif %} checked{% endif %}>
     <label for="mess_notif">New Messages</label>

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Reminders - New Tasks{% endblock %}
+{% block maincontent %}
+<form class="container two-col" id="hw-tasks_form" action="{{ url_for('reminder.new_task', reminder_id=reminder.id_) }}" method="POST">
+    <button type="button" class="fillboth" onclick="new_task()">New Task</button>
+    <div class="fillboth down" id="created_tasks">
+        <!-- where new tasks are added -->
+    </div>
+    <button class="ok fillboth" type="submit">Save</button>
+    <a class="button fillboth" href="{{ url_for('reminder.edit', reminder_id=reminder.id_)}}">Close</a>
+</form>
+{% endblock %}

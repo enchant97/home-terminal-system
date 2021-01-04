@@ -2,9 +2,25 @@
 {% block title %}Reminders - Edit{% endblock %}
 {% block maincontent %}
 <form class="container two-col" method="POST">
+    <table class="fillboth">
+        <caption>Tasks</caption>
+        <thead>
+            <tr>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in tasks %}
+            <tr>
+                <th>{{ task.name }}</th>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
     <label for="removed">Removed:</label>
-    <input type="checkbox" name="removed" id="removed" value="1">
+    <input type="checkbox" name="removed" id="removed" value="1"{% if reminder.removed %} checked{% endif %}>
     <button class="button ok fillboth" type="submit">Save</button>
     <a class="button fillboth" href="{{ url_for('reminder.view') }}">Close</a>
 </form>
+<a href="{{ url_for('reminder.new_task', reminder_id=reminder.id_) }}" class="button">New Tasks</a>
 {% endblock %}

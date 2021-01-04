@@ -20,8 +20,12 @@
     </datalist>
     <label for="removed">Mark Priority:</label>
     <input type="checkbox" name="priority" id="priority" value="1">
-    <label for="removed">Mark Removed:</label>
-    <input type="checkbox" name="removed" id="removed" value="1">
+    <label for="datedue">Date Reminder</label>
+    <input type="date" name="datedue" id="datedue">
+    <button type="button" class="fillboth" onclick="new_task()">New Task</button>
+    <div class="fillboth down" id="created_tasks">
+        <!-- where new tasks are added -->
+    </div>
     <button class="button ok fillboth" type="submit">Save</button>
     <a class="button fillboth" href="{{ url_for('reminder.view') }}">Close</a>
 </form>

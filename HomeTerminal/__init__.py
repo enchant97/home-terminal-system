@@ -24,8 +24,8 @@ from .database.dao.user import get_notifations, new_account
 from .database.database import db
 from .helpers.constants import INBUILT_DYNAMIC_IMG_FOLDERS, INBUILT_WIDGETS
 from .sockets import init_socket_handlers
-from .views import (account, api, fm, home, hwm, im, live_update_ws, main,
-                    messages, pm, reminder, shortcuts)
+from .views import (account, api, fm, home, im, live_update_ws, main, messages,
+                    pm, reminder, shortcuts)
 
 app = Flask(__name__)
 sockets = Sockets()
@@ -38,7 +38,7 @@ def not_found(e):
 @app.context_processor
 def notif_context():
     def get_jinja_notifications():
-        return get_notifations(current_user.username)
+        return get_notifations(current_user.id_)
     return dict(get_jinja_notifications=get_jinja_notifications)
 
 @app.before_first_request
@@ -132,7 +132,6 @@ def create_app():
     app.register_blueprint(main)
     app.register_blueprint(account)
     app.register_blueprint(home, url_prefix="/home")
-    app.register_blueprint(hwm, url_prefix="/homework-manager")
     app.register_blueprint(fm, url_prefix="/freezer-manager")
     app.register_blueprint(pm, url_prefix="/photo-manager")
     app.register_blueprint(im, url_prefix="/inventory-manager")

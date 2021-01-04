@@ -5,11 +5,11 @@ from datetime import datetime
 from ...helpers.constants import DEFAULT_WIDGETS
 from ...helpers.types import Notification
 from ..database import db
-from ..models.homework import Main as Homework_Main
 from ..models.user import Api_Key, Message, User, User_Settings
 from .dashboard import add_widget
 from .exceptions import AlreadyUpToDate, RowAlreadyExists, RowDoesNotExist
 from .freezer_manager import get_fm4_expiring
+from .reminder import get_reminders_due
 
 
 def try_login_user(username, password):
@@ -144,14 +144,14 @@ def get_messages(removed=False, last_updated=None):
 
     return Message.query.filter_by(removed=removed).all()
 
-def update_usersettings(username, hwm_notif=None, fm_notif=None, mess_notif=None):
+def update_usersettings(username, rem_notif=None, fm_notif=None, mess_notif=None):
     """
     updates the user settings,
     if no new settings were provided will not update,
     will return the usersettings obj
 
         :param username: the id of the users account
-        :param hwm_notif: the new value (BOOL)
+        :param rem_notif: the new value (BOOL)
         :param fm_notif: the new value (BOOL)
         :param mess_notif: the new value (BOOL)
     """
@@ -160,8 +160,8 @@ def update_usersettings(username, hwm_notif=None, fm_notif=None, mess_notif=None
         user_setting = User_Settings.query.filter_by(user_id=the_user.id_).first()
         if not user_setting:
             raise RowDoesNotExist("User settings row does not exist")
-        if hwm_notif is not None:
-            user_setting.hwm_notif = hwm_notif
+        if rem_notif is not None:
+            user_setting.rem_notif = rem_notif
         if fm_notif is not None:
             user_setting.fm_notif = fm_notif
         if mess_notif is not None:
@@ -171,27 +171,26 @@ def update_usersettings(username, hwm_notif=None, fm_notif=None, mess_notif=None
         return user_setting
     raise RowDoesNotExist(f"username {username} does not exist")
 
-def get_notifations(username):
+def get_notifations(user_id):
     """
     returns a generator of all notifications as Notification objects
 
-        :param username: the username for getting different notifications
+        :param user_id: the user id to generate notifications for
     """
-    the_user = User.query.filter_by(username=username).first()
-    if the_user:
-        usr_setting = User_Settings.query.filter_by(user_id=the_user.id_).first()
+    usr_setting = User_Settings.query.filter_by(user_id=user_id).first()
+    if usr_setting:
         if usr_setting.fm_notif is True:
             fm_expiring = get_fm4_expiring(count=True)
             if fm_expiring > 0:
                 yield Notification(
                     f"You have {fm_expiring} expiring items in the freezer",
                     "warning")
-        if usr_setting.hwm_notif is True:
-            hw_due = Homework_Main.query.filter_by(removed=False).count()
-            if hw_due > 0:
-                yield Notification(f"You have {hw_due} outstanding homeworks", "warning")
+        if usr_setting.rem_notif is True:
+            reminders_due = get_reminders_due(user_id, True, True)
+            if reminders_due > 0:
+                yield Notification(f"You have {reminders_due} outstanding reminders", "warning")
     else:
-        raise RowDoesNotExist(f"username {username} does not exist")
+        raise RowDoesNotExist(f"no settings row exists for user id: {user_id}")
 
 def get_users(removed=False):
     """

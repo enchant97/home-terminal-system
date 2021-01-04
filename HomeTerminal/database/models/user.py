@@ -50,7 +50,8 @@ class User_Settings(db.Model):
     __tablename__ = "user_settings"
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
     fm_notif = db.Column(db.Boolean, nullable=False, default=False)
-    hwm_notif = db.Column(db.Boolean, nullable=False, default=False)
+    #TODO rename to reminders notif
+    rem_notif = db.Column(db.Boolean, nullable=False, default=False)
     mess_notif = db.Column(db.Boolean, nullable=False, default=False)
     removed = db.Column(db.Boolean, nullable=False, default=False)
 
@@ -59,7 +60,7 @@ class User_Settings(db.Model):
     def serialize(self):
         return {
             "fm_notif":self.fm_notif,
-            "hwm_notif":self.hwm_notif,
+            "rem_notif":self.rem_notif,
             "mess_notif":self.mess_notif
         }
 
