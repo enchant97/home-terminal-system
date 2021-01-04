@@ -12,3 +12,14 @@ def get_im_getnames():
     item_rows = dao.inventory_manager.get_like_item_names(name, 4)
 
     return jsonify({"item_names": [i.name for i in item_rows]})
+
+@api.route("fm/get-expiring-count")
+@api_auth
+def get_fm_expiring():
+    return jsonify(count=dao.freezer_manager.get_fm4_expiring(count=True))
+
+@api.route("/reminder/tasks/<int:task_id>", methods=["DELETE"])
+@api_auth
+def delete_reminder_task(task_id):
+    dao.reminder.remove_reminder_task(task_id)
+    return jsonify(status="ok")

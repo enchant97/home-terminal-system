@@ -2,25 +2,35 @@
 {% block title %}Reminders - Edit{% endblock %}
 {% block maincontent %}
 <form class="container two-col" method="POST">
-    <table class="fillboth">
+    <h3 class="fillboth">Edit Reminder</h3>
+    <label for="removed">Removed:</label>
+    <input type="checkbox" name="removed" id="removed" value="1" {% if reminder.removed %} checked{% endif %}>
+    <button class="button ok fillboth" type="submit">Save</button>
+    <a class="button fillboth" href="{{ url_for('reminder.view') }}">Close</a>
+</form>
+<div class="container down">
+    <h3>Edit Tasks</h3>
+    <a href="{{ url_for('reminder.new_task', reminder_id=reminder.id_) }}" class="button">New Tasks</a>
+    <table>
         <caption>Tasks</caption>
         <thead>
             <tr>
+                <th>Id</th>
                 <th>Name</th>
+                <th>Remove</th>
             </tr>
         </thead>
         <tbody>
             {% for task in tasks %}
-            <tr>
-                <th>{{ task.name }}</th>
+            <tr id="task_{{ task.id_ }}">
+                <td>{{ task.id_ }}</td>
+                <td>{{ task.name }}</td>
+                <td><button type="button" class="fill"
+                        onclick="delete_tr_api(`/api/reminder/tasks/{{ task.id_ }}`, 'task_{{ task.id_ }}')">✖</button>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-    <label for="removed">Removed:</label>
-    <input type="checkbox" name="removed" id="removed" value="1"{% if reminder.removed %} checked{% endif %}>
-    <button class="button ok fillboth" type="submit">Save</button>
-    <a class="button fillboth" href="{{ url_for('reminder.view') }}">Close</a>
-</form>
-<a href="{{ url_for('reminder.new_task', reminder_id=reminder.id_) }}" class="button">New Tasks</a>
+</div>
 {% endblock %}

@@ -39,7 +39,29 @@ function new_messages(messages) {
     }
 }
 
+/**
+ * sends a delete request to the api server and
+ * then deletes the table row in the HTML table element,
+ * uses a DELETE method
+ * @param {string} api_url - the api url to send the request to
+ * @param {string} tr_id - the id of the table row
+ */
+function delete_tr_api(api_url, tr_id) {
+    const tr_elem = document.getElementById(tr_id);
+    tr_elem
+    fetch(api_url, {
+        method: "DELETE"
+    })
+        .then(() => {
+            tr_elem.remove();
+        })
+        .catch((error) => {
+            console.error("Error", error);
+        });
+}
+
 function delete_message(mess_id) {
+    //TODO: use delete_tr_api instead
     //sends a xhr DELETE request to remove a message
     //source: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
     fetch("/messages/remove/" + mess_id, {
