@@ -29,7 +29,7 @@ def new_message():
     if request.method == "POST":
         message = request.form.get("message")
         if message:
-            added_message = dao.user.new_message(current_user.username, message)
+            added_message = dao.user.new_message(current_user.id_, message)
             if added_message:
                 live_update_payload = Payload.create_dbupdate(
                     DBUpdateTypes.ADD,

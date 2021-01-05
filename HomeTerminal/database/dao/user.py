@@ -12,15 +12,19 @@ from .freezer_manager import get_fm4_expiring
 from .reminder import get_reminders_due
 
 
-def try_login_user(username, password):
+def try_login_user(username: str, password: str) -> User:
     """
-    returns user obj and sets last login date, if password and username match
+    returns user obj and sets last login date,
+    if password and username match
+
+        :param username: the username to check against
+        :param password: the password to check against
+        :return: the User obj or None
     """
     the_user = User.query.filter_by(username=username).first()
     if the_user:
         if the_user.check_password(password):
             the_user.lastlogin = datetime.utcnow()
-            db.session.add(the_user)
             db.session.commit()
             return the_user
     return None
@@ -51,31 +55,36 @@ def new_account(username, password, birthday: datetime, ignore_duplicate=False):
     db.session.commit()
     return new_user
 
-def change_user_password(username, new_password, old_password):
+def change_user_password(user_id: int, new_password: str, old_password: str) -> User:
     """
-    returns user obj if password change was success
+    used to change a users password
+
+        :param user_id: the users id column
+        :param new_password: the new password
+        :param old_password: the old password
+        :return: the user row or None if none exists
     """
-    the_user = User.query.filter_by(username=username).first()
+    the_user = User.query.filter_by(id_=user_id).first()
     if the_user:
         if the_user.check_password(old_password):
             the_user.set_password(new_password)
-            db.session.add(the_user)
             db.session.commit()
             return the_user
     return None
 
-def new_message(user_from, message):
+def new_message(user_from_id: int, message: str) -> Message:
     """
     adds a new message into database,
     returns message obj on success
 
-        :param user_from: the username that the message is from
+        :param user_from_id: the user id that the message is from
         :param message: the message
+        :raises: RowDoesNotExist if user row is not found
+        :return: the created message
     """
-    the_user = User.query.filter_by(username=user_from).first()
-    if not the_user:
-        raise RowDoesNotExist(f"username {user_from} not found")
-    the_message = Message(user_id_from=the_user.id_, message=message)
+    if User.query.filter_by(id_=user_from_id).scalar() is None:
+        raise RowDoesNotExist(f"the user with id {user_from_id} not found")
+    the_message = Message(user_id_from=user_from_id, message=message)
     db.session.add(the_message)
     db.session.commit()
     return the_message
@@ -94,31 +103,34 @@ def remove_message(mess_id, removed=True):
     db.session.add(the_message)
     db.session.commit()
 
-def check_api_key(api_key):
+def check_api_key(api_key) -> bool:
     """
     Checks whether the api key given is valid
 
         :param api_key: the api key to check
+        :return: whether api key is valid
     """
-    if Api_Key.query.filter_by(key=api_key).scalar():
-        return True
-    return False
+    if Api_Key.query.filter_by(key=api_key).scalar() is None:
+        return False
+    return True
 
-def get_api_key(username):
+def get_api_key(user_id: int) -> Api_Key:
     """
-    returns a api key given to the given username
+    returns a api key given to the given username,
+    will create one if none is found for that user
 
-        :param username: the username of the User table
+        :param user_id: the id of a user in the users table
+        :raises RowDoesNotExist: if user with id is not found
+        :return: the API key
     """
-    the_user = User.query.filter_by(username=username).first()
-    if not the_user:
-        raise RowDoesNotExist(f"username {username} not found")
+    if User.query.filter_by(id_=user_id, removed=False).scalar() is None:
+        raise RowDoesNotExist(f"user with id: {user_id} not found")
 
-    the_key = Api_Key.query.filter_by(owner_id=the_user.id_).first()
+    the_key = Api_Key.query.filter_by(owner_id=user_id).first()
     if not the_key:
         # make the api key if it does not exist
         key = str(hashlib.sha512(str(uuid.uuid4()).encode()).hexdigest())
-        the_key = Api_Key(key=key,owner_id=the_user.id_)
+        the_key = Api_Key(key=key, owner_id=user_id)
         db.session.add(the_key)
         db.session.commit()
     return the_key
@@ -144,32 +156,34 @@ def get_messages(removed=False, last_updated=None):
 
     return Message.query.filter_by(removed=removed).all()
 
-def update_usersettings(username, rem_notif=None, fm_notif=None, mess_notif=None):
+def update_usersettings(user_id: int, rem_notif=None, fm_notif=None, mess_notif=None):
     """
     updates the user settings,
     if no new settings were provided will not update,
     will return the usersettings obj
 
-        :param username: the id of the users account
+        :param user_id: the id of the users account
         :param rem_notif: the new value (BOOL)
         :param fm_notif: the new value (BOOL)
         :param mess_notif: the new value (BOOL)
+        :raises RowDoesNotExist: if the user or user
+                                 settings row is not found
+        :return: the User_Settings obj
     """
-    the_user = User.query.filter_by(username=username).first()
-    if the_user:
-        user_setting = User_Settings.query.filter_by(user_id=the_user.id_).first()
-        if not user_setting:
-            raise RowDoesNotExist("User settings row does not exist")
-        if rem_notif is not None:
-            user_setting.rem_notif = rem_notif
-        if fm_notif is not None:
-            user_setting.fm_notif = fm_notif
-        if mess_notif is not None:
-            user_setting.mess_notif = mess_notif
-        db.session.add(user_setting)
-        db.session.commit()
-        return user_setting
-    raise RowDoesNotExist(f"username {username} does not exist")
+    if User.query.filter_by(id_=user_id).scalar() is None:
+        raise RowDoesNotExist(f"user with id {user_id} does not exist")
+
+    user_setting = User_Settings.query.filter_by(user_id=user_id).first()
+    if not user_setting:
+        raise RowDoesNotExist("User settings row does not exist")
+    if rem_notif is not None:
+        user_setting.rem_notif = rem_notif
+    if fm_notif is not None:
+        user_setting.fm_notif = fm_notif
+    if mess_notif is not None:
+        user_setting.mess_notif = mess_notif
+    db.session.commit()
+    return user_setting
 
 def get_notifations(user_id):
     """

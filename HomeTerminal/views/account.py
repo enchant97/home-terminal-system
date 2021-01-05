@@ -35,30 +35,30 @@ def changepassword():
         old_password = request.form.get("old_password")
         new_password = request.form.get("new_password")
         if old_password and new_password:
-            if change_user_password(current_user.username, new_password, old_password):
+            if change_user_password(current_user.id_, new_password, old_password):
                 flash("password changed")
             else:
                 flash("password could not be changed", "error")
         else:
             flash("missing required form details", "error")
-    return render_template("account/change_password.html", username=current_user.username)
+    return render_template("account/change_password.html")
 
 @account.route("/usersettings", methods=["GET", "POST"])
 @login_required
 def settings():
-    username = current_user.username
+    user_id = current_user.id_
     if request.method == "POST":
         rem_notif = bool(request.form.get("rem_notif", 0, int))
         fm_notif = bool(request.form.get("fm_notif", 0, int))
         mess_notif = bool(request.form.get("mess_notif", 0, int))
         user_setting = update_usersettings(
-            current_user.username, rem_notif, fm_notif, mess_notif)
+            user_id, rem_notif, fm_notif, mess_notif)
         flash("updated your settings")
     else:
-        user_setting = update_usersettings(current_user.username)
+        user_setting = update_usersettings(user_id)
     return render_template("account/user_settings.html", the_settings=user_setting)
 
 @account.route("/api-key")
 @login_required
 def api_key_manage():
-    return render_template("account/api_key.html", key=get_api_key(current_user.username).key)
+    return render_template("account/api_key.html", key=get_api_key(current_user.id_).key)
