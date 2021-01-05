@@ -8,7 +8,8 @@
         <select name="category" id="category">
             <option value="">SELECT ALL</option>
             {% for cat in categories %}
-            <option value="{{ cat.name }}">{{ cat.name }}</option>
+            <option value="{{ cat.id_ }}"{% if cat_id_selected==cat.id_ %} selected{% endif %}>{{ cat.name }}
+            </option>
             {% endfor %}
         </select>
         <button class="button ok" type="submit">Display</button>
@@ -30,8 +31,8 @@
         <tr onclick="window.location = `{{ url_for('fm.edit', item_id=i.id_) }}`">
             <td>{{ i.id_ }}</td>
             <td>{{ i.name }}</td>
-            <td>{{ to_human_datetime(i.expire_date) }}</td>
-            <td>{{ i.quantity }}</td>
+            <td{% if i.has_expired %} class="error" {% endif %}>{{ to_human_datetime(i.expire_date) }}</td>
+                <td>{{ i.quantity }}</td>
         </tr>
         {% endfor %}
     </tbody>

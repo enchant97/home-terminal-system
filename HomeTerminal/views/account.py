@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from flask import (Blueprint, current_app, flash, redirect, render_template,
                    request, url_for)
 from flask_login import current_user, login_required
@@ -7,6 +5,7 @@ from flask_login import current_user, login_required
 from ..database.dao.exceptions import RowAlreadyExists
 from ..database.dao.user import (change_user_password, get_api_key,
                                  new_account, update_usersettings)
+from ..helpers.calculations import html_date
 
 account = Blueprint("account", __name__)
 
@@ -17,10 +16,9 @@ def newaccount():
         if request.method == "POST":
             username = request.form.get("username")
             password = request.form.get("password")
-            birthday = request.form.get("birthday")
+            birthday = request.form.get("birthday", type=html_date)
             if username and password and birthday:
                 try:
-                    birthday = datetime.strptime(birthday, "%Y-%m-%d")
                     new_account(username, password, birthday)
                     flash("user created!")
                 except RowAlreadyExists:

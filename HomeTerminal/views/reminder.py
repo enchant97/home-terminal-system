@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import login_required
 
@@ -8,6 +6,7 @@ from ..database.dao.reminder import (get_reminder_tasks, get_reminder_types,
                                      get_reminders, new_reminder,
                                      new_reminder_task, remove_reminder)
 from ..database.dao.user import get_users
+from ..helpers.calculations import html_date
 
 reminder = Blueprint("reminder", __name__)
 
@@ -15,11 +14,11 @@ reminder = Blueprint("reminder", __name__)
 @login_required
 def view():
     loaded_reminders = ()
+    r_type_id = None
     if request.method == "POST":
         try:
-            r_type_id = request.form["reminder-type"]
-            show_removed = request.form.get("show-removed", False)
-            show_removed = bool(show_removed)
+            r_type_id = request.form.get("reminder-type-id", None, int)
+            show_removed = request.form.get("show-removed", False, bool)
             if r_type_id:
                 loaded_reminders = get_reminders(
                     reminder_type_id=r_type_id,
@@ -30,7 +29,7 @@ def view():
             flash("Missing required form data", "error")
     return render_template(
         "reminder/view.html",
-        reminders=loaded_reminders, types=get_reminder_types())
+        reminders=loaded_reminders, types=get_reminder_types(), r_type_id=r_type_id)
 
 @reminder.route("/new", methods=["GET", "POST"])
 @login_required
@@ -41,13 +40,9 @@ def new():
             user_for = request.form["user-for"]
             r_type = request.form["reminder-type"]
             is_priority = request.form.get("priority", False, bool)
-            datedue = request.form.get("datedue")
+            datedue = request.form.get("datedue", None, html_date)
             tasks = request.form.getlist("atask")
-            if datedue:
-                # if a date was given
-                datedue = datetime.strptime(datedue, "%Y-%m-%d")
-            else:
-                datedue = None
+
             added_reminder = new_reminder(
                 content, user_for,
                 r_type, is_priority, datedue)

@@ -4,10 +4,10 @@
 <a href="{{ url_for('reminder.new') }}" class="button ok">New Reminder</a>
 <form class="two-col" action="{{ url_for('reminder.view') }}" method="POST">
     <label for="typename">Type:</label>
-    <select name="reminder-type" id="reminder-type">
+    <select name="reminder-type-id" id="reminder-type-id">
         <option value="">SELECT ALL</option>
         {% for type in types %}
-        <option value="{{ type.id_ }}">{{ type.type_name }}</option>
+        <option value="{{ type.id_ }}"{% if r_type_id==type.id_ %} selected{% endif %}>{{ type.type_name }}</option>
         {% endfor %}
     </select>
     <label for="show-removed">Show Removed:</label>
@@ -30,11 +30,8 @@
         <tr onclick="window.location = `{{ url_for('reminder.edit', reminder_id=i.id_)}}`">
             <td>{{ i.content }}</td>
             <td>{{ i.reminder_type.type_name }}</td>
-            {% if i.is_priority %}
-            <td class="error">True</td>
-            {% else %}
-            <td class="warning">False</td>
-            {% endif %}
+
+            <td{% if i.is_priority %} class="error"{% endif %}>{{ i.is_priority }}</td>
             <td>{{ to_human_datetime(i.datedue) }}</td>
             <td>{{ i.user_for.username }}</td>
         </tr>

@@ -24,3 +24,7 @@ class Item(Base):
     quantity = db.Column("quantity", db.Integer, nullable=False)
 
     category = db.relation(Category, backref=__tablename__)
+
+    @property
+    def has_expired(self):
+        return self.expire_date < datetime.now()

@@ -49,3 +49,17 @@ def to_human_datetime(dt: datetime, show_date=True, show_time=False, ignore_none
         return datetime.strftime(dt, "%d-%m-%Y")
 
     return datetime.strftime(dt, "%H:%M")
+
+def html_date(date_str: str) -> datetime:
+    """
+    used in a flask request.form.get as
+    a type arg for a html date picker
+
+        :param date_str: the date as a string as "%Y-%m-%d"
+        :raises ValueError: if date can't be converted
+        :return: the converted date into a datetime obj
+    """
+    try:
+        return datetime.strptime(date_str, "%Y-%m-%d")
+    except TypeError as e:
+        raise ValueError("Not a valid date value, must be: %Y-%m-%d") from e

@@ -16,12 +16,16 @@ fm = Blueprint("fm", __name__)
 @login_required
 def report():
     if request.method == "POST":
-        category = request.form.get("category", "").capitalize()
+        category_id = request.form.get("category", None, int)
         return render_template(
             "freezer_manager/report.html",
-            items=get_fm4_report(category),
-            categories=get_fm4_categories())
-    return render_template("freezer_manager/report.html", categories=get_fm4_categories())
+            items=get_fm4_report(category_id),
+            categories=get_fm4_categories(),
+            cat_id_selected = category_id)
+    return render_template(
+        "freezer_manager/report.html",
+        categories=get_fm4_categories(),
+        cat_id_selected = None)
 
 @fm.route("/report-expiring", methods=["GET"])
 @login_required

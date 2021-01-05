@@ -21,18 +21,16 @@ def get_fm4_expiring(days=7, count=False):
         return items.count()
     return items.all()
 
-def get_fm4_report(category=None, removed=False):
+def get_fm4_report(category_id=None, removed=False):
     """
-    returns FM4_Item obj from database
+    returns FM4_Item obj's from database
 
-        :param category: category to filter by, if None will return all
+        :param category_id: category id to filter by,
+                            if None will return all
         :param removed: allows to display removed entries
     """
-    if category:
-        the_category = Category.query.filter_by(name=category).first()
-        if not the_category:
-            raise RowDoesNotExist(f"category name {category} does not exist")
-        items = Item.query.filter_by(category_id=the_category.id_, removed=removed)
+    if category_id is not None:
+        items = Item.query.filter_by(category_id=category_id, removed=removed)
     else:
         items = Item.query.filter_by(removed=removed)
 
