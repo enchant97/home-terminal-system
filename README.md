@@ -10,4 +10,7 @@ digitize certain tasks that can be done around the home.
 ## Checkout the docs located [here](docs/index.md)
 Or go to docs folder on the repository.
 
+## If you want to contribute
+Look at the Github projects tab [here](https://github.com/enchant97/House_Terminal_System/projects), which contains all tasks that need doing.
+
 ## **! In a future update this project will use docker !**
