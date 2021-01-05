@@ -22,6 +22,7 @@ from .authentication import login_manager
 from .config import config
 from .database.dao.user import get_notifations, new_account
 from .database.database import db
+from .helpers.calculations import to_human_datetime
 from .helpers.constants import INBUILT_DYNAMIC_IMG_FOLDERS, INBUILT_WIDGETS
 from .sockets import init_socket_handlers
 from .views import (account, api, fm, home, im, live_update_ws, main, messages,
@@ -40,6 +41,10 @@ def notif_context():
     def get_jinja_notifications():
         return get_notifations(current_user.id_)
     return dict(get_jinja_notifications=get_jinja_notifications)
+
+@app.context_processor
+def context_human_dt():
+    return dict(to_human_datetime=to_human_datetime)
 
 @app.before_first_request
 def create_default_db():

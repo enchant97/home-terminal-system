@@ -8,7 +8,7 @@ from ..database.dao.freezer_manager import (edit_fm4_item, get_fm4_categories,
                                             get_fm4_expiring, get_fm4_item,
                                             get_fm4_report)
 from ..database.models.freezer_manager import Item as FM_Item
-from ..helpers.calculations import calc_expire_date
+from ..helpers.calculations import add_months
 
 fm = Blueprint("fm", __name__)
 
@@ -44,7 +44,7 @@ def edit(item_id):
                 if request.form.get("custom_expire", False) == "1":
                     expire = datetime.strptime(request.form["expire_date"], "%Y-%m-%d")
                 else:
-                    expire = calc_expire_date(request.form["expire"])
+                    expire = add_months(request.form["expire"])
             edit_fm4_item(name, category, amount, expire, removed, item_id)
             flash("Added Entry")
             # return back to adding a new entry so the user cant edit the same item again

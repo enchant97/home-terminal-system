@@ -4,11 +4,8 @@ functions that perform some kind of calculation
 
 from calendar import monthrange
 from datetime import datetime
-from functools import lru_cache
 
-
-@lru_cache(maxsize=15)
-def calc_expire_date(months: int, start_dt: datetime = None) -> datetime:
+def add_months(months: int, start_dt: datetime = None) -> datetime:
     """
     calculates the date from current
     date incremented by given months
@@ -16,8 +13,6 @@ def calc_expire_date(months: int, start_dt: datetime = None) -> datetime:
         :param months: the months to increment by
         :param start_dt: the datetime to increment will use datetime.now() if None
         :rtype: datetime.datetime
-
-    ..todo:: #TODO rename this function later to add_months
     """
     months = int(months)
 
@@ -32,3 +27,25 @@ def calc_expire_date(months: int, start_dt: datetime = None) -> datetime:
         year, month, day, start_dt.hour, start_dt.minute,
         start_dt.second, start_dt.microsecond, start_dt.tzinfo
         )
+
+def to_human_datetime(dt: datetime, show_date=True, show_time=False, ignore_none=True) -> str:
+    """
+    returns a 'human readable' format of the date or time or both
+
+        :param dt: the input datetime obj to convert
+        :param show_date: whether to include the date, defaults to True
+        :param show_time: whether to include the time, defaults to False
+        :param ignore_none: return N/A if dt is None, defaults to True
+    """
+    if ignore_none and not dt:
+        return "N/A"
+    if not show_date and not show_time:
+        raise ValueError("Both show_date and show_time cannot be False")
+
+    if show_date and show_time:
+        return datetime.strftime(dt, "%d-%m-%Y %H:%M")
+
+    if show_date:
+        return datetime.strftime(dt, "%d-%m-%Y")
+
+    return datetime.strftime(dt, "%H:%M")

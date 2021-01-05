@@ -15,7 +15,7 @@
         {% for i in items %}
         <tr onclick="window.location = `{{ url_for('fm.edit', item_id=i.id_) }}`">
             <td>{{ i.name }}</td>
-            <td>{{ i.get_day_first_date() }}</td>
+            <td>{{ to_human_datetime(i.expire_date) }}</td>
             <td>{{ i.quantity }}</td>
             <td>{{ i.category.name }}</td>
         </tr>

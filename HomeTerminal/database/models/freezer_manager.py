@@ -24,9 +24,3 @@ class Item(Base):
     quantity = db.Column("quantity", db.Integer, nullable=False)
 
     category = db.relation(Category, backref=__tablename__)
-
-    def get_day_first_date(self):
-        """
-        returns expire_date as format '%d-%m-%Y'
-        """
-        return datetime.strftime(self.expire_date, "%d-%m-%Y")

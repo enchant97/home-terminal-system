@@ -32,15 +32,6 @@ class Reminder(Base):
     reminder_type = db.relation(Reminder_Type, backref=__tablename__)
     user_for = db.relation(User, backref=__tablename__)
 
-    def get_day_first_date(self):
-        """
-        returns datedue as format '%d-%m-%Y'
-        """
-        #TODO remove in future (make a helper func to get 'human' datetime)
-        if self.datedue:
-            return datetime.strftime(self.datedue, "%d-%m-%Y")
-
-
     def serialize(self):
         """
         get data as dict,

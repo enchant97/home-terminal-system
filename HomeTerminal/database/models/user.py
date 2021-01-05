@@ -50,7 +50,6 @@ class User_Settings(db.Model):
     __tablename__ = "user_settings"
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
     fm_notif = db.Column(db.Boolean, nullable=False, default=False)
-    #TODO rename to reminders notif
     rem_notif = db.Column(db.Boolean, nullable=False, default=False)
     mess_notif = db.Column(db.Boolean, nullable=False, default=False)
     removed = db.Column(db.Boolean, nullable=False, default=False)

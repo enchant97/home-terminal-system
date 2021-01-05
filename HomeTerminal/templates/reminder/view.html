@@ -35,7 +35,7 @@
             {% else %}
             <td class="warning">False</td>
             {% endif %}
-            <td>{{ i.get_day_first_date() }}</td>
+            <td>{{ to_human_datetime(i.datedue) }}</td>
             <td>{{ i.user_for.username }}</td>
         </tr>
         {% endfor %}
