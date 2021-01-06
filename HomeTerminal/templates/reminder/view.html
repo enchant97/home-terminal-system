@@ -3,7 +3,7 @@
 {% block maincontent %}
 <a href="{{ url_for('reminder.new') }}" class="button ok">New Reminder</a>
 <form class="two-col" action="{{ url_for('reminder.view') }}" method="POST">
-    <label for="typename">Type:</label>
+    <label for="reminder-type-id">Type:</label>
     <select name="reminder-type-id" id="reminder-type-id">
         <option value="">SELECT ALL</option>
         {% for type in types %}

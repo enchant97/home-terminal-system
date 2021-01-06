@@ -37,15 +37,15 @@ def new():
     if request.method == "POST":
         try:
             content = request.form["reminder-content"]
-            user_for = request.form["user-for"]
+            user_for_id = request.form.get("user-for", None, int)
             r_type = request.form["reminder-type"]
             is_priority = request.form.get("priority", False, bool)
             datedue = request.form.get("datedue", None, html_date)
             tasks = request.form.getlist("atask")
 
             added_reminder = new_reminder(
-                content, user_for,
-                r_type, is_priority, datedue)
+                content, r_type, is_priority,
+                datedue, user_for_id)
             if tasks:
                 new_reminder_task(added_reminder.id_, *tasks)
             flash("added entry!")

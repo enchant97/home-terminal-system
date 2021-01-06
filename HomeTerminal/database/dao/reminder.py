@@ -11,29 +11,28 @@ from ..models.reminder import Reminder, Reminder_Task, Reminder_Type
 from ..models.user import User
 
 
-def new_reminder(content, user_for, type_name, is_priority=False, datedue=None) -> Reminder:
+def new_reminder(content, type_name, is_priority=False, datedue=None, user_for_id=None) -> Reminder:
     """
     adds new reminder and returns the reminder obj
 
         :param content: the content/message of the reminder
-        :param user_for: the username the notification is for or None
         :param type_name: the type name
         :param is_priority: whether it is priority, defaults to False
         :param datedue: when the reminder should alert, defaults to None
+        :param user_for_id: the id of the user the reminder is for or None, defaults to None
         :return: the created reminder obj
     """
-    #FIXME make user_for optional kw
-    #TODO use id for user and type
+    #TODO use id for type instead
+    if user_for_id is not None:
+        if User.query.filter_by(id_=user_for_id).scalar() is None:
+            raise RowDoesNotExist(f"username {user_for_id} does not exist")
+
     the_reminder = Reminder(
         content=content,
         is_priority=is_priority,
-        datedue=datedue
+        datedue=datedue,
+        user_id_for=user_for_id
     )
-    if user_for:
-        the_user = User.query.filter_by(username=user_for.lower()).first()
-        if not the_user:
-            raise RowDoesNotExist(f"username {user_for} does not exist")
-        the_reminder.user_id_for = the_user.id_
 
     # add or get reminder_type id
     r_type = Reminder_Type.query.filter_by(type_name=type_name.lower()).first()

@@ -8,7 +8,7 @@
     <select name="user-for" id="user-for">
         <option value="">**All Users**</option>
         {% for user in users %}
-        <option value="{{ user.username }}">{{ user.username }}</option>
+        <option value="{{ user.id_ }}">{{ user.username }}</option>
         {% endfor %}
     </select>
     <label for="reminder-type">Reminder Type:</label>
