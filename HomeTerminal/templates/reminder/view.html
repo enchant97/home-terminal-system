@@ -5,7 +5,7 @@
 <form class="two-col" action="{{ url_for('reminder.view') }}" method="POST">
     <label for="reminder-type-id">Type:</label>
     <select name="reminder-type-id" id="reminder-type-id">
-        <option value="">SELECT ALL</option>
+        <option value="">** Select All **</option>
         {% for type in types %}
         <option value="{{ type.id_ }}"{% if r_type_id==type.id_ %} selected{% endif %}>{{ type.type_name }}</option>
         {% endfor %}

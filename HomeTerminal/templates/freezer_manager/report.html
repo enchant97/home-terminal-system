@@ -6,7 +6,7 @@
     <form action="{{ url_for('fm.report') }}" method="POST">
         <label for="category">Category:</label>
         <select name="category" id="category">
-            <option value="">SELECT ALL</option>
+            <option value="">** Select All **</option>
             {% for cat in categories %}
             <option value="{{ cat.id_ }}"{% if cat_id_selected==cat.id_ %} selected{% endif %}>{{ cat.name }}
             </option>
@@ -20,7 +20,6 @@
 <table>
     <thead>
         <tr>
-            <th>id</th>
             <th>Name</th>
             <th>Expire</th>
             <th>Quantity</th>
@@ -29,10 +28,9 @@
     <tbody>
         {% for i in items %}
         <tr onclick="window.location = `{{ url_for('fm.edit', item_id=i.id_) }}`">
-            <td>{{ i.id_ }}</td>
             <td>{{ i.name }}</td>
             <td{% if i.has_expired %} class="error" {% endif %}>{{ to_human_datetime(i.expire_date) }}</td>
-                <td>{{ i.quantity }}</td>
+            <td>{{ i.quantity }}</td>
         </tr>
         {% endfor %}
     </tbody>

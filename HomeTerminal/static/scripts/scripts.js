@@ -127,9 +127,14 @@ function create_option_into_select(select_elem, option_val) {
  * @param {String} main_loc - the main location (photo database)
  * @param {String} first_option_inner - what the inner text of the first option should be
 */
-function start_load_options_to_select(select_id, url, main_loc, first_option_inner = 'Show All') {
-    if (main_loc == '') { return }
+function start_load_options_to_select(select_id, url, main_loc, first_option_inner = '**Show All**') {
+    //TODO split into API func
     const select_elem = document.getElementById(select_id);
+    // disable select box while loading
+    select_elem.setAttribute("disabled", true);
+    // remove prev items from select box
+    remove_elem_children(select_elem);
+    if (main_loc === '') { return }
     url = url + "?mainloc=" + main_loc
     fetch(url)
         .then((response) => { return response.json() })
@@ -142,6 +147,7 @@ function start_load_options_to_select(select_id, url, main_loc, first_option_inn
             for (const i in conv_json.sublocs) {
                 create_option_into_select(select_elem, conv_json.sublocs[i].name);
             }
+            select_elem.removeAttribute("disabled");
         })
         .catch((error) => { console.error("Error", error) });
 }
@@ -153,24 +159,30 @@ function add_active_events(func, useCapture = true, triggers = active_events) {
     });
 }
 
+/**
+ * allows for the custom expire or pre set dates to be picked, used on fm/edit
+ */
 function custom_expire_onclick() {
-    // allows for the custom expire or pre set dates to be picked, used on fm/edit
     const custom_expire = document.getElementById("custom_expire");
-    const expire_3 = document.getElementById("expire_3");
-    const expire_6 = document.getElementById("expire_6");
-    const expire_12 = document.getElementById("expire_12");
+    const expire_select_label = document.getElementById("expire_select_label");
+    const expire_select = document.getElementById("expire_select");
+    const expire_date_label = document.getElementById("expire_date_label");
     const expire_date = document.getElementById("expire_date");
     if (custom_expire.checked == false) {
-        expire_3.disabled = false;
-        expire_6.disabled = false;
-        expire_12.disabled = false;
-        expire_date.disabled = true;
+        expire_select.removeAttribute("disabled");
+        expire_date.setAttribute("disabled", true);
+        expire_select.style.removeProperty("display");
+        expire_select_label.style.removeProperty("display");
+        expire_date_label.style.setProperty("display", "none");
+        expire_date.style.setProperty("display", "none");
     }
     else if (custom_expire.checked == true) {
-        expire_3.disabled = true;
-        expire_6.disabled = true;
-        expire_12.disabled = true;
-        expire_date.disabled = false;
+        expire_select.setAttribute("disabled", true);
+        expire_date.removeAttribute("disabled");
+        expire_select.style.setProperty("display", "none");
+        expire_date.style.removeProperty("display");
+        expire_select_label.style.setProperty("display", "none");
+        expire_date_label.style.removeProperty("display");
     }
 }
 

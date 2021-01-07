@@ -6,7 +6,7 @@
     <input type="text" name="reminder-content" id="reminder-content" required>
     <label for="user-for">User For:</label>
     <select name="user-for" id="user-for">
-        <option value="">**All Users**</option>
+        <option value="">** All Users **</option>
         {% for user in users %}
         <option value="{{ user.id_ }}">{{ user.username }}</option>
         {% endfor %}

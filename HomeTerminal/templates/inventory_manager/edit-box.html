@@ -11,7 +11,7 @@
     <input type="text" name="box-name" id="box-name" required{% if box %} value="{{ box.name }}"{% endif %}>
     <label for="box-loc">Location:</label>
     <select name="box-loc" id="box-loc" required>
-        <option value=""></option>
+        <option value="">** Select An Option **</option>
         {% if box %}
             {% for i in locations %}
             <option value="{{ i.id_ }}"{% if box.loc_id == i.id_ %} selected{% endif %}>{{ i.name }}</option>

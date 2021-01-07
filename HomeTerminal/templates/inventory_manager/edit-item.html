@@ -12,7 +12,7 @@
     <input type="text" name="item-name" id="item-name" required{% if item %} value="{{ item.name }}" {% endif %}>
     <label for="item-box">Box:</label>
     <select name="item-box" id="item-box" required>
-        <option value=""></option>
+        <option value="">** Select An Option **</option>
         {% if item %}
             {% for i in boxes %}
             <option value="{{ i.id_ }}"{% if item.box_id == i.id_ %} selected{% endif %}>{{ i.name }}</option>
@@ -25,7 +25,7 @@
     </select>
     <label for="item-type">Type:</label>
     <select name="item-type" id="item-type" required>
-        <option value=""></option>
+        <option value="">** Select An Option **</option>
         {% if item %}
             {% for i in types %}
             <option value="{{ i.id_ }}"{% if item.type_id == i.id_ %} selected{% endif %}>{{ i.name }}</option>

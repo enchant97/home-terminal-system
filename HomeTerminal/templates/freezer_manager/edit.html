@@ -2,25 +2,23 @@
 {% block title %}Freezer Manager - Edit{% endblock %}
 {% block maincontent %}
 <form class="container two-col" action="{{ url_for('fm.edit', item_id=def_item.id_) }}" method="POST">
-    <label for="id">id:</label>
-    <input type="text" name="id" id="id" placeholder="AUTO" {% if def_item.id_ %}value="{{ def_item.id_ }}"{% endif %}readonly>
-    <label for="name">name:</label>
+    <label for="name">Name:</label>
     <input type="text" name="name" id="name" placeholder="Name..." value="{{ def_item.name }}" required>
     {% if def_item.id_ == None %}
-    <label for="custom_expire">Custom Expire:</label>
+    <label id="custom_expire_label" for="custom_expire">Custom Expire:</label>
     <input onchange="custom_expire_onclick()" type="checkbox" name="custom_expire" id="custom_expire" value="1">
-    <label for="expire_date">Expire Date:</label>
-    <input type="date" name="expire_date" id="expire_date" disabled>
-    <label for="expire_select">expire in months:</label>
+    <label id="expire_date_label" for="expire_date" style="display:none">Expire Date:</label>
+    <input type="date" name="expire_date" id="expire_date" disabled style="display:none">
+    <label id="expire_select_label" for="expire_select">Expire in Months:</label>
     <fieldset id="expire_select">
         <label>3<input type="radio" name="expire" id="expire_3" value="3" required></label>
         <label>6<input type="radio" name="expire" id="expire_6" value="6" required></label>
         <label>12<input type="radio" name="expire" id="expire_12" value="12" required></label>
     </fieldset>
     {% endif %}
-    <label for="amount">quantity:</label>
+    <label for="amount">Quantity:</label>
     <input type="number" name="amount" id="amount" step="1" min="1" value="{{ def_item.quantity }}">
-    <label for="category">category:</label>
+    <label for="category">Category:</label>
     <input type="text" name="category" id="category" list="categories" autocomplete="off"
         value="{{ def_item.category.name }}" required>
     <datalist name="categories" id="categories">
@@ -28,7 +26,7 @@
         <option value="{{ cat.name }}">{{ cat.name }}</option>
         {% endfor %}
     </datalist>
-    <label for="removed">remove entries</label>
+    <label for="removed">Remove:</label>
     <input type="checkbox" name="removed" id="removed" value="1">
 
     <button class="button ok fillboth" type="submit">Save</button>

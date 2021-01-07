@@ -4,14 +4,14 @@
 <form class="container two-col" action="{{ url_for('pm.new') }}" method="POST" , enctype=multipart/form-data>
     <label for="mainloc">Main Location:</label>
     <select name="mainloc" id="mainloc" required
-        onchange="start_load_options_to_select('subloc',`{{ url_for('pm.get_subloc') }}`,this.value, '')">
-        <option value=""></option>
+        onchange="start_load_options_to_select('subloc',`{{ url_for('pm.get_subloc') }}`,this.value, '** Select An Option **')">
+        <option value="">** Select An Option **</option>
         {% for mainloc in main_locations %}
         <option value="{{ mainloc.name }}">{{ mainloc.name }}</option>
         {% endfor %}
     </select>
     <label for="subloc">Sub Location:</label>
-    <select name="subloc" id="subloc" required></select>
+    <select name="subloc" id="subloc" required disabled></select>
     <label for="">Users:</label>
     <div class="down">
         {% for user in users %}

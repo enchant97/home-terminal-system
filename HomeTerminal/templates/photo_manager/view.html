@@ -7,20 +7,15 @@
     <form class="container two-col" action="{{ url_for('pm.view') }}" method="POST">
         <label for="main-location">Main Location:</label>
         <select
-            onchange="start_load_options_to_select('sub-location',`{{ url_for('pm.get_subloc') }}`,this.options[this.selectedIndex].text)"
+            onchange="start_load_options_to_select('sub-location',`{{ url_for('pm.get_subloc') }}`,this.value, '** Show All **')"
             name="main-location" id="main-location">
-            <option value="">Show All</option>
+            <option value="">** Show All **</option>
             {% for i in main_locations %}
             <option value="{{ i.name }}">{{ i.name }}</option>
             {% endfor %}
         </select>
         <label for="sub-location">Sub Location:</label>
-        <select name="sub-location" id="sub-location">
-            <option value="">Show All</option>
-            {% for i in sub_locations %}
-            <option value="{{ i.name }}">{{ i.name }}</option>
-            {% endfor %}
-        </select>
+        <select name="sub-location" id="sub-location" disabled></select>
         <label for="sort-by-date">Sort By Date</label>
         <fieldset id="sort-by-date">
             <label for="sort-by-date-desc">Descending</label>

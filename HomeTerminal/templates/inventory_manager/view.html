@@ -16,7 +16,7 @@
     <datalist id="item-names"></datalist>
     <label for="box-filter">By Box:</label>
     <select name="box-filter" id="box-filter">
-        <option value="">**No Filter**</option>
+        <option value="">** No Filter **</option>
         {% for i in boxes %}
         <option value="{{ i.id_ }}">{{ i.name }}</option>
         {% endfor %}
@@ -24,7 +24,7 @@
 
     <label for="type-filter">By Type:</label>
     <select name="type-filter" id="type-filter">
-        <option value="">**No Filter**</option>
+        <option value="">** No Filter **</option>
         {% for i in types %}
         <option value="{{ i.id_ }}">{{ i.name }}</option>
         {% endfor %}
