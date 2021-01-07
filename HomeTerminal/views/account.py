@@ -47,18 +47,16 @@ def changepassword():
 @login_required
 def settings():
     user_id = current_user.id_
+    api_key = get_api_key(user_id).key
     if request.method == "POST":
-        rem_notif = bool(request.form.get("rem_notif", 0, int))
-        fm_notif = bool(request.form.get("fm_notif", 0, int))
-        mess_notif = bool(request.form.get("mess_notif", 0, int))
+        rem_notif = request.form.get("rem_notif", False, bool)
+        fm_notif = request.form.get("fm_notif", False, bool)
+        mess_notif = request.form.get("mess_notif", False, bool)
         user_setting = update_usersettings(
             user_id, rem_notif, fm_notif, mess_notif)
         flash("updated your settings")
     else:
         user_setting = update_usersettings(user_id)
-    return render_template("account/user_settings.html", the_settings=user_setting)
-
-@account.route("/api-key")
-@login_required
-def api_key_manage():
-    return render_template("account/api_key.html", key=get_api_key(current_user.id_).key)
+    return render_template(
+        "account/user_settings.html",
+        the_settings=user_setting, api_key=api_key)

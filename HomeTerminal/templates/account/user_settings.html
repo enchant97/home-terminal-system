@@ -9,9 +9,12 @@
     <input type="checkbox" name="fm_notif" id="fm_notif" value="1"{% if the_settings.fm_notif %} checked{% endif %}>
     <label for="mess_notif">New Messages</label>
     <input type="checkbox" name="mess_notif" id="mess_notif" value="1"{% if the_settings.mess_notif %} checked{% endif %}>
+    <button type="button" onclick="copy_elem_clipboard('api_key')">Copy API Key</button>
+    <input type="password" id="api_key" readonly value="{{ api_key }}">
     <button class="button ok fillboth" type="submit">Save</button>
     <a class="button fillboth" href="{{ url_for('home.command_center') }}">Close</a>
 </form>
+
+
 <a class="button" href="{{ url_for('account.changepassword') }}">Change Password</a>
-<a class="button" href="{{ url_for('account.api_key_manage') }}">Get Api-key</a>
 {% endblock %}
