@@ -194,13 +194,27 @@ function get_child_pos(children, child) {
  * copy a elements value to clipboard
  * @param {string} elem_id - the input element id to copy from
  */
-function copy_elem_clipboard(elem_id){
+function copy_elem_clipboard(elem_id) {
     navigator.permissions.query({ name: "clipboard-write" }).then(result => {
         if (result.state == "granted" || result.state == "prompt") {
             const value = document.getElementById(elem_id).value;
             navigator.clipboard.writeText(value);
         }
     });
+}
+
+/**
+ * change an input from password type and text
+ * @param {string} input_id - the element id to toggle
+ */
+function pass_show_hide(input_id) {
+    const input_elem = document.getElementById(input_id);
+    if (input_elem.type === "password") {
+        input_elem.type = "text";
+    }
+    else {
+        input_elem.type = "password";
+    }
 }
 
 // handles showing WebSocket notifications

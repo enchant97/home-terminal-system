@@ -2,8 +2,9 @@
 decorator methods for use with the api routes
 """
 from contextlib import wraps
+from uuid import UUID
 
-from flask import abort, jsonify, request
+from flask import jsonify, request
 from flask_login import current_user
 
 from ..database.dao.exceptions import AlreadyUpToDate
@@ -21,11 +22,20 @@ def api_auth(fn):
         if not current_user.is_anonymous:
             # allow cookie auth
             return fn(*args, **kwargs)
-        elif check_api_key(request.headers.get("x-api-key", default="", type=str)):
-            # allow api-key sent in request header
-            return fn(*args, **kwargs)
-        else:
-            return abort(401)
+
+        api_key = request.headers.get("x-api-key", default=None, type=str)
+        if api_key:
+            try:
+                if check_api_key(UUID(api_key, version=4)):
+                    # allow api-key sent in request header
+                    return fn(*args, **kwargs)
+                # api key was invalid
+                return jsonify(status="invalid x-api-key"), 401
+            except ValueError as err:
+                # invalid format for api key
+                return jsonify(status=err.args[0]), 401
+        # no api key or cookie given in request
+        return jsonify(status="No x-api-key header or session cookie"), 401
     return wrap
 
 def api_date_checks(fn):

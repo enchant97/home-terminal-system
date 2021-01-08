@@ -1,6 +1,5 @@
-import hashlib
-import uuid
 from datetime import datetime
+from uuid import UUID, uuid4
 
 from ...helpers.constants import DEFAULT_WIDGETS
 from ...helpers.types import Notification
@@ -55,6 +54,18 @@ def new_account(username, password, birthday: datetime, ignore_duplicate=False):
     db.session.commit()
     return new_user
 
+def new_user_settings(user_id: int) -> User_Settings:
+    """
+    create a new user settings for given user id
+
+    :param user_id: the user id
+    :return: created user setting
+    """
+    user_settings = User_Settings(user_id=user_id)
+    db.session.add(user_settings)
+    db.session.commit()
+    return user_settings
+
 def change_user_password(user_id: int, new_password: str, old_password: str) -> User:
     """
     used to change a users password
@@ -103,7 +114,7 @@ def remove_message(mess_id, removed=True):
     db.session.add(the_message)
     db.session.commit()
 
-def check_api_key(api_key) -> bool:
+def check_api_key(api_key: UUID) -> bool:
     """
     Checks whether the api key given is valid
 
@@ -129,7 +140,7 @@ def get_api_key(user_id: int) -> Api_Key:
     the_key = Api_Key.query.filter_by(owner_id=user_id).first()
     if not the_key:
         # make the api key if it does not exist
-        key = str(hashlib.sha512(str(uuid.uuid4()).encode()).hexdigest())
+        key = uuid4()
         the_key = Api_Key(key=key, owner_id=user_id)
         db.session.add(the_key)
         db.session.commit()
@@ -170,10 +181,10 @@ def update_usersettings(user_id: int, rem_notif=None, fm_notif=None, mess_notif=
                                  settings row is not found
         :return: the User_Settings obj
     """
-    if User.query.filter_by(id_=user_id).scalar() is None:
-        raise RowDoesNotExist(f"user with id {user_id} does not exist")
-
     user_setting = User_Settings.query.filter_by(user_id=user_id).first()
+    if user_setting is None:
+        user_setting = new_user_settings(user_id)
+
     if not user_setting:
         raise RowDoesNotExist("User settings row does not exist")
     if rem_notif is not None:
@@ -185,13 +196,15 @@ def update_usersettings(user_id: int, rem_notif=None, fm_notif=None, mess_notif=
     db.session.commit()
     return user_setting
 
-def get_notifations(user_id):
+def get_notifations(user_id: int):
     """
     returns a generator of all notifications as Notification objects
 
         :param user_id: the user id to generate notifications for
     """
     usr_setting = User_Settings.query.filter_by(user_id=user_id).first()
+    if not usr_setting:
+        usr_setting = new_user_settings(user_id)
     if usr_setting:
         if usr_setting.fm_notif is True:
             fm_expiring = get_fm4_expiring(count=True)

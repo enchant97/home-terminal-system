@@ -3,8 +3,9 @@ from datetime import datetime
 from flask_login import UserMixin
 from werkzeug.security import check_password_hash, generate_password_hash
 
+from ...helpers.types import BinaryUUID4
 from ..database import db
-from .base import BaseNoUpdate
+from .base import Base, BaseNoUpdate
 
 
 # source: https://dev.to/kaelscion/authentication-hashing-in-sqlalchemy-1bem
@@ -64,14 +65,15 @@ class User_Settings(db.Model):
         }
 
 
-class Api_Key(db.Model):
+class Api_Key(Base):
     """
     Stores api keys and registers each owner
     """
     __tablename__ = "api_keys"
-    key = db.Column("key", db.String(length=128), primary_key=True)
-    owner_id = db.Column(db.Integer, db.ForeignKey("users.id"), unique=True)
-    removed = db.Column(db.Boolean, nullable=False, default=False)
+    #TODO remove created_at here when new Base is implemented in V4
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    key = db.Column(BinaryUUID4(length=128), nullable=False, index=True)
+    owner_id = db.Column(db.Integer, db.ForeignKey("users.id"), unique=True, nullable=False)
 
     user = db.relation(User, backref=__tablename__)
 

@@ -10,7 +10,10 @@
     <label for="mess_notif">New Messages</label>
     <input type="checkbox" name="mess_notif" id="mess_notif" value="1"{% if the_settings.mess_notif %} checked{% endif %}>
     <button type="button" onclick="copy_elem_clipboard('api_key')">Copy API Key</button>
-    <input type="password" id="api_key" readonly value="{{ api_key }}">
+    <div class="two-col">
+        <input type="password" id="api_key" readonly value="{{ api_key|string }}" autocomplete="off">
+        <input type="checkbox" onchange="pass_show_hide('api_key')"></input>
+    </div>
     <button class="button ok fillboth" type="submit">Save</button>
     <a class="button fillboth" href="{{ url_for('home.command_center') }}">Close</a>
 </form>
