@@ -33,7 +33,7 @@
     <input type="checkbox" name="removed" id="removed" value="1">
     <button class="fillboth ok" type="submit">Display</button>
 </form>
-<table>
+<table id="loaded_data">
     <thead>
         <tr>
             <th>Name</th>
@@ -53,4 +53,5 @@
         {% endfor %}
     </tbody>
 </table>
+<button type="button" onclick="print_friendly_table('loaded_data', 'Inventory Manager Items')">Print</button>
 {% endblock %}

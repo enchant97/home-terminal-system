@@ -15,7 +15,7 @@
     <button type="submit" class="fillboth">Display</button>
 </form>
 
-<table>
+<table id="loaded_data">
     <thead>
         <tr>
             <th>Content</th>
@@ -38,4 +38,5 @@
         {% endfor %}
     </tbody>
 </table>
+<button type="button" onclick="print_friendly_table('loaded_data', 'Reminders')">Print</button>
 {% endblock %}

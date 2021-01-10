@@ -217,6 +217,36 @@ function pass_show_hide(input_id) {
     }
 }
 
+/**
+ * opens a new browser tab with a print friendly version of the table given,
+ * and opens the print menu ready for printing
+ * @param {string} table_id - the table id to copy from
+ * @param {string} title - a optional title for the page
+ * @param {boolean} skip_last_col - the table last column needs removing
+ */
+function print_friendly_table(table_id, title = null, skip_last_col=false){
+    const table_elem = document.getElementById(table_id).cloneNode(true);
+    table_elem.style.setProperty("border-spacing", "8px");
+    const w = window.open();
+    const hts_title = w.document.createElement("h2");
+    hts_title.innerText = "Home Terminal System";
+    w.document.body.append(hts_title);
+    if (title){
+        const title_elem = w.document.createElement("h3");
+        title_elem.innerText = title;
+        w.document.body.append(title_elem);
+    }
+    w.document.body.append(table_elem);
+    if (skip_last_col){
+        const rows = table_elem.querySelectorAll("tr");
+        rows.forEach(row => {
+            row.lastElementChild.remove();
+        });
+    }
+    w.print();
+    w.close();
+}
+
 // handles showing WebSocket notifications
 window.addEventListener("ws_notif_mess", (event) => {
     if (event.detail.type_id == TYPES.NOTIFICATION.MESSAGE) {
