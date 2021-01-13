@@ -19,7 +19,6 @@ from flask_sockets import Sockets
 from werkzeug.utils import find_modules, import_string
 
 from .authentication import login_manager
-from .config import config
 from .database.dao.user import get_notifations, new_account
 from .database.database import db
 from .helpers.calculations import to_human_datetime
@@ -123,17 +122,47 @@ def create_app():
     returns:
         Flask app
     """
-    config_name = os.getenv("FLASK_CONFIGURATION", "dev")
-    app.config.from_object(config[config_name])
-    app.config["APP_VERSION"] = __version__
     app.logger.info("HTS running version " + __version__)
-    if app.config["SQLALCHEMY_DATABASE_URI"] == "sqlite:///:memory:":
-        app.logger.warning("Running sqlite in-memory database!")
+
+    # non-configurable settings
+    app.config["APP_VERSION"] = __version__
+
+    # allow for base config file to have a override
+    app.config.from_pyfile(os.getenv("FLASK_CONFIG_PATH", "flask.cfg"))
+
+    # required secret-key
+    app.config["SECRET_KEY"] = os.environ["SECRET_KEY"]
+
+    # the app's data folder
+    cwd_data = Path(os.getcwd()) / Path("data")
+    cwd_data.mkdir(exist_ok=True)
+
+    # image storage path
+    if os.getenv("IMG_PATH"):
+        app.config["BASE_IMG_PATH"] = os.environ["IMG_PATH"]
+    else:
+        # use default image path (./data/images)
+        default_img_path = cwd_data / Path("images")
+        app.config["BASE_IMG_PATH"] = default_img_path
+        app.logger.info(f"image path not set, using default path: {default_img_path}")
+
+    # database URI
+    if os.getenv("DATABASE_URI"):
+        # if a database url has already been set
+        app.config["SQLALCHEMY_DATABASE_URI"] = os.environ["DATABASE_URI"]
+    else:
+        # use default sqlite path (./data/app_data.db)
+        default_db_path = cwd_data / Path("app_data.db")
+        app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + str(default_db_path)
+        app.logger.info("database URI not set, using default path:{default_db_path}")
+
+    # init flask modules
     db.init_app(app)
     login_manager.init_app(app)
     sockets.init_app(app)
     init_socket_handlers(app)
 
+    # init app blueprints
     app.register_blueprint(main)
     app.register_blueprint(account)
     app.register_blueprint(home, url_prefix="/home")
@@ -144,7 +173,6 @@ def create_app():
     app.register_blueprint(reminder, url_prefix="/reminder")
     app.register_blueprint(messages, url_prefix="/messages")
     app.register_blueprint(shortcuts, url_prefix="/widget/shortcuts")
-
     sockets.register_blueprint(live_update_ws, url_prefix="/live-update")
 
     # import database models from the apps model folder
@@ -168,6 +196,7 @@ def create_app():
     # load the dynamic image folder names
     app.config["DYNAMIC_IMG_LOCATIONS"] = INBUILT_DYNAMIC_IMG_FOLDERS
 
+    # create database tables
     with app.app_context():
         db.create_all()
 

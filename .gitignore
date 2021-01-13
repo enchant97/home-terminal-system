@@ -7,5 +7,5 @@ pylintrc
 .pytest_cache
 HomeTerminal/plugins/*
 !/HomeTerminal/plugins/__init__.py
-HomeTerminal/appdata.db
 venv/
+data/

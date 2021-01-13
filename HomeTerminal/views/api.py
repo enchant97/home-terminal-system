@@ -5,6 +5,14 @@ from ..helpers.api import api_auth
 
 api = Blueprint("api", __name__)
 
+@api.route("/is-healthy")
+def is_healthy():
+    """
+    route for health check,
+    when running in docker
+    """
+    return jsonify(status="OK")
+
 @api.route("/im/get-names", methods=["POST"])
 @api_auth
 def get_im_getnames():

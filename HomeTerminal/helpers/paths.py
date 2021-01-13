@@ -22,6 +22,8 @@ def get_image_folder(dynamic_img_name: str) -> Path:
     if not image_path.is_absolute():
         # if path is relative join the base_path onto it
         image_path = base_path.joinpath(image_path)
+    # make sure folder are created
+    image_path.mkdir(exist_ok=True)
     return image_path
 
 def is_allowed_img_file(filename: str) -> str:
