@@ -1,0 +1,40 @@
+version: "3.3"
+
+services:
+  ingress:
+    image: nginx:1.19.6-alpine
+    restart: unless-stopped
+    depends_on:
+      - flask
+    ports:
+      - "80:80"
+      #- "443:443"
+    volumes:
+      - "ingress:/etc/nginx/conf.d/"
+
+  flask:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      - database
+    environment:
+      # replace the secret key with your own
+      - "SECRET_KEY=myverysecretkey"
+      - "DATABASE_URI=postgresql+psycopg2//postgres:postgres@database:5432/postgres"
+    volumes:
+      - "flask:/data"
+
+  database:
+    image: postgres:13.1-alpine
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - "database:/var/lib/postgresql/data"
+
+volumes:
+  ingress:
+  flask:
+  database:
