@@ -1,7 +1,6 @@
 FROM python:3.8.6-buster
 
 LABEL maintainer="enchant97"
-LABEL version="3.12.0"
 
 EXPOSE 8080
 
