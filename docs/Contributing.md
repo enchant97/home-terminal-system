@@ -1,4 +1,5 @@
 # Contributing
+[Back Home](index.md)
 
 ## Prerequisites
 -   Have the requirements for deploying the project
@@ -36,15 +37,16 @@ Make sure to follow the coding guide lines
 -   Make sure to use DRY code
 -   If creating a table model make sure to use one of the base classes to inheriting from
 -   Test your code fully before submiting a pull request (don't just use pytest actually use the program)
--   It is intended for the database to be fully compatible with MYSQL
--   Try not to add new app configs
+-   It is intended for the database to be fully compatible with MYSQL, postgresql and sqlite
+-   Try not to add new app configs that do not have defaults,
+this is to minimise changes for the user who is deploying this project
 
 ## Where To Contribute
 Check the [full issues list](https://github.com/enchant97/House_Terminal_System/issues).
 Note just because an issue exists it does not mean we will accept a contribution. There are
 several reasons why we may not accept a pull request:
 -   Performance - We want to develop a fast web app that can run on the smallest server
-(like a raspberry pi)
+(like a Raspberry Pi 2 Model B)
 -   User Experience - We want to make our project easy for almost any user to be able to use it
 -   Feature change - A feature change that will need to be developed in a certain way
 and be relevant to the way we want to develop our program

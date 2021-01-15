@@ -4,10 +4,7 @@ The Home Terminal System is a python flask application allowing for a
 house to digitize certain tasks.
 
 ## Table Of Contents:
--   [Requirements](Requirements.md) (WIP)
--   [Deploying](Deploying.md) (WIP)
--   [Guides](Guides.md) (WIP)
--   [Updates](Updating.md)
--   [Roadmap (planned future features)](Roadmap.md)
--   [Plugins](Plugins.md)
+-   [Guides](Guides.md)
+-   [Planed Updates](https://github.com/enchant97/House_Terminal_System/projects)
+-   [Plugins](Plugins.md) *(WIP)*
 -   [Contributing](Contributing.md)
