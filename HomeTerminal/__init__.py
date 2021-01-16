@@ -8,6 +8,7 @@ to use import create_app() which returns an flask app for running
 __version__ = "3.12.0"
 __author__ = "Leo Spratt"
 
+import logging
 import os
 import sys
 from datetime import datetime
@@ -51,9 +52,12 @@ def create_default_db():
     Creates the default rows in the database,
     runs before_first_request
     """
-    new_account(
-        app.config["ADMINUSERNAME"], app.config["ADMINUSERNAME"],
+    username = app.config["ADMINUSERNAME"]
+    acc_created = new_account(
+        username, username,
         datetime.utcnow(), ignore_duplicate=True)
+    if acc_created:
+        app.logger.info(f"created default admin {username} account")
 
 def get_plugins():
     """
@@ -115,15 +119,10 @@ def import_models(models_dir, import_path):
                 app.logger.debug("auto import db model: {0}".format(cls))
                 setattr(sys.modules[__name__], cls.__name__, cls)
 
-def create_app():
+def setup_config():
     """
-    Creates the app and configures SQLALCHEMY
-
-    returns:
-        Flask app
+    setups up the app config, called from create_app()
     """
-    app.logger.info("HTS running version " + __version__)
-
     # non-configurable settings
     app.config["APP_VERSION"] = __version__
 
@@ -155,6 +154,22 @@ def create_app():
         default_db_path = cwd_data / Path("app_data.db")
         app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + str(default_db_path)
         app.logger.info("database URI not set, using default path:{default_db_path}")
+
+def create_app():
+    """
+    Creates the app and configures SQLALCHEMY
+
+    returns:
+        Flask app
+    """
+    # set default logging level
+    app.logger.setLevel(logging.INFO)
+
+    # load config into app from env variables and flask.cfg
+    app.logger.info("loading app config")
+    setup_config()
+
+    app.logger.info("HTS running version " + __version__)
 
     # init flask modules
     db.init_app(app)

@@ -10,7 +10,9 @@ services:
       - "80:80"
       #- "443:443"
     volumes:
-      - "ingress:/etc/nginx/conf.d/"
+      - ./HomeTerminal/static:/var/www/static:ro
+      - ./docker-files/ingress/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./docker-files/ingress/proxy_params:/etc/nginx/proxy_params:ro
 
   flask:
     build: .
@@ -20,7 +22,7 @@ services:
     environment:
       # replace the secret key with your own
       - "SECRET_KEY=myverysecretkey"
-      - "DATABASE_URI=postgresql+psycopg2//postgres:postgres@database:5432/postgres"
+      - "DATABASE_URI=postgresql+psycopg2://postgres:postgres@database:5432/postgres"
     volumes:
       - "flask:/data"
 
@@ -35,6 +37,5 @@ services:
       - "database:/var/lib/postgresql/data"
 
 volumes:
-  ingress:
   flask:
   database:

@@ -12,8 +12,7 @@ These deployment guides do not currently instruct you on how to run with https.
 ### Docker Deployment
 #### Using docker-compose
 - Change the SECRET_KEY environment value to something secure
-- After first run copy `default.conf` and `proxy_params` file into the ingress volume
-- Running this will create three containers called: ingress, flask and database
+- Running this will create three containers called: flask and database
 
 #### Just Dockerfile
 - Run docker file with required environment values (SECRET_KEY, DATABASE_URI)

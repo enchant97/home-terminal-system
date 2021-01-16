@@ -17,5 +17,5 @@ RUN ["pip", "install", "-r", "optional-requirements.txt"]
 # copy the flask app files
 COPY HomeTerminal HomeTerminal
 
-CMD gunicorn --log-level info -b 0.0.0.0:8080 -k geventwebsocket.gunicorn.workers.GeventWebSocketWorker -w 1 'HomeTerminal:create_app()'
-HEALTHCHECK CMD curl --fail http://localhost:8080/api/is-healthy || exit 1
+CMD gunicorn -b 0.0.0.0:8080 -k geventwebsocket.gunicorn.workers.GeventWebSocketWorker -w 1 'HomeTerminal:create_app()'
+HEALTHCHECK --interval=1m --start-period=30s CMD curl --fail http://localhost:8080/api/is-healthy || exit 1
