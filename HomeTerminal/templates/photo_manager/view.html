@@ -41,7 +41,7 @@
                 <td>{{ to_human_datetime(i.date_taken) }}</td>
                 <td><pre>{{ i.notes }}</pre></td>
                 <td>{{ i.sub_location.main_location.name }} > {{ i.sub_location.name }}</td>
-                <td><img style="width: 200px;" onerror="this.style.display='none'" src="{{ url_for('pm.thumbnail', event_id=i.id_) }}" alt="event image"></td>
+                <td>{% if i.thumbnail_filename %}<img style="width: 200px;" onerror="this.style.display='none'" src="{{ url_for('pm.thumbnail', event_id=i.id_) }}" alt="event image">{% else %}None{% endif %}</td>
             </tr>
             {% endfor %}
         </tbody>

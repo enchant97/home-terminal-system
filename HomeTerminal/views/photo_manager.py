@@ -23,9 +23,9 @@ def get_subloc():
 @pm.route("/thumbnails/<int:event_id>.jpg")
 @login_required
 def thumbnail(event_id):
-    file_path = dao_pm.get_image_by_event(event_id)
-    if file_path:
-        full_path = get_image_folder("PHOTO_MANAGER") / file_path.file_path
+    filename = dao_pm.get_thumbnail_fn(event_id)
+    if filename:
+        full_path = get_image_folder("PHOTO_MANAGER") / filename
         return send_file(full_path)
     return abort(404)
 

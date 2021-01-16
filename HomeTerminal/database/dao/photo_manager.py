@@ -7,7 +7,7 @@ from ...helpers.paths import get_image_folder
 from ...helpers.photos import get_hash_image
 from ..database import db
 from ..models.photo_manager import (FullEvent, MainLocation, SubLocation,
-                                    Thumbnail, UserEvent)
+                                    UserEvent)
 from ..models.user import User
 from .exceptions import RowDoesNotExist
 
@@ -28,11 +28,17 @@ def get_mainloc():
     """
     return MainLocation.query.order_by(MainLocation.name).all()
 
-def get_image_by_event(event_id, removed=False):
+def get_thumbnail_fn(event_id: int):
     """
-    returns the Thumbnail obj
+    returns the thumbnail filename if exists
+
+        :param event_id: the full event id
+        :return: the thumbnail filename or None
     """
-    return Thumbnail.query.filter_by(full_event_id=event_id, removed=removed).first()
+    event = FullEvent.query.filter_by(id_=event_id, removed=False).first()
+    if event:
+        return event.thumbnail_filename
+    return None
 
 def get_event(mainloc=None, subloc=None, sort_dated: bool = None):
     """
@@ -102,12 +108,13 @@ def new_event(mainloc, subloc, datetaken: datetime, notes, users, img_raw=None):
     db.session.commit()
     if img_raw:
         # if a img_path was provided add it to the database and write image to file
+        #TODO move image write into a helper func
         file_name = get_hash_image(img_raw.read(), ".jpg")
         full_path = get_image_folder("PHOTO_MANAGER") / file_name
         img_raw.seek(0)# go back to start of file
         full_path.write_bytes(img_raw.read())
         img_raw.close()# close the image (allows garbage cleanup to remove)
-        db.session.add(Thumbnail(full_event_id=fullevent.id_, file_path=file_name))
+        fullevent.thumbnail_filename = file_name
     for username in users:
         # adds all the user events by selected user
         the_user = User.query.filter_by(username=username).first()
@@ -153,7 +160,6 @@ def delete_removed():
     delete the rows that are marked as removed
     """
     UserEvent.query.filter_by(removed=True).delete()
-    Thumbnail.query.filter_by(removed=True).delete()
     FullEvent.query.filter_by(removed=True).delete()
     SubLocation.query.filter_by(removed=True).delete()
     MainLocation.query.filter_by(removed=True).delete()

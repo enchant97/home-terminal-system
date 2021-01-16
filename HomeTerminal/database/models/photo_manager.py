@@ -1,7 +1,7 @@
 """
 contains the photo manager models
 """
-from .base import Base, BaseNoUpdate, db
+from .base import Base, db
 from .user import User
 
 
@@ -40,19 +40,10 @@ class FullEvent(Base):
     subloc_id = db.Column(db.Integer, db.ForeignKey("pm_sublocs.id"), nullable=False)
     date_taken = db.Column(db.DateTime, nullable=False)
     notes = db.Column(db.String(length=2000), nullable=False)
+    thumbnail_filename = db.Column(db.String(length=128), nullable=True)
 
     sub_location = db.relation(SubLocation, backref=__tablename__)
 
-
-class Thumbnail(BaseNoUpdate):
-    """
-    Stores image paths with file ext for thumbnails
-    """
-    __tablename__ = "pm_thumbnails"
-    full_event_id = db.Column(db.Integer, db.ForeignKey("pm_fullevents.id"), nullable=False)
-    file_path = db.Column(db.String(length=128), nullable=False)
-
-    full_event = db.relation(FullEvent, backref=__tablename__)
 
 class UserEvent(Base):
     """
