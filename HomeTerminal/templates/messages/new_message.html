@@ -1,5 +1,6 @@
 {% extends "base.html" %}
-{% block title %}Messages - New{% endblock %}
+{% block title %}Messages{% endblock %}
+{% block title2 %}New{% endblock %}
 {% block maincontent %}
 <form class="container down" id="newmessage" action="{{ url_for('messages.new_message') }}" method="POST">
     <h2>Write Message Here:</h2>

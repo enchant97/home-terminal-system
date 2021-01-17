@@ -1,15 +1,18 @@
 {% extends "base.html" %}
 {% block title %}Inventory Manager{% endblock %}
+{% block title2 %}View{% endblock %}
 {% block extrahead %}
 <script src="/static/scripts/inventory-manager.js"></script>
 {% endblock %}
 {% block maincontent %}
-<a class="button" href="{{ url_for('im.edit_location') }}">New Location</a>
-<a class="button" href="{{ url_for('im.edit_type') }}">New Type</a>
-<a class="button" href="{{ url_for('im.edit_box') }}">New Box</a>
-<a class="button" href="{{ url_for('im.edit_item') }}">New Item</a>
+<div class="container down">
+    <a class="button" href="{{ url_for('im.edit_location') }}">New Location</a>
+    <a class="button" href="{{ url_for('im.edit_type') }}">New Type</a>
+    <a class="button" href="{{ url_for('im.edit_box') }}">New Box</a>
+    <a class="button" href="{{ url_for('im.edit_item') }}">New Item</a>
+</div>
 
-<form class="two-col" action="{{ url_for('im.view') }}" method="post">
+<form class="container two-col" action="{{ url_for('im.view') }}" method="post">
     <h2 class="fillboth">Item Filter</h2>
     <label for="live-item-input">Item Search:</label>
     <input type="text" name="live-item-input" id="live-item-input" list="item-names" placeholder="Search Here..." oninput="mark_typing(this, 'item-names', `{{ url_for('api.get_im_getnames') }}`)">

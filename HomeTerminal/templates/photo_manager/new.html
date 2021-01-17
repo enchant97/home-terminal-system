@@ -1,5 +1,6 @@
 {% extends "base.html" %}
-{% block title %}Photo Manager - New{% endblock %}
+{% block title %}Photo Manager{% endblock %}
+{% block title2 %}New{% endblock %}
 {% block maincontent %}
 <form class="container two-col" action="{{ url_for('pm.new') }}" method="POST" , enctype=multipart/form-data>
     <label for="mainloc">Main Location:</label>

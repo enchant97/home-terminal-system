@@ -1,11 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Inventory Manager{% endblock %}
+{% block title2 %}{% if location %}Edit Location{% else %}New Location{% endif %}{% endblock %}
 {% block maincontent %}
-{% if location %}
-<h2>Edit Location</h2>
-{% else %}
-<h2>New Location</h2>
-{% endif %}
 <form class="container two-col" action="" method="post">
     <label for="loc-name">Name:</label>
     <input type="text" name="loc-name" id="loc-name" required{% if location %} value="{{ location.name }}"{% endif %}>

@@ -1,5 +1,6 @@
 {% extends "base.html" %}
-{% block title %}Freezer Manager - Edit{% endblock %}
+{% block title %}Freezer Manager{% endblock %}
+{% block title2 %}Edit{% endblock %}
 {% block maincontent %}
 <form class="container two-col" action="{{ url_for('fm.edit', item_id=def_item.id_) }}" method="POST">
     <label for="name">Name:</label>

@@ -1,5 +1,6 @@
 {% extends "base.html" %}
-{% block title %}Messages - View{% endblock %}
+{% block title %}Messages{% endblock %}
+{% block title2 %}View{% endblock %}
 {% block maincontent %}
 <a href="{{ url_for('messages.new_message') }}" class="button">New Message</a>
 <table id="loaded_data">

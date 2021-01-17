@@ -1,21 +1,22 @@
 {% extends "base.html" %}
-{% block title %}Freezer Manager - Report{% endblock %}
+{% block title %}Freezer Manager{% endblock %}
+{% block title2 %}Report{% endblock %}
 {% block maincontent %}
-<a href="{{ url_for('fm.report_expiring') }}" class="button">Report of Expiring</a>
-<div class="center">
-    <form action="{{ url_for('fm.report') }}" method="POST">
-        <label for="category">Category:</label>
-        <select name="category" id="category">
-            <option value="">** Select All **</option>
-            {% for cat in categories %}
-            <option value="{{ cat.id_ }}"{% if cat_id_selected==cat.id_ %} selected{% endif %}>{{ cat.name }}
-            </option>
-            {% endfor %}
-        </select>
-        <button class="button ok" type="submit">Display</button>
-    </form>
-    <a class="button add" href="{{ url_for('fm.edit') }}">Add Entry</a>
+<div class="container down">
+    <a href="{{ url_for('fm.report_expiring') }}" class="button">Report of Expiring</a>
+    <a class="button ok" href="{{ url_for('fm.edit') }}">New Entry</a>
 </div>
+<form class="container two-col" action="{{ url_for('fm.report') }}" method="POST">
+    <label for="category">Category:</label>
+    <select name="category" id="category">
+        <option value="">** Select All **</option>
+        {% for cat in categories %}
+        <option value="{{ cat.id_ }}"{% if cat_id_selected==cat.id_ %} selected{% endif %}>{{ cat.name }}
+        </option>
+        {% endfor %}
+    </select>
+    <button class="button fillboth" type="submit">Display</button>
+</form>
 
 <table id="loaded_data">
     <thead>

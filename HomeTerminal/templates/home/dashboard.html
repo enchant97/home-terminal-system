@@ -5,7 +5,9 @@
 {% endblock %}
 {% block maincontent %}
 <div id="widgets"><div class="spinload"></div></div>
-<a class="button" href="{{ url_for('home.command_center') }}">Command Center</a>
-<button id="widgeteditmode-bnt" onclick="show_widgets_editmode()">Start Editing Widgets</button>
+<div class="container down">
+    <a class="button" href="{{ url_for('home.command_center') }}">Command Center</a>
+    <button id="widgeteditmode-bnt" onclick="show_widgets_editmode()">Start Editing Widgets</button>
+</div>
 <script>const live_update_ws = new LiveUpdateWS(["messages"])</script>
 {% endblock %}

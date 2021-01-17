@@ -1,12 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Inventory Manager{% endblock %}
+{% block title2 %}{% if item_type %}Edit Type{% else %}New Type{% endif %}{% endblock %}
 {% block maincontent %}
-
-{% if item_type %}
-<h2>Edit Type</h2>
-{% else %}
-<h2>New Type</h2>
-{% endif %}
 <form class="container two-col" action="" method="post">
     <label for="type-name">Name:</label>
     <input type="text" name="type-name" id="type-name" required {% if item_type %}value="{{ item_type.name }}"{% endif %}>

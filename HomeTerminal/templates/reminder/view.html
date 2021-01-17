@@ -1,8 +1,11 @@
 {% extends "base.html" %}
-{% block title %}Reminders - View{% endblock %}
+{% block title %}Reminders{% endblock %}
+{% block title2 %}View{% endblock %}
 {% block maincontent %}
-<a href="{{ url_for('reminder.new') }}" class="button ok">New Reminder</a>
-<form class="two-col" action="{{ url_for('reminder.view') }}" method="POST">
+<div class="container down">
+    <a href="{{ url_for('reminder.new') }}" class="button ok">New Reminder</a>
+</div>
+<form class="container two-col" action="{{ url_for('reminder.view') }}" method="POST">
     <label for="reminder-type-id">Type:</label>
     <select name="reminder-type-id" id="reminder-type-id">
         <option value="">** Select All **</option>

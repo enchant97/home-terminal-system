@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Customise Shorcuts{% endblock %}
+{% block title2 %}Add New Shortcut{% endblock %}
 {% block maincontent %}
-<h2>Add New Shortcut</h2>
 <form action="" method="post" class="container two-col">
     <label for="name">Name:</label>
     <input type="text" name="name" id="name" required>
@@ -9,6 +9,6 @@
     <input type="text" name="url_endpoint" id="url_endpoint" placeholder="main.do_logout" required>
     <label for="url_variables">URL Variables:</label>
     <input type="text" name="url_variables" id="url_variables" placeholder="{'id': 1, ...}">
-    <button class="fillboth" type="submit">Save</button>
+    <button class="fillboth ok" type="submit">Save</button>
 </form>
 {% endblock %}

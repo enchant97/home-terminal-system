@@ -1,5 +1,6 @@
 {% extends "base.html" %}
-{% block title %}Reminders - New{% endblock %}
+{% block title %}Reminders{% endblock %}
+{% block title2 %}New{% endblock %}
 {% block maincontent %}
 <form class="container two-col" action="{{ url_for('reminder.new') }}" method="POST">
     <label for="reminder-content">Reminder Content:</label>
