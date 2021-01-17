@@ -1,18 +1,18 @@
-from flask import (Blueprint, current_app, flash, redirect, render_template,
-                   request, url_for)
+from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 
 from ..database.dao.exceptions import RowAlreadyExists
 from ..database.dao.user import (change_user_password, get_api_key,
                                  new_account, update_usersettings)
 from ..helpers.calculations import html_date
+from ..helpers.checkers import is_admin
 
 account = Blueprint("account", __name__)
 
 @account.route("/newaccount", methods=["POST", "GET"])
 @login_required
 def newaccount():
-    if current_user.username == current_app.config.get("ADMINUSERNAME"):
+    if is_admin(current_user.username):
         if request.method == "POST":
             username = request.form.get("username")
             password = request.form.get("password")
