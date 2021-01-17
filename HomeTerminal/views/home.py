@@ -3,11 +3,12 @@ from uuid import UUID
 from flask import (Blueprint, Response, current_app, jsonify, render_template,
                    request, stream_with_context, url_for)
 from flask_login import current_user, login_required
+from werkzeug.routing import BuildError
 
 from ..database import dao
 from ..helpers.checkers import is_admin
 from ..helpers.types import Widget
-from ..helpers.widgets import generate_widget_container
+from ..helpers.widgets import generate_widget_container, generate_widget_failed
 
 home = Blueprint("home", __name__)
 
@@ -35,11 +36,16 @@ def view_plugins():
 def get_dashboard_widgets():
     def stream_response():
         for widget_row in dao.dashboard.get_dashboard_widget_order(current_user.id_):
-            widget_info: Widget = current_app.config["WIDGETS"][widget_row.widget_uuid]
-            widget_html = widget_info.generation_func(
-                widget_row.id_,
-                widget_row.widget_settings)
-            yield generate_widget_container(widget_row.id_, widget_html)
+            try:
+                widget_info: Widget = current_app.config["WIDGETS"][widget_row.widget_uuid]
+                widget_html = widget_info.generation_func(
+                    widget_row.id_,
+                    widget_row.widget_settings)
+                yield generate_widget_container(widget_row.id_, widget_html)
+            except (KeyError, BuildError):
+                current_app.logger.exception("widget failed to load")
+                dao.dashboard.remove_widget(widget_row.id_)
+                yield generate_widget_failed(widget_row.id_)
     return Response(stream_with_context(stream_response()))
 
 @home.route("/dashboard/widgets/get-names")

@@ -16,6 +16,10 @@ def generate_widget_container(widget_id: int, widget_html: str) -> str:
     """
     return f"<div id='widget-{widget_id}'>{widget_html}</div>"
 
+def generate_widget_failed(widget_id: int):
+    return f"<div class='container' id='widget-{widget_id}'>\
+    <p>Widget failed to load, so will be deleted</p></div>"
+
 def generate_shortcut_widget(widget_id: int, widget_settings=None) -> str:
     """
     returns HTML of the widget,
