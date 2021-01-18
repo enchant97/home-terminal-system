@@ -1,7 +1,7 @@
 :root {
   --main-background: #e6e6e6;
-  --content-background: rgb(196, 196, 196);
-  --border-col: rgb(121, 121, 121);
+  --content-background: #c4c4c4;
+  --border-col: #797979;
   --dark-text: #000000;
   --light-text: #ffffff;
   --bnt-col: #a7a7a7;
@@ -16,7 +16,7 @@
   :root {
     --main-background: #152020;
     --content-background: #1a1a1a;
-    --border-col: rgb(48, 48, 48);
+    --border-col: #303030;
     --dark-text: #e9e9e9;
     --light-text: #e9e9e9;
     --bnt-col: #3b3b3b;
@@ -138,8 +138,17 @@ nav #datetime {
   font-size: 2em;
 }
 
-nav :last-child {
+nav .m-left {
   margin-left: auto;
+}
+
+nav button.themepicker {
+  background-image: url("/static/img/theme-changer.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: auto;
+  height: 35px;
+  width: 65px;
 }
 
 header {
@@ -270,20 +279,20 @@ button,
 button.ok,
 .button.ok {
   background-color: var(--green);
-  color: white;
+  color: var(--light-text);
 }
 
 button.cancel,
 .button.cancel {
   background-color: #780000;
-  color: white;
+  color: var(--light-text);
 }
 
 button:hover,
 .button:hover {
   transition-duration: 500ms;
-  background-color: black;
-  color: white;
+  background-color: var(--main-background);
+  color: var(--light-text);
 }
 
 #backhome {
@@ -293,7 +302,7 @@ button:hover,
 
 .closebtn {
   margin-left: 15px;
-  color: white;
+  color: var(--light-text);
   font-weight: bold;
   float: right;
   font-size: 22px;
@@ -334,7 +343,7 @@ table tbody tr td {
 table tbody tr:hover {
   cursor: pointer;
   transition-duration: 500ms;
-  background-color: black;
+  background-color: var(--main-background);
   color: var(--light-text);
 }
 
@@ -390,8 +399,12 @@ table.plain tbody tr {
     text-align: center;
   }
 
-  nav :last-child {
+  nav .m-left {
     margin-left: unset;
+  }
+
+  nav button.themepicker{
+    width: 98%;
   }
 }
 

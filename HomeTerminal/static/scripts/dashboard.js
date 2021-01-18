@@ -43,7 +43,7 @@ function show_widgets_editmode() {
             // move_down_bnt.innerText = "⬇";
             // move_down_bnt.addEventListener("click", _event => { move_widget_posistion(widget, "down") });
             const settings_img = document.createElement("img");
-            settings_img.setAttribute("src", "/static/settings-cog.svg");
+            settings_img.setAttribute("src", "/static/img/settings-cog.svg");
             settings_img.setAttribute("width", "15px")
             const settings_bnt = document.createElement("button");
             settings_bnt.addEventListener("click", _event => { get_widget_edit_url(widget.id.split("-").pop()) })

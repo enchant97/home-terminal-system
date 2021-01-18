@@ -1,5 +1,12 @@
 "use strict";
 
+const THEME_KEYNAME = "theme";
+const THEMES = {
+    OS_PREF: "os-pref",
+    LIGHT: "light",
+    DARK: "dark",
+    SOLARIZED_DARK: "solarized-dark"
+}
 const active_events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
 
 function gen_datetime() {
@@ -224,20 +231,20 @@ function pass_show_hide(input_id) {
  * @param {string} title - a optional title for the page
  * @param {boolean} skip_last_col - the table last column needs removing
  */
-function print_friendly_table(table_id, title = null, skip_last_col=false){
+function print_friendly_table(table_id, title = null, skip_last_col = false) {
     const table_elem = document.getElementById(table_id).cloneNode(true);
     table_elem.style.setProperty("border-spacing", "8px");
     const w = window.open();
     const hts_title = w.document.createElement("h2");
     hts_title.innerText = "Home Terminal System";
     w.document.body.append(hts_title);
-    if (title){
+    if (title) {
         const title_elem = w.document.createElement("h3");
         title_elem.innerText = title;
         w.document.body.append(title_elem);
     }
     w.document.body.append(table_elem);
-    if (skip_last_col){
+    if (skip_last_col) {
         const rows = table_elem.querySelectorAll("tr");
         rows.forEach(row => {
             row.lastElementChild.remove();
@@ -245,6 +252,105 @@ function print_friendly_table(table_id, title = null, skip_last_col=false){
     }
     w.print();
     w.close();
+}
+
+/**
+ *
+ * @param {string} theme_name - the name of the theme
+ * @param {string} bnt_text - the text for the button
+ * @param {string} curr_selected - what the current theme is
+ * @returns {Element} the created button element
+ */
+function create_theme_picker_button(theme_name, bnt_text, curr_selected) {
+    const elem = document.createElement('button');
+    elem.addEventListener('click', _event => { change_theme(theme_name) });
+    elem.innerText = bnt_text;
+    if (curr_selected === theme_name) {
+        elem.classList.add('ok');
+    }
+    return elem;
+}
+
+/**
+ * opens(creates) or closes(removes) the site theme picker
+ */
+function toggle_theme_picker() {
+    var curr_theme = window.localStorage.getItem(THEME_KEYNAME);
+    if (curr_theme === null) { curr_theme = THEMES.OS_PREF }
+    var the_box = document.getElementById('theme-selection');
+    if (the_box) {
+        the_box.remove();
+    }
+    else {
+        const header = document.getElementsByTagName('header')[0];
+        const navbar = document.getElementsByTagName('nav')[0];
+        the_box = document.createElement('div');
+        the_box.id = 'theme-selection';
+
+        the_box.appendChild(create_theme_picker_button(THEMES.LIGHT, "Light", curr_theme));
+        the_box.appendChild(create_theme_picker_button(THEMES.DARK, "Dark", curr_theme));
+        the_box.appendChild(create_theme_picker_button(THEMES.SOLARIZED_DARK, "Solarized Dark", curr_theme));
+        the_box.appendChild(create_theme_picker_button(THEMES.OS_PREF, "OS Theme", curr_theme));
+
+        header.insertBefore(the_box, navbar.nextSibling);
+    }
+}
+
+/**
+ * change page theme cookie and load the theme
+ * @param {string} new_theme - the theme name
+ */
+function change_theme(new_theme) {
+    window.localStorage.setItem(THEME_KEYNAME, new_theme);
+    if (new_theme === THEMES.OS_PREF) {
+        location.reload();
+    }
+    load_theme();
+    toggle_theme_picker();
+}
+
+/**
+ * loads the theme currently selected in local storage
+ */
+function load_theme() {
+    var curr_theme = window.localStorage.getItem(THEME_KEYNAME);
+    if (curr_theme === null) { curr_theme = THEMES.OS_PREF }
+    if (curr_theme === THEMES.LIGHT){
+        document.documentElement.style.setProperty("--green", "#007800");
+        document.documentElement.style.setProperty("--orange", "#ff9900");
+        document.documentElement.style.setProperty("--blue", "#2195f3");
+        document.documentElement.style.setProperty("--red", "#f44437");
+        document.documentElement.style.setProperty("--main-background", "#e6e6e6");
+        document.documentElement.style.setProperty("--content-background", "#c4c4c4");
+        document.documentElement.style.setProperty("--border-col", "#797979");
+        document.documentElement.style.setProperty("--dark-text", "#000000");
+        document.documentElement.style.setProperty("--light-text", "#ffffff");
+        document.documentElement.style.setProperty("--bnt-col", "#a7a7a7");
+    }
+    else if (curr_theme === THEMES.DARK || curr_theme === THEMES.SOLARIZED_DARK){
+        document.documentElement.style.setProperty("--green", "#015801");
+        document.documentElement.style.setProperty("--orange", "#c27400");
+        document.documentElement.style.setProperty("--blue", "#1e76be");
+        document.documentElement.style.setProperty("--red", "#b4281e");
+        if (curr_theme === THEMES.DARK){
+            document.documentElement.style.setProperty("--main-background", "#152020");
+            document.documentElement.style.setProperty("--content-background", "#1a1a1a");
+            document.documentElement.style.setProperty("--border-col", "#303030");
+            document.documentElement.style.setProperty("--dark-text", "#e9e9e9");
+            document.documentElement.style.setProperty("--light-text", "#e9e9e9");
+            document.documentElement.style.setProperty("--bnt-col", "#3b3b3b");
+        }
+        else{
+            // solarized dark theme
+            document.documentElement.style.setProperty("--main-background", "#002b36");
+            document.documentElement.style.setProperty("--content-background", "#073540");
+            document.documentElement.style.setProperty("--border-col", "#334348");
+            document.documentElement.style.setProperty("--dark-text", "#bcbcbc");
+            document.documentElement.style.setProperty("--light-text", "#bcbcbc");
+            document.documentElement.style.setProperty("--bnt-col", "#013d4b");
+        }
+    }
+    // OS theme does not need changing as it OS defines it
 }
 
 // handles showing WebSocket notifications
@@ -257,3 +363,5 @@ window.addEventListener("ws_notif_mess", (event) => {
 window.addEventListener("ws_update_messages", (_event) => {
     do_messages_refresh();
 });
+
+window.addEventListener("load", _event => { load_theme() }, { once:true });
