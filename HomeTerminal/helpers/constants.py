@@ -15,14 +15,14 @@ INBUILT_DYNAMIC_IMG_FOLDERS = {
 # widgets that are inbuilt to the HTS
 INBUILT_WIDGETS = (
         Widget(
-            UUID(bytes=b"\x17\x08wX\xac\xc5Ca\x8f\x05bb<B\x93\xa9", version=4),
-                "messages", generate_message_widget, None),
+            UUID("17087758-acc5-4361-8f05-62623c4293a9"),
+            "messages", generate_message_widget, None),
         Widget(
-            UUID(bytes=b"\tmE\xdc\xdbCJ\xe4\x968\xa1\xf5C\x00\x9c\xc3", version=4),
-                "shortcuts", generate_shortcut_widget, "shortcuts.index"),
+            UUID("096d45dc-db43-4ae4-9638-a1f543009cc3"),
+            "shortcuts", generate_shortcut_widget, "shortcuts.index"),
         Widget(
-            UUID(bytes=b"\xfe\xe6\xac\xac\xd3\xcaGq\x8a\xa5\x8dz;\xe0\x89Y", version=4),
-                "weather", generate_weather_widget, None)
+            UUID("fee6acac-d3ca-4771-8aa5-8d7a3be08959"),
+            "weather", generate_weather_widget, None)
     )
 
 # default widgets to give the user on account creation
