@@ -14,7 +14,7 @@ function gen_datetime() {
     var h = date.getHours();
     var m = date.getMinutes();
     var dd = date.getDate();
-    var mm = date.getMonth();
+    var mm = date.getMonth() + 1;
     if (h < 10) { h = '0' + h }
     if (m < 10) { m = '0' + m }
     if (dd < 10) { dd = '0' + dd }
