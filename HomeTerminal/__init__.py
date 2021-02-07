@@ -5,7 +5,7 @@ certain tasks that can be done around the home
 to use import create_app() which returns an flask app for running
 """
 
-__version__ = "3.13.0"
+__version__ = "3.13.1"
 __author__ = "Leo Spratt"
 
 import logging
@@ -153,7 +153,7 @@ def setup_config():
         # use default sqlite path (./data/app_data.db)
         default_db_path = cwd_data / Path("app_data.db")
         app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + str(default_db_path)
-        app.logger.info("database URI not set, using default path:{default_db_path}")
+        app.logger.info(f"database URI not set, using default path: {default_db_path}")
 
 def create_app():
     """
