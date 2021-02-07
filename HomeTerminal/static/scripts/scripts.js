@@ -251,7 +251,6 @@ function print_friendly_table(table_id, title = null, skip_last_col = false) {
         });
     }
     w.print();
-    w.close();
 }
 
 /**
