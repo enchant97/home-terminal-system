@@ -240,22 +240,6 @@ form select {
   margin-bottom: 10px;
 }
 
-.error {
-  background-color: var(--red);
-}
-
-.warning {
-  background-color: var(--orange);
-}
-
-.ok {
-  background-color: var(--green);
-}
-
-.alert.message {
-  background-color: var(--blue);
-}
-
 button,
 .button {
   border: none;
@@ -403,7 +387,7 @@ table.plain tbody tr {
     margin-left: unset;
   }
 
-  nav button.themepicker{
+  nav button.themepicker {
     width: 98%;
   }
 }
@@ -417,6 +401,22 @@ table.plain tbody tr {
   height: 50px;
   animation: spin 700ms linear infinite;
   margin: auto auto;
+}
+
+.error {
+  background-color: var(--red);
+}
+
+.warning {
+  background-color: var(--orange);
+}
+
+.ok {
+  background-color: var(--green);
+}
+
+.message {
+  background-color: var(--blue);
 }
 
 @keyframes spin {

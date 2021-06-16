@@ -83,6 +83,16 @@ def edit_fm4_item(name: str, categoryname: str, quantity: int,
     db.session.commit()
     return fm_item
 
+def remove_item(item_id: int, removed: bool = True):
+    """
+    mark an item as removed, or not
+
+        :param item_id: the item id to remove
+        :param removed: whether the item should be removed
+    """
+    Item.query.filter_by(id_=item_id).update({ "removed": removed })
+    db.session.commit()
+
 def delete_removed():
     """
     delete the rows that are marked as removed

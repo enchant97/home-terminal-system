@@ -3,10 +3,8 @@ from datetime import datetime
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import login_required
 
+from ..database import dao
 from ..database.dao.exceptions import RowDoesNotExist
-from ..database.dao.freezer_manager import (edit_fm4_item, get_fm4_categories,
-                                            get_fm4_expiring, get_fm4_item,
-                                            get_fm4_report)
 from ..database.models.freezer_manager import Item as FM_Item
 from ..helpers.calculations import add_months
 
@@ -19,18 +17,18 @@ def report():
         category_id = request.form.get("category", None, int)
         return render_template(
             "freezer_manager/report.html",
-            items=get_fm4_report(category_id),
-            categories=get_fm4_categories(),
+            items=dao.freezer_manager.get_fm4_report(category_id),
+            categories=dao.freezer_manager.get_fm4_categories(),
             cat_id_selected = category_id)
     return render_template(
         "freezer_manager/report.html",
-        categories=get_fm4_categories(),
+        categories=dao.freezer_manager.get_fm4_categories(),
         cat_id_selected = None)
 
 @fm.route("/report-expiring", methods=["GET"])
 @login_required
 def report_expiring():
-    items = get_fm4_expiring()
+    items = dao.freezer_manager.get_fm4_expiring()
     return render_template("/freezer_manager/report_expiring.html", items=items)
 
 @fm.route("/edit/", defaults={"item_id": None}, methods=["GET", "POST"])
@@ -49,7 +47,7 @@ def edit(item_id):
                     expire = datetime.strptime(request.form["expire_date"], "%Y-%m-%d")
                 else:
                     expire = add_months(request.form["expire"])
-            edit_fm4_item(name, category, amount, expire, removed, item_id)
+            dao.freezer_manager.edit_fm4_item(name, category, amount, expire, removed, item_id)
             flash("Added Entry")
             # return back to adding a new entry so the user cant edit the same item again
             return redirect(url_for(".edit"))
@@ -57,14 +55,28 @@ def edit(item_id):
             flash("Missing required fields!", "warning")
         except RowDoesNotExist:
             flash("An item with that id does not exist!", "error")
-    categories = get_fm4_categories()
+    categories = dao.freezer_manager.get_fm4_categories()
     if not item_id:
         default_item = FM_Item(name="", expire_date="", category_id="", quantity=0, id_=None)
     else:
         try:
-            default_item = get_fm4_item(item_id)
+            default_item = dao.freezer_manager.get_fm4_item(item_id)
         except RowDoesNotExist:
             flash("An item with that id does not exist!", "error")
     return render_template(
         "freezer_manager/edit.html",
         categories=categories, def_item=default_item)
+
+@fm.route("/remove/<int:item_id>")
+@login_required
+def remove_item(item_id: int):
+    dao.freezer_manager.remove_item(item_id, True)
+    flash("removed item")
+    return redirect(url_for(".report"))
+
+@fm.route("/restore/<int:item_id>")
+@login_required
+def restore_item(item_id: int):
+    dao.freezer_manager.remove_item(item_id, False)
+    flash("restored item")
+    return redirect(url_for(".report"))

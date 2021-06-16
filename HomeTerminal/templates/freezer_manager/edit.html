@@ -27,10 +27,16 @@
         <option value="{{ cat.name }}">{{ cat.name }}</option>
         {% endfor %}
     </datalist>
-    <label for="removed">Remove:</label>
-    <input type="checkbox" name="removed" id="removed" value="1">
-
+    {% if def_item.id_ == None %}
     <button class="button ok fillboth" type="submit">Save</button>
-    <a class="button fillboth" href="{{ url_for('fm.report') }}">Close</a>
+    {% else %}
+    {% if def_item.removed == True %}
+    <a href="{{ url_for('fm.restore_item', item_id=def_item.id_) }}" class="button fillboth">Restore</a>
+    {% else %}
+    <a href="{{ url_for('fm.remove_item', item_id=def_item.id_) }}" class="button error fillboth">Remove</a>
+    <button class="button ok fillboth" type="submit">Save</button>
+    {% endif %}
+    {% endif %}
+    <a class="button fillboth" href="{{ url_for('fm.report') }}">Cancel</a>
 </form>
 {% endblock %}
