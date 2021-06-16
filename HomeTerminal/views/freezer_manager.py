@@ -56,13 +56,13 @@ def edit(item_id):
         except RowDoesNotExist:
             flash("An item with that id does not exist!", "error")
     categories = dao.freezer_manager.get_fm4_categories()
-    if not item_id:
-        default_item = FM_Item(name="", expire_date="", category_id="", quantity=0, id_=None)
-    else:
+    default_item = FM_Item(name="", expire_date="", category_id="", quantity=0, id_=None)
+    if item_id:
         try:
             default_item = dao.freezer_manager.get_fm4_item(item_id)
         except RowDoesNotExist:
             flash("An item with that id does not exist!", "error")
+            return redirect(url_for(".report"))
     return render_template(
         "freezer_manager/edit.html",
         categories=categories, def_item=default_item)
