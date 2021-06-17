@@ -4,10 +4,13 @@
 {% block maincontent %}
 <form class="container two-col" method="POST">
     <h3 class="fillboth">Edit Reminder</h3>
-    <label for="removed">Removed:</label>
-    <input type="checkbox" name="removed" id="removed" value="1" {% if reminder.removed %} checked{% endif %}>
+    {% if reminder.removed %}
+    <a href="{{ url_for('reminder.restore_reminder', item_id=reminder.id_) }}" class="button fillboth">Restore</a>
+    {% else %}
+    <a href="{{ url_for('reminder.remove_reminder', item_id=reminder.id_) }}" class="button error fillboth">Remove</a>
+    {% endif %}
     <button class="button ok fillboth" type="submit">Save</button>
-    <a class="button fillboth" href="{{ url_for('reminder.view') }}">Close</a>
+    <a class="button fillboth" href="{{ url_for('reminder.view') }}">Cancel</a>
 </form>
 <div class="container down">
     <h3>Edit Tasks</h3>
