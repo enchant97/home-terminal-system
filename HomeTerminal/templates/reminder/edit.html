@@ -19,7 +19,6 @@
         <caption>Tasks</caption>
         <thead>
             <tr>
-                <th>Id</th>
                 <th>Name</th>
                 <th>Remove</th>
             </tr>
@@ -27,9 +26,8 @@
         <tbody>
             {% for task in tasks %}
             <tr id="task_{{ task.id_ }}">
-                <td>{{ task.id_ }}</td>
                 <td>{{ task.name }}</td>
-                <td><button type="button" class="fill"
+                <td><button type="button" class="fill error"
                         onclick="delete_tr_api(`/api/reminder/tasks/{{ task.id_ }}`, 'task_{{ task.id_ }}')">✖</button>
                 </td>
             </tr>

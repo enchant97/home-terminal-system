@@ -18,7 +18,7 @@
             <td>{{ i.message }}</td>
             <td>{{ i.user.username }}</td>
             <td>{{ to_human_datetime(i.dateadded) }}</td>
-            <td><button class="fill" onclick="delete_message({{ i.id_ }});location.reload();">X</button></td>
+            <td><button class="fill error" onclick="delete_message({{ i.id_ }});location.reload();">X</button></td>
         </tr>
         {% endfor %}
     </tbody>
