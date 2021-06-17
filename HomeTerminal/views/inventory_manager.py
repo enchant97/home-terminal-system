@@ -1,4 +1,5 @@
 from flask import Blueprint, flash, render_template, request
+from flask_login import login_required
 
 from ..database.dao import inventory_manager as im_dao
 from ..database.dao.exceptions import RowDoesNotExist
@@ -6,6 +7,7 @@ from ..database.dao.exceptions import RowDoesNotExist
 im = Blueprint("im", __name__)
 
 @im.route("/", methods=["GET", "POST"])
+@login_required
 def view():
     items = ()
     if request.method == "POST":
@@ -29,6 +31,7 @@ def view():
 
 @im.route("/edit-box/", defaults={"box_id": None}, methods=["GET", "POST"])
 @im.route("/edit-box/<box_id>", methods=["GET", "POST"])
+@login_required
 def edit_box(box_id):
     try:
         if request.method == "POST":
@@ -53,6 +56,7 @@ def edit_box(box_id):
 
 @im.route("/edit-item/", defaults={"item_id": None}, methods=["GET", "POST"])
 @im.route("/edit-item/<item_id>", methods=["GET", "POST"])
+@login_required
 def edit_item(item_id):
     try:
         if request.method == "POST":
@@ -85,6 +89,7 @@ def edit_item(item_id):
 
 @im.route("/edit-type/", defaults={"type_id": None}, methods=["GET", "POST"])
 @im.route("/edit-type/<type_id>", methods=["GET", "POST"])
+@login_required
 def edit_type(type_id):
     try:
         if request.method == "POST":
@@ -106,6 +111,7 @@ def edit_type(type_id):
 
 @im.route("/edit-location/", defaults={"location_id": None}, methods=["GET", "POST"])
 @im.route("/edit-location/<location_id>", methods=["GET", "POST"])
+@login_required
 def edit_location(location_id):
     try:
         if request.method == "POST":
