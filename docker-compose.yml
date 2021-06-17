@@ -25,6 +25,11 @@ services:
       - "DATABASE_URI=postgresql+psycopg2://postgres:postgres@database:5432/postgres"
     volumes:
       - "flask:/data"
+    healthcheck:
+      test: "curl --fail http://127.0.0.1:8080/api/is-healthy || exit 1"
+      timeout: 20s
+      interval: 1m
+      retries: 3
 
   database:
     image: postgres:13.1-alpine
