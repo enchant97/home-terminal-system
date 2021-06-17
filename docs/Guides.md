@@ -5,14 +5,14 @@
 
 ## Deploying
 Depending on how you decide to run this app it will require different setups.
-Docker Deployment is the prefered method.
+Docker Deployment is the preferred method.
 
 These deployment guides do not currently instruct you on how to run with https.
 
 ### Docker Deployment
 #### Using docker-compose
 - Change the SECRET_KEY environment value to something secure
-- Running this will create three containers called: flask and database
+- Running this will create three containers called: ingress, flask and database
 
 #### Just Dockerfile
 - Run docker file with required environment values (SECRET_KEY, DATABASE_URI)
@@ -26,27 +26,17 @@ as there are multiple different ways it could be deployed.
 ---
 
 ## Configure App
-### Environment Values
-These are passed in using environment values
-
-|Name             |Meaning                                     |Required|
-|:----------------|:-------------------------------------------|:-------|
-|FLASK_CONFIG_PATH|override path for the default flask.cfg file|NO      |
-|SECRET_KEY       |the secret key (keep it secret)             |YES     |
-|IMG_PATH         |override for the default img path           |NO      |
-|DATABASE_URI     |the SQLALCHEMY_DATABASE_URI                 |NO      |
-
-### flask.cfg file
-These are given in the flask.cfg and are loaded before environment variables.
-If you wish to override flask.cfg it is suggested to copy the default one and
-then make your changes to prevent missing a required config.
+These are passed in using environment values or a .env file
 
 |Name               |Meaning                                       |Required|
 |:------------------|:---------------------------------------------|:-------|
-|MAX_IMAGE_SIZE     |max image resolution for dynamic images       |YES     |
-|JPEG_QUALITY       |the jpeg quality percentage as int            |YES     |
-|ALLOWED_IMG_EXT    |the allowed image extentions                  |YES     |
-|ADMINUSERNAME      |the admin username                            |YES     |
+|SECRET_KEY         |the secret key (keep it secret)               |YES     |
+|IMG_PATH           |override for the default img path             |NO      |
+|DATABASE_URI       |the SQLALCHEMY_DATABASE_URI                   |NO      |
+|MAX_IMAGE_SIZE     |max image resolution for dynamic images       |NO      |
+|JPEG_QUALITY       |the jpeg quality percentage as int            |NO      |
+|ALLOWED_IMG_EXT    |the allowed image extensions                  |NO      |
+|ADMIN_USERNAME     |the admin username                            |NO      |
 |MAX_SOCKET_MESS    |max number of queued messages if -1 has no max|NO      |
 |MAX_SOCKET_PUT_WAIT|max number of seconds to wait if queue is full|NO      |
 
@@ -56,7 +46,7 @@ then make your changes to prevent missing a required config.
 When first run a default user will be created called "terminal".
 The password for this account is the same as username.
 This is the admin account which allows further user accounts to be created.
-It is recomended to change the default password when setup is complete.
+It is recommended to change the default password when setup is complete.
 
 Depending on your hardware it may take a few seconds to load the first page,
 this is due to the database being setup.

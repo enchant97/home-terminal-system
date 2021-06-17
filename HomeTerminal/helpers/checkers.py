@@ -14,7 +14,7 @@ def is_admin(username):
         :return: whether the user is a admin
         :rtype: True/False
     """
-    if username == current_app.config.get("ADMINUSERNAME"):
+    if username == current_app.config["ADMIN_USERNAME"]:
         return True
     return False
 

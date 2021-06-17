@@ -17,9 +17,10 @@ from pathlib import Path
 from flask import Flask, render_template
 from flask_login import current_user
 from flask_sockets import Sockets
-from werkzeug.utils import find_modules, import_string
+from werkzeug.utils import import_string
 
 from .authentication import login_manager
+from .config import get_settings
 from .database.dao.user import get_notifations, new_account
 from .database.database import db
 from .helpers.calculations import to_human_datetime
@@ -52,7 +53,7 @@ def create_default_db():
     Creates the default rows in the database,
     runs before_first_request
     """
-    username = app.config["ADMINUSERNAME"]
+    username = get_settings().ADMIN_USERNAME
     acc_created = new_account(
         username, username,
         datetime.utcnow(), ignore_duplicate=True)
@@ -126,19 +127,16 @@ def setup_config():
     # non-configurable settings
     app.config["APP_VERSION"] = __version__
 
-    # allow for base config file to have a override
-    app.config.from_pyfile(os.getenv("FLASK_CONFIG_PATH", "flask.cfg"))
-
-    # required secret-key
-    app.config["SECRET_KEY"] = os.environ["SECRET_KEY"]
+    # load configs from pydantic
+    app.config.from_object(get_settings())
 
     # the app's data folder
     cwd_data = Path(os.getcwd()) / Path("data")
     cwd_data.mkdir(exist_ok=True)
 
     # image storage path
-    if os.getenv("IMG_PATH"):
-        app.config["BASE_IMG_PATH"] = os.environ["IMG_PATH"]
+    if get_settings().IMG_PATH:
+        app.config["BASE_IMG_PATH"] = get_settings().IMG_PATH
     else:
         # use default image path (./data/images)
         default_img_path = cwd_data / Path("images")
@@ -146,9 +144,9 @@ def setup_config():
         app.logger.info(f"image path not set, using default path: {default_img_path}")
 
     # database URI
-    if os.getenv("DATABASE_URI"):
+    if get_settings().DATABASE_URI:
         # if a database url has already been set
-        app.config["SQLALCHEMY_DATABASE_URI"] = os.environ["DATABASE_URI"]
+        app.config["SQLALCHEMY_DATABASE_URI"] = get_settings().DATABASE_URI
     else:
         # use default sqlite path (./data/app_data.db)
         default_db_path = cwd_data / Path("app_data.db")
@@ -165,7 +163,6 @@ def create_app():
     # set default logging level
     app.logger.setLevel(logging.INFO)
 
-    # load config into app from env variables and flask.cfg
     app.logger.info("loading app config")
     setup_config()
 
@@ -196,7 +193,7 @@ def create_app():
     import_models(models_dir, import_path)
 
     # import plugins or not
-    if app.config.get("ENABLE_PLUGINS", True):
+    if get_settings().ENABLE_PLUGINS:
         app.logger.info("loading plugins...")
         load_plugins()
         app.logger.info("finished loading plugins")
