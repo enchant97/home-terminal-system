@@ -24,7 +24,7 @@ def get_image_folder(dynamic_img_name: str) -> Path:
         # if path is relative join the base_path onto it
         image_path = base_path.joinpath(image_path)
     # make sure folder are created
-    image_path.mkdir(exist_ok=True)
+    image_path.mkdir(exist_ok=True, parents=True)
     return image_path
 
 
