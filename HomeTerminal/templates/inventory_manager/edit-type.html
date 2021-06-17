@@ -4,13 +4,15 @@
 {% block maincontent %}
 <form class="container two-col" action="" method="post">
     <label for="type-name">Name:</label>
-    <input type="text" name="type-name" id="type-name" required {% if item_type %}value="{{ item_type.name }}"{% endif %}>
+    <input type="text" name="type-name" id="type-name" required {% if item_type %}value="{{ item_type.name }}" {% endif
+        %}>
 
-    <label for="removed">Removed:</label>
-    {% if type %}
-    <input type="checkbox" name="removed" id="removed" value="1" {% if type.removed == True %} checked{% endif %}>
+    {% if item_type %}
+    {% if item_type.removed %}
+    <a href="{{ url_for('im.restore_type', type_id=item_type.id_) }}" class="button fillboth">Restore</a>
     {% else %}
-    <input type="checkbox" name="removed" id="removed" value="1">
+    <a href="{{ url_for('im.remove_type', type_id=item_type.id_) }}" class="button error fillboth">Remove</a>
+    {% endif %}
     {% endif %}
 
     <button class="ok fillboth" type="submit">Save</button>

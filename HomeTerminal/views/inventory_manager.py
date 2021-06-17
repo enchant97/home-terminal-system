@@ -1,4 +1,4 @@
-from flask import Blueprint, flash, render_template, request
+from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import login_required
 
 from ..database.dao import inventory_manager as im_dao
@@ -37,9 +37,8 @@ def edit_box(box_id):
         if request.method == "POST":
             name = request.form["box-name"].lower()
             loc_id = request.form["box-loc"]
-            removed = request.form.get("removed", False, bool)
             if box_id:
-                im_dao.edit_box(box_id, name=name, loc_id=loc_id, removed=removed)
+                im_dao.edit_box(box_id, name=name, loc_id=loc_id)
                 flash("updated!")
             else:
                 im_dao.new_box(loc_id, name)
@@ -54,6 +53,26 @@ def edit_box(box_id):
         locs = im_dao.get_locations(removed=False)
     return render_template("inventory_manager/edit-box.html", locations=locs)
 
+@im.route("/remove-box/<int:box_id>")
+@login_required
+def remove_box(box_id: int):
+    try:
+        im_dao.edit_box(box_id, removed=True)
+        flash("removed box")
+    except RowDoesNotExist:
+        flash("no box found with that id", "error")
+    return redirect(url_for(".view"))
+
+@im.route("/restore-box/<int:box_id>")
+@login_required
+def restore_box(box_id: int):
+    try:
+        im_dao.edit_box(box_id, removed=False)
+        flash("restored box")
+    except RowDoesNotExist:
+        flash("no box found with that id", "error")
+    return redirect(url_for(".view"))
+
 @im.route("/edit-item/", defaults={"item_id": None}, methods=["GET", "POST"])
 @im.route("/edit-item/<item_id>", methods=["GET", "POST"])
 @login_required
@@ -65,12 +84,11 @@ def edit_item(item_id):
             type_id = request.form["item-type"]
             quantity = request.form["item-quantity"]
             in_box = request.form.get("item-inbox", False, bool)
-            removed = request.form.get("removed", False, bool)
             if item_id:
                 im_dao.edit_item(
                     item_id, name=name, box_id=box_id,
                     type_id=type_id, quantity=quantity,
-                    in_box=in_box, removed=removed)
+                    in_box=in_box)
                 flash("updated!")
             else:
                 im_dao.new_item(name, box_id, quantity, type_id, in_box)
@@ -87,6 +105,26 @@ def edit_item(item_id):
         types = im_dao.get_type(removed=False)
     return render_template("inventory_manager/edit-item.html", types=types, boxes=boxes)
 
+@im.route("/remove-item/<int:item_id>")
+@login_required
+def remove_item(item_id: int):
+    try:
+        im_dao.edit_item(item_id, removed=True)
+        flash("removed item")
+    except RowDoesNotExist:
+        flash("no item found with that id", "error")
+    return redirect(url_for(".view"))
+
+@im.route("/restore-item/<int:item_id>")
+@login_required
+def restore_item(item_id: int):
+    try:
+        im_dao.edit_item(item_id, removed=False)
+        flash("restored item")
+    except RowDoesNotExist:
+        flash("no item found with that id", "error")
+    return redirect(url_for(".view"))
+
 @im.route("/edit-type/", defaults={"type_id": None}, methods=["GET", "POST"])
 @im.route("/edit-type/<type_id>", methods=["GET", "POST"])
 @login_required
@@ -94,9 +132,8 @@ def edit_type(type_id):
     try:
         if request.method == "POST":
             name = request.form["type-name"].lower()
-            removed = request.form.get("removed", False, bool)
             if type_id:
-                im_dao.edit_type(type_id, name=name, removed=removed)
+                im_dao.edit_type(type_id, name=name)
                 flash("updated!")
             else:
                 im_dao.new_type(name)
@@ -109,6 +146,26 @@ def edit_type(type_id):
         flash("type row does not exist", "error")
     return render_template("inventory_manager/edit-type.html")
 
+@im.route("/remove-type/<int:type_id>")
+@login_required
+def remove_type(type_id: int):
+    try:
+        im_dao.edit_type(type_id, removed=True)
+        flash("removed type")
+    except RowDoesNotExist:
+        flash("no type found with that id", "error")
+    return redirect(url_for(".view"))
+
+@im.route("/restore-type/<int:type_id>")
+@login_required
+def restore_type(type_id: int):
+    try:
+        im_dao.edit_type(type_id, removed=False)
+        flash("restored type")
+    except RowDoesNotExist:
+        flash("no type found with that id", "error")
+    return redirect(url_for(".view"))
+
 @im.route("/edit-location/", defaults={"location_id": None}, methods=["GET", "POST"])
 @im.route("/edit-location/<location_id>", methods=["GET", "POST"])
 @login_required
@@ -117,9 +174,8 @@ def edit_location(location_id):
         if request.method == "POST":
             name = request.form["loc-name"].lower()
             comment = request.form.get("loc-comment", None)
-            removed = request.form.get("removed", False, bool)
             if location_id:
-                im_dao.edit_location(location_id, name=name, comment=comment, removed=removed)
+                im_dao.edit_location(location_id, name=name, comment=comment)
                 flash("updated!")
             else:
                 im_dao.new_location(name, comment)
@@ -131,3 +187,23 @@ def edit_location(location_id):
     except RowDoesNotExist:
         flash("location row does not exist", "error")
     return render_template("inventory_manager/edit-location.html")
+
+@im.route("/remove-location/<int:location_id>")
+@login_required
+def remove_location(location_id: int):
+    try:
+        im_dao.edit_location(location_id, removed=True)
+        flash("removed location")
+    except RowDoesNotExist:
+        flash("no location found with that id", "error")
+    return redirect(url_for(".view"))
+
+@im.route("/restore-location/<int:location_id>")
+@login_required
+def restore_location(location_id: int):
+    try:
+        im_dao.edit_location(location_id, removed=False)
+        flash("restored location")
+    except RowDoesNotExist:
+        flash("no location found with that id", "error")
+    return redirect(url_for(".view"))

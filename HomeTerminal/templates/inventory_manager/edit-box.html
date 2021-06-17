@@ -4,31 +4,34 @@
 {% block maincontent %}
 <form class="container two-col" action="" method="post">
     <label for="box-name">Name:</label>
-    <input type="text" name="box-name" id="box-name" required{% if box %} value="{{ box.name }}"{% endif %}>
+    <input type="text" name="box-name" id="box-name" required{% if box %} value="{{ box.name }}" {% endif %}>
     <label for="box-loc">Location:</label>
     <select name="box-loc" id="box-loc" required>
         <option value="">** Select An Option **</option>
         {% if box %}
-            {% for i in locations %}
-            <option value="{{ i.id_ }}"{% if box.loc_id == i.id_ %} selected{% endif %}>{{ i.name }}</option>
-            {% endfor %}
+        {% for i in locations %}
+        <option value="{{ i.id_ }}" {% if box.loc_id==i.id_ %} selected{% endif %}>{{ i.name }}</option>
+        {% endfor %}
         {% else %}
-            {% for i in locations %}
-            <option value="{{ i.id_ }}">{{ i.name }}</option>
-            {% endfor %}
+        {% for i in locations %}
+        <option value="{{ i.id_ }}">{{ i.name }}</option>
+        {% endfor %}
         {% endif %}
     </select>
 
-    <label for="removed">Removed:</label>
     {% if box %}
-    <input type="checkbox" name="removed" id="removed" value="1" {% if box.removed == True %} checked{% endif %}>
+    {% if box.removed %}
+    <a href="{{ url_for('im.restore_box', box_id=box.id_) }}" class="button fillboth">Restore</a>
     {% else %}
-    <input type="checkbox" name="removed" id="removed" value="1">
+    <a href="{{ url_for('im.remove_box', box_id=box.id_) }}" class="button error fillboth">Remove</a>
     {% endif %}
+    {% endif %}
+
     <button class="ok fillboth" type="submit">Save</button>
     <a class="fillboth button" href="{{ url_for('im.view') }}" class="button">Cancel</a>
 </form>
 {% if box %}
-<a href="{{ url_for('im.edit_location', location_id=box.loc_id) }}" class="button">Edit Location '{{ box.location.name }}'</a>
+<a href="{{ url_for('im.edit_location', location_id=box.loc_id) }}" class="button">Edit Location '{{ box.location.name
+    }}'</a>
 {% endif %}
 {% endblock %}
