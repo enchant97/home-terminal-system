@@ -6,6 +6,7 @@ from pathlib import Path
 
 from flask import current_app
 
+
 def get_image_folder(dynamic_img_name: str) -> Path:
     """
     used to get the dynamic image path for
@@ -26,6 +27,7 @@ def get_image_folder(dynamic_img_name: str) -> Path:
     image_path.mkdir(exist_ok=True)
     return image_path
 
+
 def is_allowed_img_file(filename: str) -> str:
     """
     Checks whether given filename has an allowed extention
@@ -35,4 +37,5 @@ def is_allowed_img_file(filename: str) -> str:
         :rtype: True, False
     """
     return '.' in filename and \
-        filename.rsplit(".", 1)[1].lower() in current_app.config["ALLOWED_IMG_EXT"]
+        filename.rsplit(".", 1)[1].lower(
+        ) in current_app.config["ALLOWED_IMG_EXT"]

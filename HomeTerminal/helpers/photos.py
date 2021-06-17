@@ -24,11 +24,13 @@ def compress_jpg_thumbnail(img_bytes, max_size, quality) -> BytesIO:
     exif = raw_image.info.get("exif")
     raw_image.thumbnail(max_size)
     if exif:
-        raw_image.save(converted_img, format="JPEG", quality=quality, exif=exif)
+        raw_image.save(converted_img, format="JPEG",
+                       quality=quality, exif=exif)
     else:
         raw_image.save(converted_img, format="JPEG", quality=quality)
     converted_img.seek(0)
     return converted_img
+
 
 def get_hash_image(img_bytes, ext="") -> str:
     """

@@ -6,6 +6,7 @@ from ..database.dao.exceptions import RowDoesNotExist
 
 im = Blueprint("im", __name__)
 
+
 @im.route("/", methods=["GET", "POST"])
 @login_required
 def view():
@@ -18,7 +19,8 @@ def view():
         if live_item_name:
             items = im_dao.get_like_item_names(live_item_name.lower())
         elif box_filter and type_filter:
-            items = im_dao.get_item(box_id=box_filter, type_id=type_filter, removed=removed)
+            items = im_dao.get_item(
+                box_id=box_filter, type_id=type_filter, removed=removed)
         elif box_filter:
             items = im_dao.get_item(box_id=box_filter, removed=removed)
         elif type_filter:
@@ -28,6 +30,7 @@ def view():
     boxes = im_dao.get_box(removed=False)
     types = im_dao.get_type(removed=False)
     return render_template("inventory_manager/view.html", items=items, boxes=boxes, types=types)
+
 
 @im.route("/edit-box/", defaults={"box_id": None}, methods=["GET", "POST"])
 @im.route("/edit-box/<box_id>", methods=["GET", "POST"])
@@ -53,6 +56,7 @@ def edit_box(box_id):
         locs = im_dao.get_locations(removed=False)
     return render_template("inventory_manager/edit-box.html", locations=locs)
 
+
 @im.route("/remove-box/<int:box_id>")
 @login_required
 def remove_box(box_id: int):
@@ -63,6 +67,7 @@ def remove_box(box_id: int):
         flash("no box found with that id", "error")
     return redirect(url_for(".view"))
 
+
 @im.route("/restore-box/<int:box_id>")
 @login_required
 def restore_box(box_id: int):
@@ -72,6 +77,7 @@ def restore_box(box_id: int):
     except RowDoesNotExist:
         flash("no box found with that id", "error")
     return redirect(url_for(".view"))
+
 
 @im.route("/edit-item/", defaults={"item_id": None}, methods=["GET", "POST"])
 @im.route("/edit-item/<item_id>", methods=["GET", "POST"])
@@ -105,6 +111,7 @@ def edit_item(item_id):
         types = im_dao.get_type(removed=False)
     return render_template("inventory_manager/edit-item.html", types=types, boxes=boxes)
 
+
 @im.route("/remove-item/<int:item_id>")
 @login_required
 def remove_item(item_id: int):
@@ -115,6 +122,7 @@ def remove_item(item_id: int):
         flash("no item found with that id", "error")
     return redirect(url_for(".view"))
 
+
 @im.route("/restore-item/<int:item_id>")
 @login_required
 def restore_item(item_id: int):
@@ -124,6 +132,7 @@ def restore_item(item_id: int):
     except RowDoesNotExist:
         flash("no item found with that id", "error")
     return redirect(url_for(".view"))
+
 
 @im.route("/edit-type/", defaults={"type_id": None}, methods=["GET", "POST"])
 @im.route("/edit-type/<type_id>", methods=["GET", "POST"])
@@ -146,6 +155,7 @@ def edit_type(type_id):
         flash("type row does not exist", "error")
     return render_template("inventory_manager/edit-type.html")
 
+
 @im.route("/remove-type/<int:type_id>")
 @login_required
 def remove_type(type_id: int):
@@ -156,6 +166,7 @@ def remove_type(type_id: int):
         flash("no type found with that id", "error")
     return redirect(url_for(".view"))
 
+
 @im.route("/restore-type/<int:type_id>")
 @login_required
 def restore_type(type_id: int):
@@ -165,6 +176,7 @@ def restore_type(type_id: int):
     except RowDoesNotExist:
         flash("no type found with that id", "error")
     return redirect(url_for(".view"))
+
 
 @im.route("/edit-location/", defaults={"location_id": None}, methods=["GET", "POST"])
 @im.route("/edit-location/<location_id>", methods=["GET", "POST"])
@@ -188,6 +200,7 @@ def edit_location(location_id):
         flash("location row does not exist", "error")
     return render_template("inventory_manager/edit-location.html")
 
+
 @im.route("/remove-location/<int:location_id>")
 @login_required
 def remove_location(location_id: int):
@@ -197,6 +210,7 @@ def remove_location(location_id: int):
     except RowDoesNotExist:
         flash("no location found with that id", "error")
     return redirect(url_for(".view"))
+
 
 @im.route("/restore-location/<int:location_id>")
 @login_required

@@ -28,6 +28,7 @@ def try_login_user(username: str, password: str) -> User:
             return the_user
     return None
 
+
 def new_account(username, password, birthday: datetime, ignore_duplicate=False):
     """
     creates a new account in the database,
@@ -54,6 +55,7 @@ def new_account(username, password, birthday: datetime, ignore_duplicate=False):
     db.session.commit()
     return new_user
 
+
 def new_user_settings(user_id: int) -> User_Settings:
     """
     create a new user settings for given user id
@@ -65,6 +67,7 @@ def new_user_settings(user_id: int) -> User_Settings:
     db.session.add(user_settings)
     db.session.commit()
     return user_settings
+
 
 def change_user_password(user_id: int, new_password: str, old_password: str) -> User:
     """
@@ -83,6 +86,7 @@ def change_user_password(user_id: int, new_password: str, old_password: str) -> 
             return the_user
     return None
 
+
 def new_message(user_from_id: int, message: str) -> Message:
     """
     adds a new message into database,
@@ -100,6 +104,7 @@ def new_message(user_from_id: int, message: str) -> Message:
     db.session.commit()
     return the_message
 
+
 def remove_message(mess_id, removed=True):
     """
     marks a message as removed in the database
@@ -114,6 +119,7 @@ def remove_message(mess_id, removed=True):
     db.session.add(the_message)
     db.session.commit()
 
+
 def check_api_key(api_key: UUID) -> bool:
     """
     Checks whether the api key given is valid
@@ -124,6 +130,7 @@ def check_api_key(api_key: UUID) -> bool:
     if Api_Key.query.filter_by(key=api_key).scalar() is None:
         return False
     return True
+
 
 def get_api_key(user_id: int) -> Api_Key:
     """
@@ -146,6 +153,7 @@ def get_api_key(user_id: int) -> Api_Key:
         db.session.commit()
     return the_key
 
+
 def get_messages(removed=False, last_updated=None):
     """
     Returns the messages,
@@ -158,7 +166,8 @@ def get_messages(removed=False, last_updated=None):
     if last_updated:
         if not isinstance(datetime, last_updated):
             # if the last_updated was a string try to convert
-            last_updated = datetime.strptime(last_updated, "%Y-%m-%d %H:%M:%S.%f")
+            last_updated = datetime.strptime(
+                last_updated, "%Y-%m-%d %H:%M:%S.%f")
         last_message = Message.query.filter_by(removed=removed)\
             .order_by(Message.last_updated.desc()).first()
         if last_message:
@@ -166,6 +175,7 @@ def get_messages(removed=False, last_updated=None):
                 raise AlreadyUpToDate()
 
     return Message.query.filter_by(removed=removed).all()
+
 
 def update_usersettings(user_id: int, rem_notif=None, fm_notif=None, mess_notif=None):
     """
@@ -196,6 +206,7 @@ def update_usersettings(user_id: int, rem_notif=None, fm_notif=None, mess_notif=
     db.session.commit()
     return user_setting
 
+
 def get_notifations(user_id: int):
     """
     returns a generator of all notifications as Notification objects
@@ -219,11 +230,13 @@ def get_notifations(user_id: int):
     else:
         raise RowDoesNotExist(f"no settings row exists for user id: {user_id}")
 
+
 def get_users(removed=False):
     """
     returns User obj's
     """
     return User.query.filter_by(removed=removed).all()
+
 
 def delete_removed():
     """

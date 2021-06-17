@@ -21,6 +21,8 @@ class BaseNoUpdate(db.Model):
     removed = db.Column(db.Boolean, nullable=False, default=False)
 
 # Source: https://stackoverflow.com/a/37515941
+
+
 class Base(BaseNoUpdate):
     """
     The Base row model

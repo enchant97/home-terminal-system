@@ -19,6 +19,7 @@ def new_location(name: str, comment: str = None):
     db.session.commit()
     return new_loc
 
+
 def new_type(name: str):
     """
     adds new type
@@ -30,6 +31,7 @@ def new_type(name: str):
     db.session.add(new_type_row)
     db.session.commit()
     return new_type_row
+
 
 def new_box(loc_id: int, name: str = None):
     """
@@ -45,6 +47,7 @@ def new_box(loc_id: int, name: str = None):
     db.session.commit()
     return new_box_row
 
+
 def new_item(name: str, box_id: int, quantity: int = 1, type_id: int = None, in_box: int = True):
     """
     adds new item
@@ -58,10 +61,11 @@ def new_item(name: str, box_id: int, quantity: int = 1, type_id: int = None, in_
     new_item_row = Item(
         name=name, box_id=box_id,
         quantity=quantity, type_id=type_id, in_box=in_box
-        )
+    )
     db.session.add(new_item_row)
     db.session.commit()
     return new_item_row
+
 
 def edit_location(loc_id, **kwargs):
     """
@@ -77,6 +81,7 @@ def edit_location(loc_id, **kwargs):
     db.session.commit()
     return location_row
 
+
 def edit_type(type_id, **kwargs):
     """
     used to edit a type row
@@ -90,6 +95,7 @@ def edit_type(type_id, **kwargs):
     type_row.update(kwargs)
     db.session.commit()
     return type_row
+
 
 def edit_box(box_id, **kwargs):
     """
@@ -105,6 +111,7 @@ def edit_box(box_id, **kwargs):
     db.session.commit()
     return box_row
 
+
 def edit_item(item_id, **kwargs):
     """
     used to edit a item row
@@ -119,6 +126,7 @@ def edit_item(item_id, **kwargs):
     db.session.commit()
     return item_row
 
+
 def get_type(first=False, **filters):
     """
     returns Type rows
@@ -130,6 +138,7 @@ def get_type(first=False, **filters):
     if first:
         return query.first()
     return query.all()
+
 
 def get_locations(first=False, **filters):
     """
@@ -143,6 +152,7 @@ def get_locations(first=False, **filters):
         return query.first()
     return query.all()
 
+
 def get_box(first=False, **filters):
     """
     returns Box rows
@@ -154,6 +164,7 @@ def get_box(first=False, **filters):
     if first:
         return query.first()
     return query.all()
+
 
 def get_item(first=False, **filters):
     """
@@ -167,6 +178,7 @@ def get_item(first=False, **filters):
         return query.first()
     return query.all()
 
+
 def get_like_item_names(name, limit: int = None):
     """
     returns Items, using like
@@ -179,6 +191,7 @@ def get_like_item_names(name, limit: int = None):
     if limit:
         return query.limit(limit).all()
     return query.all()
+
 
 def delete_removed():
     """

@@ -21,12 +21,14 @@ def get_subloc(main_loc):
         return SubLocation.query.filter_by(main_loc_id=main.id_).all()
     raise RowDoesNotExist(f"mainlocation {main_loc} does not exist")
 
+
 def get_mainloc():
     """
     returns PD1_MainLocation objects,
     ordered by mainlocation name
     """
     return MainLocation.query.order_by(MainLocation.name).all()
+
 
 def get_thumbnail_fn(event_id: int):
     """
@@ -39,6 +41,7 @@ def get_thumbnail_fn(event_id: int):
     if event:
         return event.thumbnail_filename
     return None
+
 
 def get_event(mainloc=None, subloc=None, sort_dated: bool = None):
     """
@@ -58,16 +61,19 @@ def get_event(mainloc=None, subloc=None, sort_dated: bool = None):
     elif mainloc:
         main_loc = MainLocation.query.filter_by(name=mainloc).first()
         if not main_loc:
-            raise RowDoesNotExist(f"main location name {mainloc} does not exist")
+            raise RowDoesNotExist(
+                f"main location name {mainloc} does not exist")
 
         if subloc:
             # if mainloc and subloc are given
-            subloc = SubLocation.query.filter_by(name=subloc, main_loc_id=main_loc.id_).first()
+            subloc = SubLocation.query.filter_by(
+                name=subloc, main_loc_id=main_loc.id_).first()
             if subloc:
                 events = FullEvent.query.filter_by(subloc_id=subloc.id_)
             raise RowDoesNotExist("sub location does not exist")
         # if just mainloc was specified
-        events = FullEvent.query.filter(FullEvent.sub_location.has(main_loc_id=main_loc.id_))
+        events = FullEvent.query.filter(
+            FullEvent.sub_location.has(main_loc_id=main_loc.id_))
     else:
         raise Exception("Not a supported filter")
 
@@ -81,6 +87,7 @@ def get_event(mainloc=None, subloc=None, sort_dated: bool = None):
             raise ValueError("sort_dated must be None or True/False")
     events.all()
     return events
+
 
 def new_event(mainloc, subloc, datetaken: datetime, notes, users, img_raw=None):
     """
@@ -99,30 +106,34 @@ def new_event(mainloc, subloc, datetaken: datetime, notes, users, img_raw=None):
     if not main_loc:
         raise RowDoesNotExist(f"main location {mainloc} does not exist")
 
-    sub_loc = SubLocation.query.filter_by(name=subloc, main_loc_id=main_loc.id_).first()
+    sub_loc = SubLocation.query.filter_by(
+        name=subloc, main_loc_id=main_loc.id_).first()
     if not sub_loc:
         raise RowDoesNotExist(f"sub location {subloc} does not exist")
 
-    fullevent = FullEvent(subloc_id=sub_loc.id_, date_taken=datetaken, notes=notes)
+    fullevent = FullEvent(subloc_id=sub_loc.id_,
+                          date_taken=datetaken, notes=notes)
     db.session.add(fullevent)
     db.session.commit()
     if img_raw:
         # if a img_path was provided add it to the database and write image to file
-        #TODO move image write into a helper func
+        # TODO move image write into a helper func
         file_name = get_hash_image(img_raw.read(), ".jpg")
         full_path = get_image_folder("PHOTO_MANAGER") / file_name
-        img_raw.seek(0)# go back to start of file
+        img_raw.seek(0)  # go back to start of file
         full_path.write_bytes(img_raw.read())
-        img_raw.close()# close the image (allows garbage cleanup to remove)
+        img_raw.close()  # close the image (allows garbage cleanup to remove)
         fullevent.thumbnail_filename = file_name
     for username in users:
         # adds all the user events by selected user
         the_user = User.query.filter_by(username=username).first()
         if not the_user:
             raise RowDoesNotExist(f"username {username} does not exist")
-        db.session.add(UserEvent(full_event_id=fullevent.id_, user_id=the_user.id_))
+        db.session.add(
+            UserEvent(full_event_id=fullevent.id_, user_id=the_user.id_))
     db.session.commit()
     return fullevent
+
 
 def new_subloc(sub_loc_name, lat, lng, main_loc_name, removed=False):
     """
@@ -154,6 +165,7 @@ def new_subloc(sub_loc_name, lat, lng, main_loc_name, removed=False):
     db.session.commit()
 
     return sub_loc
+
 
 def delete_removed():
     """

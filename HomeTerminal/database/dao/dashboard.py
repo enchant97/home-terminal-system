@@ -11,6 +11,7 @@ def get_shortcuts(removed=False):
     """
     return Shortcut.query.filter_by(removed=removed).all()
 
+
 def get_shortcuts_by_ids(*ids):
     """
     returns the shortcuts that have the specific id's given
@@ -19,6 +20,7 @@ def get_shortcuts_by_ids(*ids):
     """
     return Shortcut.query.filter_by(removed=False).filter(Shortcut.id_.in_(ids)).all()
 
+
 def get_shortcut(shortcut_id: int) -> Shortcut:
     """
     returns a specific shortcut row
@@ -26,6 +28,7 @@ def get_shortcut(shortcut_id: int) -> Shortcut:
         :param shortcut_id: the shortcut id
     """
     return Shortcut.query.filter_by(id_=shortcut_id).all()
+
 
 def new_shortcut(name: str, url_endpoint: str, **url_variables) -> Shortcut:
     """
@@ -41,6 +44,7 @@ def new_shortcut(name: str, url_endpoint: str, **url_variables) -> Shortcut:
     db.session.commit()
     return the_shortcut
 
+
 def add_widget(user_id: int, widget_uuid: UUID, id_to_replace=None) -> Widget:
     """
     adds a new widget row
@@ -52,7 +56,7 @@ def add_widget(user_id: int, widget_uuid: UUID, id_to_replace=None) -> Widget:
                               if None will place at root
         :return: the created widget row
     """
-    #TODO: allow for adding below(after) other widgets not just above(before)
+    # TODO: allow for adding below(after) other widgets not just above(before)
     new_widget = Widget(user_id=user_id, widget_uuid=widget_uuid)
     db.session.add(new_widget)
     db.session.commit()
@@ -64,7 +68,7 @@ def add_widget(user_id: int, widget_uuid: UUID, id_to_replace=None) -> Widget:
         row_to_replace = Widget.query.filter_by(
             left_widget_id=None,
             removed=False,
-            user_id=user_id).filter(Widget.id_!=new_widget.id_).first()
+            user_id=user_id).filter(Widget.id_ != new_widget.id_).first()
         if not row_to_replace:
             # no root
             return new_widget
@@ -76,11 +80,13 @@ def add_widget(user_id: int, widget_uuid: UUID, id_to_replace=None) -> Widget:
             user_id=user_id).first()
 
     if not row_to_replace:
-        raise RowDoesNotExist(f"Widget row with id of {id_to_replace} does not exist")
+        raise RowDoesNotExist(
+            f"Widget row with id of {id_to_replace} does not exist")
 
     if row_to_replace.left_widget_id:
         # if the widget is not a root
-        row_to_replace_left = Widget.query.filter_by(id_=row_to_replace.left_widget_id).first()
+        row_to_replace_left = Widget.query.filter_by(
+            id_=row_to_replace.left_widget_id).first()
         new_widget.left_widget_id = row_to_replace_left.id_
         row_to_replace_left.right_widget_id = new_widget.id_
 
@@ -90,13 +96,16 @@ def add_widget(user_id: int, widget_uuid: UUID, id_to_replace=None) -> Widget:
     db.session.commit()
     return new_widget
 
+
 def update_widget_setting(widget_id: int, new_settings):
     widget = Widget.query.filter_by(id_=widget_id).first()
     if not widget:
-        raise RowDoesNotExist(f"widget row with the id does not exist, {widget_id}")
+        raise RowDoesNotExist(
+            f"widget row with the id does not exist, {widget_id}")
     widget.widget_settings = new_settings
     db.session.commit()
     return widget
+
 
 def _reshuffle_widgets(widget: Widget):
     """
@@ -108,19 +117,22 @@ def _reshuffle_widgets(widget: Widget):
     if widget.left_widget_id and widget.right_widget_id:
         # update both the right and left widget id's
         left_widget = Widget.query.filter_by(id_=widget.left_widget_id).first()
-        right_widget = Widget.query.filter_by(id_=widget.right_widget_id).first()
+        right_widget = Widget.query.filter_by(
+            id_=widget.right_widget_id).first()
         left_widget.right_widget_id = right_widget.id_
         right_widget.left_widget_id = left_widget.id_
 
     elif widget.left_widget_id is None and widget.right_widget_id:
         # update only right widget
-        right_widget = Widget.query.filter_by(id_=widget.right_widget_id).first()
+        right_widget = Widget.query.filter_by(
+            id_=widget.right_widget_id).first()
         right_widget.left_widget_id = None
 
     elif widget.left_widget_id and widget.right_widget_id is None:
         # update only left widget
         left_widget = Widget.query.filter_by(id_=widget.left_widget_id).first()
         left_widget.right_widget_id = None
+
 
 def remove_widget(widget_id):
     """
@@ -134,7 +146,8 @@ def remove_widget(widget_id):
     if not widget_to_remove:
         raise RowDoesNotExist(f"row does not exist with id {widget_id}")
     if widget_to_remove.removed:
-        raise AlreadyMarkedAsRemoved(f"row already removed with id {widget_id}")
+        raise AlreadyMarkedAsRemoved(
+            f"row already removed with id {widget_id}")
 
     _reshuffle_widgets(widget_to_remove)
 
@@ -142,6 +155,7 @@ def remove_widget(widget_id):
     widget_to_remove.removed = True
 
     db.session.commit()
+
 
 def move_widget(widget_id: int, id_to_replace: int, user_id: int):
     """
@@ -151,13 +165,15 @@ def move_widget(widget_id: int, id_to_replace: int, user_id: int):
         :param id_to_replace: the widget to 'replace'
         :param user_id: the user id
     """
-    #TODO: allow for adding below(after) other widgets not just above(before)
+    # TODO: allow for adding below(after) other widgets not just above(before)
     if widget_id == id_to_replace:
         raise ValueError("widget_id and id_to_replace cannot be the same")
 
     # get the widgets
-    widget_to_move = Widget.query.filter_by(id_=widget_id, user_id=user_id).first()
-    widget_to_be_replaced = Widget.query.filter_by(id_=id_to_replace, user_id=user_id).first()
+    widget_to_move = Widget.query.filter_by(
+        id_=widget_id, user_id=user_id).first()
+    widget_to_be_replaced = Widget.query.filter_by(
+        id_=id_to_replace, user_id=user_id).first()
 
     # check whether they exist
     if not widget_to_move or not widget_to_be_replaced:
@@ -168,7 +184,8 @@ def move_widget(widget_id: int, id_to_replace: int, user_id: int):
 
     # change the widgets around where the widget will be
     if widget_to_be_replaced.left_widget_id:
-        left_widget = Widget.query.filter_by(id_=widget_to_be_replaced.left_widget_id, user_id=user_id).first()
+        left_widget = Widget.query.filter_by(
+            id_=widget_to_be_replaced.left_widget_id, user_id=user_id).first()
         left_widget.right_widget_id = widget_to_move.id_
 
     widget_to_move.left_widget_id = widget_to_be_replaced.left_widget_id
@@ -176,6 +193,7 @@ def move_widget(widget_id: int, id_to_replace: int, user_id: int):
     widget_to_move.right_widget_id = widget_to_be_replaced.id_
 
     db.session.commit()
+
 
 def get_widget(user_id: int, widget_id: int, removed=False) -> Widget:
     """
@@ -187,6 +205,7 @@ def get_widget(user_id: int, widget_id: int, removed=False) -> Widget:
         :return: a Wiget object
     """
     return Widget.query.filter_by(id_=widget_id, user_id=user_id, removed=removed).first()
+
 
 def get_dashboard_widget_order(user_id):
     """
@@ -207,6 +226,7 @@ def get_dashboard_widget_order(user_id):
                 # keep yielding each widget in order
                 yield curr_parent
                 curr_parent = curr_parent.right_widget
+
 
 def delete_removed():
     """

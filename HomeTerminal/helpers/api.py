@@ -38,6 +38,7 @@ def api_auth(fn):
         return jsonify(status="No x-api-key header or session cookie"), 401
     return wrap
 
+
 def api_date_checks(fn):
     """
     decorator that returns json for the date
@@ -47,7 +48,7 @@ def api_date_checks(fn):
         try:
             return fn(*args, **kwargs)
         except AlreadyUpToDate:
-            return jsonify({"error": "AlreadyUpToDate", "loaded_data":tuple()})
+            return jsonify({"error": "AlreadyUpToDate", "loaded_data": tuple()})
         except ValueError:
-            return jsonify({"error":"datetime not in correct format of YYYY/MM/DD H:M:S.MS"})
+            return jsonify({"error": "datetime not in correct format of YYYY/MM/DD H:M:S.MS"})
     return wrap

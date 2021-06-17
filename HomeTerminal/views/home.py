@@ -12,24 +12,29 @@ from ..helpers.widgets import generate_widget_container, generate_widget_failed
 
 home = Blueprint("home", __name__)
 
+
 @home.context_processor
 def context_get_messages():
     return dict(get_messages=dao.user.get_messages)
+
 
 @home.route("/dashboard")
 @login_required
 def dashboard():
     return render_template("/home/dashboard.html")
 
+
 @home.route("/cc")
 @login_required
 def command_center():
     return render_template("home/command_center.html", admin=is_admin(current_user.username))
 
+
 @home.route("/view-plugins")
 @login_required
 def view_plugins():
     return render_template("home/plugins.html")
+
 
 @home.route("/dashboard/widgets/get-all")
 @login_required
@@ -48,11 +53,13 @@ def get_dashboard_widgets():
                 yield generate_widget_failed(widget_row.id_)
     return Response(stream_with_context(stream_response()))
 
+
 @home.route("/dashboard/widgets/get-names")
 @login_required
 def get_widget_names():
-    return jsonify([{"name": value.name, "uuid": value.uuid}\
-         for value in current_app.config["WIDGETS"].values()])
+    return jsonify([{"name": value.name, "uuid": value.uuid}
+                    for value in current_app.config["WIDGETS"].values()])
+
 
 @home.route("/dashboard/widgets/get-setting-url/<widget_id>")
 @login_required
@@ -68,6 +75,7 @@ def get_widget_settings_url(widget_id):
     except (TypeError, ValueError):
         return jsonify(error="incorrect datatype sent"), 400
 
+
 @home.route("/dashboard/widgets/add", methods=["POST"])
 @login_required
 def add_widget():
@@ -79,7 +87,8 @@ def add_widget():
         # convert 'uuid' str into UUID
         widget_uuid = UUID(json_form["widget-uuid"], version=4)
         # add widget to db
-        widget_row = dao.dashboard.add_widget(current_user.id_, widget_uuid, id_to_replace)
+        widget_row = dao.dashboard.add_widget(
+            current_user.id_, widget_uuid, id_to_replace)
         # generate for the user and return
         widget_info: Widget = current_app.config["WIDGETS"][widget_uuid]
         widget_html = widget_info.generation_func(
@@ -90,6 +99,7 @@ def add_widget():
         return jsonify(error="missing required values"), 400
     except (TypeError, ValueError):
         return jsonify(error="incorrect datatype sent"), 400
+
 
 @home.route("/dashboard/widgets/remove", methods=["DELETE"])
 @login_required
@@ -102,6 +112,7 @@ def delete_widget():
         return jsonify(error="missing required values"), 400
     except ValueError:
         return jsonify(error="incorrect datatype sent"), 400
+
 
 @home.route("/dashboard/widgets/move", methods=["PUT"])
 @login_required

@@ -11,6 +11,7 @@ from ..helpers.photos import compress_jpg_thumbnail
 
 pm = Blueprint("pm", __name__)
 
+
 @pm.route("/report-subloc", methods=["GET"])
 @login_required
 def get_subloc():
@@ -20,6 +21,7 @@ def get_subloc():
         return jsonify(main_loc=main_loc, sublocs=[subloc.serialize() for subloc in sublocations])
     return jsonify(sublocs=[])
 
+
 @pm.route("/thumbnails/<int:event_id>.jpg")
 @login_required
 def thumbnail(event_id):
@@ -28,6 +30,7 @@ def thumbnail(event_id):
         full_path = get_image_folder("PHOTO_MANAGER") / filename
         return send_file(full_path)
     return abort(404)
+
 
 @pm.route("/", methods=["GET", "POST"])
 @login_required
@@ -49,13 +52,15 @@ def view():
             if subloc:
                 filter_by = filter_by + " > " + subloc
             try:
-                loaded_entries = dao_pm.get_event(mainloc, subloc, sort_by_date)
+                loaded_entries = dao_pm.get_event(
+                    mainloc, subloc, sort_by_date)
             except RowDoesNotExist:
                 flash(f"sub location '{subloc}' does not exist", "error")
     main_locations = dao_pm.get_mainloc()
     return render_template(
         "/photo_manager/view.html", main_locations=main_locations,
         loaded_entries=loaded_entries, filter_by=filter_by)
+
 
 @pm.route("/new", methods=["GET", "POST"])
 @login_required
@@ -82,7 +87,8 @@ def new():
                         return redirect(url_for(".new"))
                 else:
                     bytes_picture = None
-                dao_pm.new_event(mainloc, subloc, datetaken, notes, users, bytes_picture)
+                dao_pm.new_event(mainloc, subloc, datetaken,
+                                 notes, users, bytes_picture)
                 flash("added entry")
             else:
                 flash("not added as no users were selected", "warning")
@@ -91,6 +97,7 @@ def new():
     main_locations = dao_pm.get_mainloc()
     users = get_users()
     return render_template("photo_manager/new.html", main_locations=main_locations, users=users)
+
 
 @pm.route("/edit-sub-location", methods=["GET", "POST"])
 @login_required

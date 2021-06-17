@@ -14,12 +14,14 @@ def get_fm4_expiring(days=7, count=False):
                      expire date less than or equal to days after
         :param count: whether it should return the number of or the items
     """
-    #TODO: use utc now instead
+    # TODO: use utc now instead
     days_after = datetime.now() + timedelta(days=days)
-    items = Item.query.filter(Item.expire_date <= days_after).filter_by(removed=False)
+    items = Item.query.filter(
+        Item.expire_date <= days_after).filter_by(removed=False)
     if count:
         return items.count()
     return items.all()
+
 
 def get_fm4_report(category_id=None, removed=False):
     """
@@ -36,11 +38,13 @@ def get_fm4_report(category_id=None, removed=False):
 
     return items.order_by(Item.expire_date).all()
 
+
 def get_fm4_categories(removed=False):
     """
     returns all the fm4 categories
     """
     return Category.query.filter_by(removed=removed).all()
+
 
 def get_fm4_item(id_):
     """
@@ -51,6 +55,7 @@ def get_fm4_item(id_):
     if not fm_item:
         raise RowDoesNotExist(f"Row with id {id_} does not exist")
     return fm_item
+
 
 def edit_fm4_item(name: str, categoryname: str, quantity: int,
                   expire=None, removed=False, id_=None):
@@ -83,6 +88,7 @@ def edit_fm4_item(name: str, categoryname: str, quantity: int,
     db.session.commit()
     return fm_item
 
+
 def remove_item(item_id: int, removed: bool = True):
     """
     mark an item as removed, or not
@@ -90,8 +96,9 @@ def remove_item(item_id: int, removed: bool = True):
         :param item_id: the item id to remove
         :param removed: whether the item should be removed
     """
-    Item.query.filter_by(id_=item_id).update({ "removed": removed })
+    Item.query.filter_by(id_=item_id).update({"removed": removed})
     db.session.commit()
+
 
 def delete_removed():
     """

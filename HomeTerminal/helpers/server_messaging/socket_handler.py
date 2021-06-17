@@ -22,6 +22,7 @@ def pack(msg: ServerMessage):
     msg_dict = msg.asdict
     return dumps(msg_dict), packb(msg_dict)
 
+
 class MessageSocketsHandler(Thread):
     """
     Handles the queued messages for sending from a seperate thread
@@ -31,6 +32,7 @@ class MessageSocketsHandler(Thread):
                                 is <= 0 size is 'infinite'
         :param wait_timeout: timeout for put method in each queue
     """
+
     def __init__(self, max_messages: int = 100, wait_timeout: int = None):
         super().__init__(daemon=True, name="MessageSocketThread")
         self.__connected_clients = defaultdict(dict)
@@ -68,8 +70,10 @@ class MessageSocketsHandler(Thread):
             :param app_name: the name of the 'app' that the message was sent from
         """
         if client_id is None or self.__connected_clients.get(client_id):
-            mess_to_queue = QueuedMessage(message, client_id, device_id, app_name)
-            self.__queued_messages.put(mess_to_queue, timeout=self.__wait_timeout)
+            mess_to_queue = QueuedMessage(
+                message, client_id, device_id, app_name)
+            self.__queued_messages.put(
+                mess_to_queue, timeout=self.__wait_timeout)
 
     def new_client(self, client_id, device_id, device_conn: DeviceConnection):
         """
@@ -97,7 +101,7 @@ class MessageSocketsHandler(Thread):
         """
         starts the thread loop
         """
-        #TODO: refactor later
+        # TODO: refactor later
         while True:
             next_message: QueuedMessage = self.__queued_messages.get()
             # (JSON, MSGPACK)

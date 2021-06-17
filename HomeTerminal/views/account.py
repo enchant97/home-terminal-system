@@ -9,6 +9,7 @@ from ..helpers.checkers import is_admin
 
 account = Blueprint("account", __name__)
 
+
 @account.route("/newaccount", methods=["POST", "GET"])
 @login_required
 def newaccount():
@@ -28,6 +29,7 @@ def newaccount():
         return render_template("account/new_account.html")
     return redirect(url_for("main.index"))
 
+
 @account.route("/changepassword", methods=["POST", "GET"])
 @login_required
 def changepassword():
@@ -42,6 +44,7 @@ def changepassword():
         else:
             flash("missing required form details", "error")
     return render_template("account/change_password.html")
+
 
 @account.route("/usersettings", methods=["GET", "POST"])
 @login_required

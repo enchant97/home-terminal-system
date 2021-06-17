@@ -18,6 +18,7 @@ def is_admin(username):
         return True
     return False
 
+
 def json_dict(possible_json: str):
     """
     converts string to JSON, returns

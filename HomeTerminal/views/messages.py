@@ -10,18 +10,22 @@ from ..sockets import message_handler
 
 messages = Blueprint("messages", __name__)
 
+
 @messages.route("/")
 @login_required
 def view():
     loaded_messages = dao.user.get_messages()
     return render_template("messages/view.html", messages=loaded_messages)
 
+
 @messages.route("/asjson")
 @api_auth
 @api_date_checks
 def view_json():
-    loaded_messages = dao.user.get_messages(last_updated=request.args.get("last-update"))
+    loaded_messages = dao.user.get_messages(
+        last_updated=request.args.get("last-update"))
     return jsonify(loaded_data=[message.serialize() for message in loaded_messages])
+
 
 @messages.route("/new", methods=["POST", "GET"])
 @login_required
@@ -38,11 +42,13 @@ def new_message():
                 live_update_mess = ServerMessage(
                     MessageTypes.DB_UPDATE,
                     live_update_payload)
-                message_handler.send_message(live_update_mess, app_name="messages")
+                message_handler.send_message(
+                    live_update_mess, app_name="messages")
                 flash("Message saved!")
         else:
             flash("required form details missing", "error")
     return render_template("messages/new_message.html")
+
 
 @messages.route("/remove/<mess_id>", methods=["DELETE"])
 @api_auth

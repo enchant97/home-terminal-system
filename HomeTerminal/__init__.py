@@ -32,20 +32,25 @@ from .views import (account, api, fm, home, im, live_update_ws, main, messages,
 app = Flask(__name__)
 sockets = Sockets()
 
+
 @app.errorhandler(404)
 def not_found(e):
     return render_template("404.html"), 404
 
 # source: https://stackoverflow.com/questions/6036082/call-a-python-function-from-jinja2
+
+
 @app.context_processor
 def notif_context():
     def get_jinja_notifications():
         return get_notifations(current_user.id_)
     return dict(get_jinja_notifications=get_jinja_notifications)
 
+
 @app.context_processor
 def context_human_dt():
     return dict(to_human_datetime=to_human_datetime)
+
 
 @app.before_first_request
 def create_default_db():
@@ -59,6 +64,7 @@ def create_default_db():
         datetime.utcnow(), ignore_duplicate=True)
     if acc_created:
         app.logger.info(f"created default admin {username} account")
+
 
 def get_plugins():
     """
@@ -76,12 +82,15 @@ def get_plugins():
             if hasattr(plugin, "blueprint"):
                 if hasattr(plugin, "PluginData"):
                     app.register_blueprint(plugin.blueprint)
-                    yield folder_name, plugin.PluginData # yield the plugin name and its setup data
+                    yield folder_name, plugin.PluginData  # yield the plugin name and its setup data
                     app.logger.debug(f"loaded plugin: {plugin.blueprint.name}")
                 else:
-                    app.logger.error(f"could not load plugin {path} as load_plugin() could not be found")
+                    app.logger.error(
+                        f"could not load plugin {path} as load_plugin() could not be found")
             else:
-                app.logger.error(f"could not load plugin {path} as blueprint could not be found")
+                app.logger.error(
+                    f"could not load plugin {path} as blueprint could not be found")
+
 
 def load_plugins():
     """
@@ -94,13 +103,16 @@ def load_plugins():
         if plugin[1].written_for_version.split(".")[0] == version_now[0]:
             if plugin[1].has_models:
                 # import the models if the plugin has indicated they have any
-                models_dir = Path(__file__).resolve(strict=True).parent / "plugins" / plugin[0] / "models"
+                models_dir = Path(__file__).resolve(
+                    strict=True).parent / "plugins" / plugin[0] / "models"
                 import_path = f"HomeTerminal.plugins.{plugin[0]}.models"
                 import_models(models_dir, import_path)
             # store the PluginData in app.config for potential use within app
-            app.config["LOADED_PLUGINS"] = {plugin[1].unique_name : plugin[1]}
+            app.config["LOADED_PLUGINS"] = {plugin[1].unique_name: plugin[1]}
         else:
-            app.logger.error(f"plugin {plugin[0]} incompatable as is version {plugin[1].written_for_version}")
+            app.logger.error(
+                f"plugin {plugin[0]} incompatable as is version {plugin[1].written_for_version}")
+
 
 def import_models(models_dir, import_path):
     """
@@ -114,11 +126,13 @@ def import_models(models_dir, import_path):
     # Source: https://github.com/davidism/basic_flask
     for py in [f[:-3] for f in os.listdir(models_dir) if f.endswith('.py') and f != '__init__.py']:
         mod = __import__('.'.join([import_path, py]), fromlist=[py])
-        classes = [getattr(mod, x) for x in dir(mod) if isinstance(getattr(mod, x), type)]
+        classes = [getattr(mod, x) for x in dir(
+            mod) if isinstance(getattr(mod, x), type)]
         for cls in classes:
             if 'flask_sqlalchemy.' in str(type(cls)):
                 app.logger.debug("auto import db model: {0}".format(cls))
                 setattr(sys.modules[__name__], cls.__name__, cls)
+
 
 def setup_config():
     """
@@ -141,7 +155,8 @@ def setup_config():
         # use default image path (./data/images)
         default_img_path = cwd_data / Path("images")
         app.config["BASE_IMG_PATH"] = default_img_path
-        app.logger.info(f"image path not set, using default path: {default_img_path}")
+        app.logger.info(
+            f"image path not set, using default path: {default_img_path}")
 
     # database URI
     if get_settings().DATABASE_URI:
@@ -150,8 +165,11 @@ def setup_config():
     else:
         # use default sqlite path (./data/app_data.db)
         default_db_path = cwd_data / Path("app_data.db")
-        app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + str(default_db_path)
-        app.logger.info(f"database URI not set, using default path: {default_db_path}")
+        app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + \
+            str(default_db_path)
+        app.logger.info(
+            f"database URI not set, using default path: {default_db_path}")
+
 
 def create_app():
     """
@@ -188,7 +206,8 @@ def create_app():
     sockets.register_blueprint(live_update_ws, url_prefix="/live-update")
 
     # import database models from the apps model folder
-    models_dir = Path(__file__).resolve(strict=True).parent / "database" / "models"
+    models_dir = Path(__file__).resolve(
+        strict=True).parent / "database" / "models"
     import_path = "HomeTerminal.database.models"
     import_models(models_dir, import_path)
 

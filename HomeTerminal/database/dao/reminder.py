@@ -22,7 +22,7 @@ def new_reminder(content, type_name, is_priority=False, datedue=None, user_for_i
         :param user_for_id: the id of the user the reminder is for or None, defaults to None
         :return: the created reminder obj
     """
-    #TODO use id for type instead
+    # TODO use id for type instead
     if user_for_id is not None:
         if User.query.filter_by(id_=user_for_id).scalar() is None:
             raise RowDoesNotExist(f"username {user_for_id} does not exist")
@@ -46,6 +46,7 @@ def new_reminder(content, type_name, is_priority=False, datedue=None, user_for_i
     db.session.add(the_reminder)
     db.session.commit()
     return the_reminder
+
 
 def new_reminder_task(reminder_id: int, name: str, *args) -> Reminder_Task:
     """
@@ -75,6 +76,7 @@ def new_reminder_task(reminder_id: int, name: str, *args) -> Reminder_Task:
     db.session.commit()
     return new_task
 
+
 def remove_reminder_task(reminder_task_id: int, is_removed=True):
     """
     marks a reminder task as removed
@@ -85,6 +87,7 @@ def remove_reminder_task(reminder_task_id: int, is_removed=True):
     task = Reminder_Task.query.filter_by(id_=reminder_task_id).first()
     task.removed = is_removed
     db.session.commit()
+
 
 def remove_reminder(reminder_id, is_removed=True) -> Reminder:
     """
@@ -100,9 +103,11 @@ def remove_reminder(reminder_id, is_removed=True) -> Reminder:
         raise RowDoesNotExist(f"row with id {reminder_id} does not exist")
     reminder.removed = is_removed
 
-    Reminder_Task.query.filter_by(reminder_id=reminder_id).update(dict(removed=is_removed))
+    Reminder_Task.query.filter_by(
+        reminder_id=reminder_id).update(dict(removed=is_removed))
     db.session.commit()
     return reminder
+
 
 def get_reminders(only_first=False, **filters):
     """
@@ -118,6 +123,7 @@ def get_reminders(only_first=False, **filters):
         return query.first()
     return query.all()
 
+
 def get_reminder_tasks(**filters):
     """
     returns all reminder tasks,
@@ -127,6 +133,7 @@ def get_reminder_tasks(**filters):
     """
     return Reminder_Task.query.filter_by(**filters).all()
 
+
 def get_reminder_types(removed=False):
     """
     gets reminder types
@@ -134,6 +141,7 @@ def get_reminder_types(removed=False):
         :param removed: whether to select removed entries, defaults to False
     """
     return Reminder_Type.query.filter_by(removed=removed).all()
+
 
 def get_reminders_due(user_id: int, include_general=True, only_count=False, days=2):
     """
@@ -152,10 +160,12 @@ def get_reminders_due(user_id: int, include_general=True, only_count=False, days
             Reminder.datedue <= days_after,
             or_(Reminder.user_id_for == user_id, Reminder.user_id_for == None)))
     else:
-        query = query.filter(and_(Reminder.datedue <= days_after, Reminder.user_id_for == user_id))
+        query = query.filter(
+            and_(Reminder.datedue <= days_after, Reminder.user_id_for == user_id))
     if only_count:
         return query.count()
     return query.all()
+
 
 def delete_removed():
     """

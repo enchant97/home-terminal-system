@@ -20,9 +20,11 @@ class Reminder(Base):
     The reminder table for storing main content of reminders
     """
     __tablename__ = "reminders"
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, nullable=False,
+                           default=datetime.utcnow)
     content = db.Column(db.String(length=1500), nullable=False)
-    user_id_for = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=True)
+    user_id_for = db.Column(
+        db.Integer, db.ForeignKey("users.id"), nullable=True)
     reminder_type_id = db.Column(
         db.Integer, db.ForeignKey("reminder_types.id"),
         nullable=False)
@@ -39,7 +41,7 @@ class Reminder(Base):
         """
         return {
             "created_at": datetime.strftime(self.created_at, "%Y-%m-%d"),
-            "id":self.id_,
+            "id": self.id_,
             "content": self.content,
             "user_id_for": self.user_id_for,
             "type_id": self.reminder_type_id,
@@ -47,12 +49,14 @@ class Reminder(Base):
             "datedue": datetime.strftime(self.datedue, "%Y-%m-%d")
         }
 
+
 class Reminder_Task(Base):
     """
     reminder task table for sub tasks in a reminder
     """
     __tablename__ = "reminder_tasks"
-    reminder_id = db.Column(db.Integer, db.ForeignKey("reminders.id"), nullable=False)
+    reminder_id = db.Column(db.Integer, db.ForeignKey(
+        "reminders.id"), nullable=False)
     name = db.Column(db.String(length=1500), nullable=False)
 
     def serialize(self):

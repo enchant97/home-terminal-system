@@ -11,6 +11,7 @@ from ..sockets import message_handler
 
 live_update_ws = Blueprint(__name__, "liveupdate-ws")
 
+
 @live_update_ws.route("/listen")
 @login_required
 def listen(socket: WebSocket):
@@ -22,7 +23,7 @@ def listen(socket: WebSocket):
             message = socket.receive()
             json_msg = json_dict(message)
             if json_msg.get("transport_type"):
-                #TODO: handle unknown transport types
+                # TODO: handle unknown transport types
                 device_conn = DeviceConnection(
                     socket, json_msg["transport_type"],
                     tuple(json_msg["notify_apps"]))

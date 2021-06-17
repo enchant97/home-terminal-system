@@ -5,6 +5,7 @@ functions that perform some kind of calculation
 from calendar import monthrange
 from datetime import datetime
 
+
 def add_months(months: int, start_dt: datetime = None) -> datetime:
     """
     calculates the date from current
@@ -26,7 +27,8 @@ def add_months(months: int, start_dt: datetime = None) -> datetime:
     return datetime(
         year, month, day, start_dt.hour, start_dt.minute,
         start_dt.second, start_dt.microsecond, start_dt.tzinfo
-        )
+    )
+
 
 def to_human_datetime(dt: datetime, show_date=True, show_time=False, ignore_none=True) -> str:
     """
@@ -49,6 +51,7 @@ def to_human_datetime(dt: datetime, show_date=True, show_time=False, ignore_none
         return datetime.strftime(dt, "%d-%m-%Y")
 
     return datetime.strftime(dt, "%H:%M")
+
 
 def html_date(date_str: str) -> datetime:
     """

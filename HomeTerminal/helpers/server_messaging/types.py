@@ -18,6 +18,7 @@ class ConnType(IntEnum):
     JSON = 1
     MSGPACK = 2
 
+
 @unique
 class MessageTypes(IntEnum):
     """
@@ -93,6 +94,7 @@ class Payload(dict):
             raise ValueError("percent range is incorrect must be 0-100")
         return cls(context_id=context_id, perc=perc)
 
+
 @dataclass
 class ServerMessage:
     """
@@ -124,6 +126,7 @@ class ServerMessage:
         """
         return cls(obj["m_type"], obj["payload"])
 
+
 @dataclass
 class QueuedMessage:
     """
@@ -142,6 +145,7 @@ class QueuedMessage:
     curr_device_id: str = None
     app_name: str = None
 
+
 @dataclass
 class DeviceConnection:
     """
@@ -153,5 +157,5 @@ class DeviceConnection:
     """
     socket: WebSocket
     transport_type: ConnType = ConnType.JSON
-    #TODO: change to set type later?
+    # TODO: change to set type later?
     notify_apps: tuple = ()

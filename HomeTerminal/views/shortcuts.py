@@ -29,6 +29,7 @@ def index(widget_id):
         shortcuts=dao.dashboard.get_shortcuts(),
         widget_id=widget_id)
 
+
 @shortcuts.route("/new-shortcut/<widget_id>", methods=["GET", "POST"])
 @login_required
 def new_shortcut(widget_id):
