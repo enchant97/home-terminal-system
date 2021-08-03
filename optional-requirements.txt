@@ -1,2 +1,2 @@
 # for postgres database
-psycopg2==2.9
+psycopg2==2.9.1
