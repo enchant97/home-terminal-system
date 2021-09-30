@@ -1,0 +1,23 @@
+<div class="container down">
+    <h2>Expiring Freezer Items</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Expire</th>
+                <th>Quantity</th>
+                <th>Category</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in items %}
+            <tr onclick="window.location = `{{ url_for('fm.edit', item_id=i.id_) }}`">
+                <td>{{ i.name }}</td>
+                <td{% if i.has_expired %} class="error" {% endif %}>{{ to_human_datetime(i.expire_date) }}</td>
+                    <td>{{ i.quantity }}</td>
+                    <td>{{ i.category.name }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

@@ -5,7 +5,7 @@ from uuid import UUID
 
 from .types import Widget
 from .widgets import (generate_message_widget, generate_shortcut_widget,
-                      generate_weather_widget)
+                      generate_weather_widget, generate_expiring_freezer_manager_widget)
 
 # the folder names for dynamic images folder
 INBUILT_DYNAMIC_IMG_FOLDERS = {
@@ -22,7 +22,10 @@ INBUILT_WIDGETS = (
         "shortcuts", generate_shortcut_widget, "shortcuts.index"),
     Widget(
         UUID("fee6acac-d3ca-4771-8aa5-8d7a3be08959"),
-        "weather", generate_weather_widget, None)
+        "weather", generate_weather_widget, None),
+    Widget(
+        UUID("6f205a19-2475-465f-99a5-0b00dd01d6e8"),
+        "expiring freezer manager", generate_expiring_freezer_manager_widget, None),
 )
 
 # default widgets to give the user on account creation

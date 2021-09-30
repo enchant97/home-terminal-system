@@ -64,3 +64,8 @@ def generate_weather_widget(widget_id: int, widget_settings=None) -> str:
         :return: the str html that has been rendered
     """
     return render_template("/widgets/weather.html")
+
+
+def generate_expiring_freezer_manager_widget(widget_id: int, widget_settings=None) -> str:
+    items = dao.freezer_manager.get_fm4_expiring()
+    return render_template("/widgets/expiring_freezer_manager.html", items=items)
