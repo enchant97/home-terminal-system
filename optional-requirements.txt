@@ -1,2 +1,4 @@
 # for postgres database
-psycopg2==2.9.1
+psycopg2==2.9
+# for mysql database
+pymysql==1.0
