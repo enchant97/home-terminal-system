@@ -12,6 +12,7 @@ import logging
 import os
 import sys
 from datetime import datetime
+from importlib import import_module
 from pathlib import Path
 
 from flask import Flask, render_template
@@ -112,7 +113,7 @@ def load_plugins():
                 f"plugin {plugin[0]} incompatable as is version {plugin[1].written_for_version}")
 
 
-def import_models(models_dir, import_path):
+def import_models(models_dir: Path, import_path: str):
     """
     used to import all database models found in given directory,
     can be run several times if there are different model directories
@@ -120,16 +121,15 @@ def import_models(models_dir, import_path):
         :param models_dir: the directory where db models are located
         :param import_path: the import path for the models directory
     """
-    # Source: https://gist.github.com/languanghao/a24d74b8ab4232a801312e2a0a107064
-    # Source: https://github.com/davidism/basic_flask
-    for py in [f[:-3] for f in os.listdir(models_dir) if f.endswith('.py') and f != '__init__.py']:
-        mod = __import__('.'.join([import_path, py]), fromlist=[py])
-        classes = [getattr(mod, x) for x in dir(
-            mod) if isinstance(getattr(mod, x), type)]
-        for cls in classes:
-            if 'flask_sqlalchemy.' in str(type(cls)):
-                app.logger.debug("auto import db model: {0}".format(cls))
-                setattr(sys.modules[__name__], cls.__name__, cls)
+    for path in models_dir.glob("*"):
+        if (name := path.stem) != "__init__" and path.is_file():
+            mod = import_module("." + name, import_path)
+            classes = [getattr(mod, x) for x in dir(
+                mod) if isinstance(getattr(mod, x), type)]
+            for cls in classes:
+                if 'flask_sqlalchemy.' in str(type(cls)):
+                    app.logger.debug("auto import db model: {0}".format(cls))
+                    setattr(sys.modules[__name__], cls.__name__, cls)
 
 
 def setup_config():
