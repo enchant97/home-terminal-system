@@ -133,13 +133,13 @@ class MessageSocketsHandler(Thread):
                 for device_id in client_sockets:
                     if device_id != next_message.curr_device_id:
                         try:
-                           curr_client = self.__connected_clients[user_id][device_id]
-                           # only send the message if the client is listening for the current app
-                           if (next_message.app_name is None) or (next_message.app_name in curr_client.notify_apps):
-                               if curr_client.transport_type == ConnType.MSGPACK:
-                                   curr_client.socket.send(packed_msg[1])
-                               else:
-                                   curr_client.socket.send(packed_msg[0])
+                            curr_client = self.__connected_clients[user_id][device_id]
+                            # only send the message if the client is listening for the current app
+                            if (next_message.app_name is None) or (next_message.app_name in curr_client.notify_apps):
+                                if curr_client.transport_type == ConnType.MSGPACK:
+                                    curr_client.socket.send(packed_msg[1])
+                                else:
+                                    curr_client.socket.send(packed_msg[0])
                         except ConnectionClosed:
                             clients_to_remove.append((user_id, device_id))
                         except KeyError:
