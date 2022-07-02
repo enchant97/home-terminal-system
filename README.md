@@ -7,11 +7,14 @@
 This web app is built in flask, it is a personal project to
 digitize certain tasks that can be done around the home.
 
+## This Project Is EOL
+What does this mean?
+
+- Project has reached the end of it's life
+- No new features
+- Bugs will not be fixed
+- Security patches will not be applied
+
 ## Checkout the docs located [here](docs/index.md)
 Or go to docs folder on the repository.
 You will find a guides on deployment and configuring the app
-
-## If you want to contribute
-Please first look at the Contributing guide
-Look at the Github projects tab [here](https://github.com/enchant97/House_Terminal_System/projects),
-which contains all tasks that need doing. Or look at the GitHub issues tab [here](https://github.com/enchant97/House_Terminal_System/issues).
