@@ -76,7 +76,7 @@ def get_plugins():
     for path in plugins_dir.iterdir():
         folder_name = path.name
         if path.is_dir() and folder_name != "__pycache__":
-            plugin = import_string(f"HomeTerminal.plugins.{folder_name}")
+            plugin = import_string(f"hts.plugins.{folder_name}")
             if hasattr(plugin, "blueprint"):
                 if hasattr(plugin, "PluginData"):
                     app.register_blueprint(plugin.blueprint)
@@ -103,7 +103,7 @@ def load_plugins():
                 # import the models if the plugin has indicated they have any
                 models_dir = Path(__file__).resolve(
                     strict=True).parent / "plugins" / plugin[0] / "models"
-                import_path = f"HomeTerminal.plugins.{plugin[0]}.models"
+                import_path = f"hts.plugins.{plugin[0]}.models"
                 import_models(models_dir, import_path)
             # store the PluginData in app.config for potential use within app
             app.config["LOADED_PLUGINS"] = {plugin[1].unique_name: plugin[1]}
@@ -205,7 +205,7 @@ def create_app():
     # import database models from the apps model folder
     models_dir = Path(__file__).resolve(
         strict=True).parent / "database" / "models"
-    import_path = "HomeTerminal.database.models"
+    import_path = "hts.database.models"
     import_models(models_dir, import_path)
 
     # import plugins or not

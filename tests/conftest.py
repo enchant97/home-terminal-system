@@ -8,9 +8,9 @@ from os import environ
 
 import pytest
 
-from HomeTerminal import create_app, db
-from HomeTerminal.database.dao.user import new_account
-from HomeTerminal.database.models.user import User
+from hts import create_app, db
+from hts.database.dao.user import new_account
+from hts.database.models.user import User
 
 
 @pytest.fixture(scope='module')

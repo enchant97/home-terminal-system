@@ -18,6 +18,6 @@ RUN --mount=type=cache,target=/root/.cache \
     pip install -r optional-requirements.txt
 
 # copy the flask app files
-COPY HomeTerminal HomeTerminal
+COPY hts hts
 
-CMD gunicorn -b 0.0.0.0:8080 -w 1 'HomeTerminal:create_app()'
+CMD gunicorn -b 0.0.0.0:8080 -w 1 'hts:create_app()'
