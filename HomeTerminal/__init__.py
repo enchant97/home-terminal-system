@@ -16,7 +16,6 @@ from pathlib import Path
 
 from flask import Flask, render_template
 from flask_login import current_user
-from flask_sockets import Sockets
 from werkzeug.utils import import_string
 
 from .authentication import login_manager
@@ -26,11 +25,10 @@ from .database.database import db
 from .helpers.calculations import to_human_datetime
 from .helpers.constants import INBUILT_DYNAMIC_IMG_FOLDERS, INBUILT_WIDGETS
 from .sockets import init_socket_handlers
-from .views import (account, api, fm, home, im, live_update_ws, main, messages,
+from .views import (account, api, fm, home, im, live_update, main, messages,
                     pm, reminder, shortcuts)
 
 app = Flask(__name__)
-sockets = Sockets()
 
 
 @app.errorhandler(404)
@@ -189,7 +187,7 @@ def create_app():
     # init flask modules
     db.init_app(app)
     login_manager.init_app(app)
-    sockets.init_app(app)
+    live_update.sock.init_app(app)
     init_socket_handlers(app)
 
     # init app blueprints
@@ -203,7 +201,6 @@ def create_app():
     app.register_blueprint(reminder, url_prefix="/reminder")
     app.register_blueprint(messages, url_prefix="/messages")
     app.register_blueprint(shortcuts, url_prefix="/widget/shortcuts")
-    sockets.register_blueprint(live_update_ws, url_prefix="/live-update")
 
     # import database models from the apps model folder
     models_dir = Path(__file__).resolve(

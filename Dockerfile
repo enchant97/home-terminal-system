@@ -1,4 +1,4 @@
-FROM python:3.9-slim
+FROM python:3.10-slim
 
 LABEL maintainer="enchant97"
 
@@ -20,4 +20,4 @@ RUN --mount=type=cache,target=/root/.cache \
 # copy the flask app files
 COPY HomeTerminal HomeTerminal
 
-CMD gunicorn -b 0.0.0.0:8080 -k geventwebsocket.gunicorn.workers.GeventWebSocketWorker -w 1 'HomeTerminal:create_app()'
+CMD gunicorn -b 0.0.0.0:8080 -w 1 'HomeTerminal:create_app()'

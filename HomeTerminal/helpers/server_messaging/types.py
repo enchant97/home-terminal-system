@@ -5,7 +5,7 @@ sending server messages to the client using WebSocket
 from dataclasses import asdict, dataclass
 from enum import IntEnum, unique
 
-from geventwebsocket.websocket import WebSocket
+from simple_websocket import Server as WebSocket
 
 
 @unique
