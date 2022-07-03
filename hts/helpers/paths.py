@@ -28,7 +28,7 @@ def get_image_folder(dynamic_img_name: str) -> Path:
     return image_path
 
 
-def is_allowed_img_file(filename: str) -> str:
+def is_allowed_img_file(filename: str) -> bool:
     """
     Checks whether given filename has an allowed extention
 
@@ -36,6 +36,4 @@ def is_allowed_img_file(filename: str) -> str:
         :return: whether the filename is allowed
         :rtype: True, False
     """
-    return '.' in filename and \
-        filename.rsplit(".", 1)[1].lower(
-        ) in current_app.config["ALLOWED_IMG_EXT"]
+    return Path(filename).suffix.removeprefix(".") in current_app.config["ALLOWED_IMG_EXT"]

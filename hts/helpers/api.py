@@ -1,7 +1,7 @@
 """
 decorator methods for use with the api routes
 """
-from contextlib import wraps
+from functools import wraps
 from uuid import UUID
 
 from flask import jsonify, request

@@ -6,7 +6,7 @@ from calendar import monthrange
 from datetime import datetime
 
 
-def add_months(months: int, start_dt: datetime = None) -> datetime:
+def add_months(months: int, start_dt: datetime | None = None) -> datetime:
     """
     calculates the date from current
     date incremented by given months

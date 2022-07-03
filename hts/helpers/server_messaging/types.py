@@ -141,9 +141,9 @@ class QueuedMessage:
                          message was sent from, can be None
     """
     message: ServerMessage
-    curr_client_id: str = None
-    curr_device_id: str = None
-    app_name: str = None
+    curr_client_id: str | None = None
+    curr_device_id: str | None = None
+    app_name: str | None = None
 
 
 @dataclass

@@ -13,7 +13,7 @@ from ...helpers.server_messaging.types import (ConnType, DeviceConnection,
                                                QueuedMessage, ServerMessage)
 
 
-def pack(msg: ServerMessage):
+def pack(msg: ServerMessage) -> tuple[str, bytes]:
     """
     packs message as json and msgpack
 
@@ -99,15 +99,29 @@ class MessageSocketsHandler(Thread):
         if not self.__connected_clients[client_id]:
             del self.__connected_clients[client_id]
 
+    def _send_packed_message_to_client(
+            self,
+            user_id,
+            device_id,
+            app_name: str | None,
+            packed_msg: tuple[str, bytes],
+        ):
+        curr_client = self.__connected_clients[user_id][device_id]
+        # send the message if the client is listening for the current app
+        if (app_name is None) or (app_name in curr_client.notify_apps):
+            match curr_client.transport_type:
+                case ConnType.MSGPACK:
+                    curr_client.socket.send(packed_msg[1])
+                case _:
+                    curr_client.socket.send(packed_msg[0])
+
     def run(self):
         """
         starts the thread loop
         """
-        # TODO: refactor later
         clients_to_remove = []
         while True:
             next_message: QueuedMessage = self.__queued_messages.get()
-            print(len(self.__connected_clients))
             # (JSON, MSGPACK)
             packed_msg = pack(next_message.message)
             if next_message.curr_client_id is None:
@@ -115,13 +129,12 @@ class MessageSocketsHandler(Thread):
                 for user_id in self.__connected_clients:
                     for device_id in self.__connected_clients[user_id]:
                         try:
-                            curr_client = self.__connected_clients[user_id][device_id]
-                            # only send the message if the client is listening for the current app
-                            if (next_message.app_name is None) or (next_message.app_name in curr_client.notify_apps):
-                                if curr_client.transport_type == ConnType.MSGPACK:
-                                    curr_client.socket.send(packed_msg[1])
-                                else:
-                                    curr_client.socket.send(packed_msg[0])
+                            self._send_packed_message_to_client(
+                                user_id,
+                                device_id,
+                                next_message.app_name,
+                                packed_msg,
+                            )
                         except ConnectionClosed:
                             clients_to_remove.append((user_id, device_id))
                         except KeyError:
@@ -129,17 +142,15 @@ class MessageSocketsHandler(Thread):
             else:
                 # send to a specific user
                 user_id = next_message.curr_client_id
-                client_sockets: dict = self.__connected_clients[user_id]
-                for device_id in client_sockets:
+                for device_id in self.__connected_clients[user_id]:
                     if device_id != next_message.curr_device_id:
                         try:
-                            curr_client = self.__connected_clients[user_id][device_id]
-                            # only send the message if the client is listening for the current app
-                            if (next_message.app_name is None) or (next_message.app_name in curr_client.notify_apps):
-                                if curr_client.transport_type == ConnType.MSGPACK:
-                                    curr_client.socket.send(packed_msg[1])
-                                else:
-                                    curr_client.socket.send(packed_msg[0])
+                            self._send_packed_message_to_client(
+                                user_id,
+                                device_id,
+                                next_message.app_name,
+                                packed_msg,
+                            )
                         except ConnectionClosed:
                             clients_to_remove.append((user_id, device_id))
                         except KeyError:
@@ -148,4 +159,4 @@ class MessageSocketsHandler(Thread):
             self.__queued_messages.task_done()
 
             for client_id, device_id in clients_to_remove:
-                self.remove_client(user_id, device_id)
+                self.remove_client(client_id, device_id)
