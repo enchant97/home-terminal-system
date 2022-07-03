@@ -5,6 +5,6 @@ house to digitize certain tasks.
 
 ## Table Of Contents:
 -   [Guides](Guides.md)
--   [Planed Updates](https://github.com/enchant97/House_Terminal_System/projects)
+-   [Planed Updates](https://github.com/enchant97/home-terminal-system/projects)
 -   [Plugins](Plugins.md) *(WIP)*
 -   [Contributing](Contributing.md)

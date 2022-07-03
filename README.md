@@ -1,8 +1,8 @@
 # Home Terminal System (HTS)
-![Python application](https://github.com/enchant97/House_Terminal_System/workflows/Python%20application/badge.svg)
-![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/enchant97/House_Terminal_System)
-![GitHub](https://img.shields.io/github/license/enchant97/House_Terminal_System)
-![GitHub last commit](https://img.shields.io/github/last-commit/enchant97/House_Terminal_System)
+![Python application](https://github.com/enchant97/home-terminal-system/workflows/Python%20application/badge.svg)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/enchant97/home-terminal-system)
+![GitHub](https://img.shields.io/github/license/enchant97/home-terminal-system)
+![GitHub last commit](https://img.shields.io/github/last-commit/enchant97/home-terminal-system)
 
 This web app is built in flask, it is a personal project to
 digitize certain tasks that can be done around the home.

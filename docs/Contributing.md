@@ -9,14 +9,14 @@
 ## Getting The Sources
 First fork the repository to your GitHub account, then clone your fork locally:
 ```
-git clone https://github.com/<<<your-github-account>>>/House_Terminal_System.git
+git clone https://github.com/<<<your-github-account>>>/home-terminal-system.git
 ```
 
 You will want to update your repository every so often with your fork
 ```
-cd House_Terminal_System
+cd home-terminal-system
 git checkout master
-git pull https://github.com/enchant97/House_Terminal_System.git master
+git pull https://github.com/enchant97/home-terminal-system.git master
 ```
 Then merge any conflicts, commit them and then push them to your fork.
 
@@ -42,7 +42,7 @@ Make sure to follow the coding guide lines
 this is to minimise changes for the user who is deploying this project
 
 ## Where To Contribute
-Check the [full issues list](https://github.com/enchant97/House_Terminal_System/issues).
+Check the [full issues list](https://github.com/enchant97/home-terminal-system/issues).
 Note just because an issue exists it does not mean we will accept a contribution. There are
 several reasons why we may not accept a pull request:
 -   Performance - We want to develop a fast web app that can run on the smallest server
