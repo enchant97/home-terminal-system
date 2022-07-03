@@ -1,23 +1,29 @@
-FROM python:3.10-slim
+ARG PYTHON_VERSION=3.10
 
-LABEL maintainer="enchant97"
+FROM python:${PYTHON_VERSION} as builder
 
-EXPOSE 8080
+    WORKDIR /app
 
-# setup python environment
-COPY requirements.txt requirements.txt
+    RUN apt-get update && apt-get install -y libpq-dev && rm -rf /var/lib/apt/lists/*
 
-# build/add base-requirements
-# also allow for DOCKER_BUILDKIT=1 to be used
-RUN --mount=type=cache,target=/root/.cache \
-    pip install -r requirements.txt
+    COPY requirements.txt .
+    COPY optional-requirements.txt .
 
-# add extra requirements
-COPY optional-requirements.txt optional-requirements.txt
-RUN --mount=type=cache,target=/root/.cache \
-    pip install -r optional-requirements.txt
+    RUN python -m venv .venv
+    ENV PATH="/app/.venv/bin:$PATH"
 
-# copy the flask app files
-COPY hts hts
+    RUN --mount=type=cache,target=/root/.cache pip install -r requirements.txt -r optional-requirements.txt
 
-CMD gunicorn -b 0.0.0.0:8080 -w 1 'hts:create_app()'
+FROM python:${PYTHON_VERSION}-slim
+
+    WORKDIR /app
+    EXPOSE 8080
+    ENV PATH="/app/.venv/bin:$PATH"
+
+    RUN apt-get update && apt-get install -y libpq5 && rm -rf /var/lib/apt/lists/*
+
+    COPY --from=builder /app/.venv .venv
+
+    COPY hts hts
+
+    CMD gunicorn -b 0.0.0.0:8080 -w 1 --worker-class gevent 'hts:create_app()'
