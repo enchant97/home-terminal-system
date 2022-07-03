@@ -15,6 +15,14 @@ What does this mean?
 - Bugs will not be fixed
 - Security patches will not be applied
 
+Are there alternatives that offer the same features?
+
+Yes I (Leo S) have decided to break up the applications in this program into several different programs, this are shown below:
+
+- Dashboard - [Web Portal](https://github.com/enchant97/web-portal), [Web Portal Lite](https://github.com/enchant97/web-portal-lite)
+- IM & FM - [Inventory Manager](https://github.com/enchant97/inventory_manager)
+- Reminders - [List Manager](https://github.com/enchant97/list-manager)
+
 ## Checkout the docs located [here](docs/index.md)
 Or go to docs folder on the repository.
 You will find a guides on deployment and configuring the app
